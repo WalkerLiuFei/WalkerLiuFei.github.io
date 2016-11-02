@@ -3,39 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>搭建Github page笔记遇到的坑 | Hexo</title>
+  <title>Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="配置Hexo遇到的坑
-在配置hexo的_config.yml文件时 
- deploy:
-   type: git //前面要加空格！
-   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
-   branch: master
- 
-每次提交新文章的时候，hexo会清空github仓库（坑！），">
+  <meta name="description" content="很久没有整过这玩意了，现在都不会配置了。1：安装根目录下的data 和base 目录一定要指定好。2：不要自己去建立data文件夹3：在遇到error 1045 ，被denial的情况。网上的教程 有个错误（如下图2所示）。貌似是最新版本的MySql 在user这个表上做了一些更改。注意1：如果自定义了 port 口的话，可能会是在 等待连接，你在连接的时候却连接不上！注意2：Password这个">
 <meta property="og:type" content="article">
-<meta property="og:title" content="搭建Github page笔记遇到的坑">
-<meta property="og:url" content="http://yoursite.com/2016/11/02/hello-world/index.html">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2016/11/02/配置MySql遇到的一点坑/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="配置Hexo遇到的坑
-在配置hexo的_config.yml文件时 
- deploy:
-   type: git //前面要加空格！
-   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
-   branch: master
- 
-每次提交新文章的时候，hexo会清空github仓库（坑！），">
-<meta property="og:updated_time" content="2016-11-02T07:02:26.166Z">
+<meta property="og:description" content="很久没有整过这玩意了，现在都不会配置了。1：安装根目录下的data 和base 目录一定要指定好。2：不要自己去建立data文件夹3：在遇到error 1045 ，被denial的情况。网上的教程 有个错误（如下图2所示）。貌似是最新版本的MySql 在user这个表上做了一些更改。注意1：如果自定义了 port 口的话，可能会是在 等待连接，你在连接的时候却连接不上！注意2：Password这个">
+<meta property="og:image" content="http://yoursite.com/path/to/image">
+<meta property="og:updated_time" content="2016-11-02T07:24:32.045Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="搭建Github page笔记遇到的坑">
-<meta name="twitter:description" content="配置Hexo遇到的坑
-在配置hexo的_config.yml文件时 
- deploy:
-   type: git //前面要加空格！
-   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
-   branch: master
- 
-每次提交新文章的时候，hexo会清空github仓库（坑！），">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="很久没有整过这玩意了，现在都不会配置了。1：安装根目录下的data 和base 目录一定要指定好。2：不要自己去建立data文件夹3：在遇到error 1045 ，被denial的情况。网上的教程 有个错误（如下图2所示）。貌似是最新版本的MySql 在user这个表上做了一些更改。注意1：如果自定义了 port 口的话，可能会是在 等待连接，你在连接的时候却连接不上！注意2：Password这个">
+<meta name="twitter:image" content="http://yoursite.com/path/to/image">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -84,42 +65,26 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-配置MySql遇到的一点坑" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/11/02/hello-world/" class="article-date">
-  <time datetime="2016-11-02T02:54:31.743Z" itemprop="datePublished">2016-11-02</time>
+    <a href="/2016/11/02/配置MySql遇到的一点坑/" class="article-date">
+  <time datetime="2016-11-02T07:23:05.171Z" itemprop="datePublished">2016-11-02</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      搭建Github page笔记遇到的坑
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="配置Hexo遇到的坑"><a href="#配置Hexo遇到的坑" class="headerlink" title="配置Hexo遇到的坑"></a>配置Hexo遇到的坑</h2><ol>
-<li>在配置hexo的_config.yml文件时 <pre>
- deploy:
-   type: git //前面要加空格！
-   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
-   branch: master
- </pre></li>
-<li>每次提交新文章的时候，hexo会清空github仓库（坑！），所以我在其他地方提交的文件，例如定向文件CNAME会被清空掉，所以这个文件药房你的hexo博客目录下面的source文件夹下！</li>
-</ol>
+        <p>很久没有整过这玩意了，现在都不会配置了。<br>1：安装根目录下的data 和base 目录一定要指定好。<br>2：不要自己去建立data文件夹<br>3：在遇到error 1045 ，被denial的情况。网上的教程 有个错误（如下图2所示）。貌似是最新版本的MySql 在user这个表上做了一些更改。<br>注意1：如果自定义了 port 口的话，可能会是在 等待连接，你在连接的时候却连接不上！<br>注意2：Password这个列在最新的user表中已经不存在了！现在已经是authentication_string了！</p>
+<img src="/path/to/image" class="[class names]" title="[width] [height] [title text [alt text]]">
+<p>2: 在使用过程中如果碰到密码过期的问题可以使用下面的命令来解决：<br>set PASSWORD=PASSWORD(‘new_PASSWORD’)</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/hello-world/" data-id="civ0lw1pr0001zgn9c574c2i2" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/11/02/配置MySql遇到的一点坑/" data-id="civ0lw1pv0002zgn9nyryunpv" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -128,15 +93,20 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/11/02/多线程概念/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/11/02/EventBus源码阅读笔记/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Récent</strong>
       <div class="article-nav-title">
         
-          多线程概念
+          (no title)
         
       </div>
     </a>
   
+  
+    <a href="/2016/11/02/ImageLoder/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">ImageLoder源码阅读笔记</div>
+    </a>
   
 </nav>
 

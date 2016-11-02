@@ -48,9 +48,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -60,6 +60,454 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-EventBus源码阅读笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/02/EventBus源码阅读笔记/" class="article-date">
+  <time datetime="2016-11-02T07:27:38.296Z" itemprop="datePublished">2016-11-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1：getDefault方法，明显看的出来这是单例模式的得到单例对象的方法</p>
+<pre><code>/** Convenience singleton for apps using a process-wide EventBus instance. */
+public static EventBus getDefault() {
+    if (defaultInstance == null) {
+        synchronized (EventBus.class) {
+            if (defaultInstance == null) {
+                defaultInstance = new EventBus();
+            }
+        }
+    }
+    return defaultInstance;
+}
+</code></pre><p>2:先来看看register具体实现方法。是的，反射！ 对于findSubscriberMethods方法,它里面有一个MethodCache 的HashMap（最新的版本作者改成了ConcurrentHashMap来保证线程安全，）这个HashMap的key是注册类，Value是通过反射得到的Subscribe方法。</p>
+<pre><code>private synchronized void register(Object subscriber, boolean sticky, int priority) {
+    List&lt;SubscriberMethod&gt; subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriber.getClass());
+    for (SubscriberMethod subscriberMethod : subscriberMethods) {
+        subscribe(subscriber, subscriberMethod, sticky, priority);
+    }
+}
+</code></pre><p>3：Subsrcibe 方法：<br>   // 必须在保证线程安全的情况下调用</p>
+<pre><code>private void subscribe(Object subscriber, SubscriberMethod subscriberMethod) {
+    //得到事件类型，（这个东西就是POST 和 subcribe 想对应的那个类）
+    Class&lt;?&gt; eventType = subscriberMethod.eventType;
+    Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
+    //通过Map拿到线程安全的随机访问List
+    CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);
+    if (subscriptions == null) {
+        subscriptions = new CopyOnWriteArrayList&lt;&gt;();
+        subscriptionsByEventType.put(eventType, subscriptions);
+    } else {
+        if (subscriptions.contains(newSubscription)) {
+            throw new EventBusException(&quot;Subscriber &quot; + subscriber.getClass() + &quot; already registered to event &quot;
+                    + eventType);
+        }
+    }
+    //根据优先级进行插入
+    int size = subscriptions.size();
+    for (int i = 0; i &lt;= size; i++) {
+        if (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) {
+            subscriptions.add(i, newSubscription);
+            break;
+        }
+    }
+    //插入订阅者订阅的消息
+    List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);
+    if (subscribedEvents == null) {
+        subscribedEvents = new ArrayList&lt;&gt;();
+        typesBySubscriber.put(subscriber, subscribedEvents);
+    }
+    subscribedEvents.add(eventType);
+    //拿到SubsriberMethod
+    if (subscriberMethod.sticky) {
+    /*
+        在默认情况下，Subsricb的超类也会被通知，将这个纳入到订阅接受的考虑情况会提高事件的发布效率
+        在这个开关off掉，会提高 20%的事件发布接受效率
+    */
+          if (eventInheritance) {
+    /*
+       这个参数是新版EventBus添加的，这个参数的意义
+    &lt;span style=&quot;white-space:pre&quot;&gt;    &lt;/span&gt;            
+                注：因为有很多粘性时间，遍历所有的事件会降低效率
+       新版的EventBus改变了存储结构 使用了 Class -&gt; List&lt;Class&gt; 的Map结构，
+    */
+            Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();
+            for (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) {
+                Class&lt;?&gt; candidateEventType = entry.getKey();
+                if (eventType.isAssignableFrom(candidateEventType)) {
+                    Object stickyEvent = entry.getValue();
+                    checkPostStickyEventToSubscription(newSubscription, stickyEvent);
+                }
+            }
+        } else {
+            Object stickyEvent = stickyEvents.get(eventType);
+            checkPostStickyEventToSubscription(newSubscription, stickyEvent);
+        }
+    }
+}
+</code></pre><p>4：最后看下Post方法：<br>看一下形式就发现和Handler的实现原理非常类似。Looper,消息队列等等。。</p>
+<pre><code>// Posts the given event to the event bus. 
+public void post(Object event) {
+    PostingThreadState postingState = currentPostingThreadState.get();
+    List&lt;Object&gt; eventQueue = postingState.eventQueue;
+    eventQueue.add(event);
+
+    if (!postingState.isPosting) {
+        postingState.isMainThread = Looper.getMainLooper() == Looper.myLooper();
+        postingState.isPosting = true;
+        if (postingState.canceled) {
+            throw new EventBusException(&quot;Internal error. Abort state was not reset&quot;);
+        }
+        try {
+            while (!eventQueue.isEmpty()) {
+                postSingleEvent(eventQueue.remove(0), postingState);
+            }
+        } finally {
+            postingState.isPosting = false;
+            postingState.isMainThread = false;
+        }
+    }
+}
+</code></pre><p>最后找到具体实现方法</p>
+<pre>
+   private void postToSubscription(Subscription subscription, Object event, boolean isMainThread) {
+        switch (subscription.subscriberMethod.threadMode) {
+            case PostThread:
+                invokeSubscriber(subscription, event);
+                break;
+            case MainThread:
+                if (isMainThread) {
+                    invokeSubscriber(subscription, event);
+                } else {
+                    mainThreadPoster.enqueue(subscription, event);
+                }
+                break;
+            case BackgroundThread:
+                if (isMainThread) {
+                    backgroundPoster.enqueue(subscription, event);
+                } else {
+                    invokeSubscriber(subscription, event);
+                }
+                break;
+            case Async:
+                asyncPoster.enqueue(subscription, event);
+                break;
+            default:
+                throw new IllegalStateException("Unknown thread mode: " + subscription.subscriberMethod.threadMode);
+        }
+    }
+</pre>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>前面已经说过subscription包含了所有执行需要的东西，大致有:subscriber, subscriberMethod（method, threadMode, eventType）, priority；<br>那么这个方法：第一步根据threadMode去判断应该在哪个线程去执行该方法；<br>case PostThread。<br>直接反射调用；也就是说在当前的线程直接调用该方法；<br>case MainThread:<br>首先去判断当前如果是UI线程，则直接调用；否则： mainThreadPoster.enqueue(subscription, event);把当前的方法加入到队列，然后直接通过handler去发送一个消息，在handler的handleMessage中，去执行我们的方法。说白了就是通过Handler去发送消息，然后执行的。<br>     case BackgroundThread:<br>如果当前非UI线程，则直接调用；如果是UI线程，则将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用<br>executorService = Executors.newCachedThreadPool();。<br>     case Async:将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用；线程池与BackgroundThread用的是同一个。<br>这么说BackgroundThread和Async有什么区别呢？<br>    BackgroundThread中的任务，一个接着一个去调用，中间使用了一个布尔型变量handlerActive进行的控制。<br>Async则会动态控制并发。</p>
+<p>register会把当前类中匹配的方法，通过反射得到存入一个map。Map的键值分别是订阅者和其所有的订阅方法类（这个方法类包含了优先级，执行线程，和EventType等），而post会根据实参去map查找进行反射调用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/02/EventBus源码阅读笔记/" data-id="civ0lw1pn0000zgn9505b9cnm" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-配置MySql遇到的一点坑" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/02/配置MySql遇到的一点坑/" class="article-date">
+  <time datetime="2016-11-02T07:23:05.171Z" itemprop="datePublished">2016-11-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>很久没有整过这玩意了，现在都不会配置了。<br>1：安装根目录下的data 和base 目录一定要指定好。<br>2：不要自己去建立data文件夹<br>3：在遇到error 1045 ，被denial的情况。网上的教程 有个错误（如下图2所示）。貌似是最新版本的MySql 在user这个表上做了一些更改。<br>注意1：如果自定义了 port 口的话，可能会是在 等待连接，你在连接的时候却连接不上！<br>注意2：Password这个列在最新的user表中已经不存在了！现在已经是authentication_string了！</p>
+<img src="/path/to/image" class="[class names]" title="[width] [height] [title text [alt text]]">
+<p>2: 在使用过程中如果碰到密码过期的问题可以使用下面的命令来解决：<br>set PASSWORD=PASSWORD(‘new_PASSWORD’)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/02/配置MySql遇到的一点坑/" data-id="civ0lw1pv0002zgn9nyryunpv" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ImageLoder" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/02/ImageLoder/" class="article-date">
+  <time datetime="2016-11-02T07:14:05.378Z" itemprop="datePublished">2016-11-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/02/ImageLoder/">ImageLoder源码阅读笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>开源框架ImageLoader的源码阅读笔记,重点集中在线程管理机制和网络请求和缓存管理。其它繁琐内容暂且不去管。基于最新的1.95版本。文中有错还请纠正。我也是个菜鸟。互相学习</p>
+</blockquote>
+<p>首先通过源码来了解下 ImageLoader 中的displayImage方法的去了解ImageLoader的大概架构，因为这个方法是我们使用ImageLoader中调用最多的方法了。也是最重要的方法了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayImage</span><span class="params">(String uri, ImageAware imageAware, DisplayImageOptions options,  </span></span></div><div class="line">        ImageSize targetSize, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) &#123;  </div><div class="line">  </div><div class="line">    <span class="comment">//一些检查工作  </span></div><div class="line">    checkConfiguration();  </div><div class="line">    <span class="keyword">if</span> (imageAware == <span class="keyword">null</span>) &#123;  </div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(ERROR_WRONG_ARGUMENTS);  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">if</span> (listener == <span class="keyword">null</span>) &#123;  </div><div class="line">        listener = defaultListener;  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">if</span> (options == <span class="keyword">null</span>) &#123;  </div><div class="line">        options = configuration.defaultDisplayImageOptions;  </div><div class="line">    &#125;  </div><div class="line">      </div><div class="line">    <span class="keyword">if</span> (TextUtils.isEmpty(uri)) &#123;  </div><div class="line">        <span class="comment">//这里有个ImageLoaderEngine 对象engine，这是个很重要的类，下文详解  </span></div><div class="line">        engine.cancelDisplayTaskFor(imageAware);  </div><div class="line">        listener.onLoadingStarted(uri, imageAware.getWrappedView());  </div><div class="line">        <span class="keyword">if</span> (options.shouldShowImageForEmptyUri()) &#123;  </div><div class="line">            imageAware.setImageDrawable(options.getImageForEmptyUri(configuration.resources));  </div><div class="line">        &#125; <span class="keyword">else</span> &#123;  </div><div class="line">            imageAware.setImageDrawable(<span class="keyword">null</span>);  </div><div class="line">        &#125;  </div><div class="line">        listener.onLoadingComplete(uri, imageAware.getWrappedView(), <span class="keyword">null</span>);  </div><div class="line">        <span class="keyword">return</span>;  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="keyword">if</span> (targetSize == <span class="keyword">null</span>) &#123;  </div><div class="line">        targetSize = ImageSizeUtils.defineTargetSizeForView(imageAware, configuration.getMaxImageSize());  </div><div class="line">    &#125;  </div><div class="line">    <span class="comment">//生成存储键值  </span></div><div class="line">    String memoryCacheKey = MemoryCacheUtils.generateKey(uri, targetSize);  </div><div class="line">    engine.prepareDisplayTaskFor(imageAware, memoryCacheKey);  </div><div class="line">  </div><div class="line">    listener.onLoadingStarted(uri, imageAware.getWrappedView());  </div><div class="line">    <span class="comment">//从一级缓存中去取缓存的bitmap   </span></div><div class="line">    Bitmap bmp = configuration.memoryCache.get(memoryCacheKey);  </div><div class="line">    <span class="keyword">if</span> (bmp != <span class="keyword">null</span> &amp;&amp; !bmp.isRecycled()) &#123;  </div><div class="line">        <span class="comment">//存在即加载喽......  </span></div><div class="line">        L.d(LOG_LOAD_IMAGE_FROM_MEMORY_CACHE, memoryCacheKey);  </div><div class="line">        <span class="comment">//如果需要在源bitmap上有一些额外操作  </span></div><div class="line">        <span class="keyword">if</span> (options.shouldPostProcess()) &#123;  </div><div class="line">            ImageLoadingInfo imageLoadingInfo = <span class="keyword">new</span> ImageLoadingInfo(uri, imageAware, targetSize, memoryCacheKey,  </div><div class="line">                    options, listener, progressListener, engine.getLockForUri(uri));  </div><div class="line">            <span class="comment">//这个Task可以在显示前由 程序员自定义对原bitmap的操作，（通过实现 bitmapProcessor接口）！  </span></div><div class="line">            ProcessAndDisplayImageTask displayTask = <span class="keyword">new</span> ProcessAndDisplayImageTask(engine, bmp, imageLoadingInfo,  </div><div class="line">                    defineHandler(options));  </div><div class="line">            <span class="keyword">if</span> (options.isSyncLoading()) &#123;  </div><div class="line">                <span class="comment">//如果是同步显示，则run开始走  </span></div><div class="line">                displayTask.run();  </div><div class="line">            &#125; <span class="keyword">else</span> &#123;  </div><div class="line">                <span class="comment">//若是异步，那就就提交到线程池中执行  </span></div><div class="line">                engine.submit(displayTask);  </div><div class="line">            &#125;  </div><div class="line">        &#125; <span class="keyword">else</span> &#123;  </div><div class="line">            <span class="comment">//没有的话，就去显示bitmap  </span></div><div class="line">            options.getDisplayer().display(bmp, imageAware, LoadedFrom.MEMORY_CACHE);  </div><div class="line">            listener.onLoadingComplete(uri, imageAware.getWrappedView(), bmp);  </div><div class="line">        &#125;  </div><div class="line">    &#125; <span class="keyword">else</span> &#123;  </div><div class="line">        <span class="comment">//加载时显示的图片  </span></div><div class="line">        <span class="keyword">if</span> (options.shouldShowImageOnLoading()) &#123;  </div><div class="line">            imageAware.setImageDrawable(options.getImageOnLoading(configuration.resources));  </div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (options.isResetViewBeforeLoading()) &#123;  </div><div class="line">            imageAware.setImageDrawable(<span class="keyword">null</span>);  </div><div class="line">        &#125;  </div><div class="line">  </div><div class="line">        ImageLoadingInfo imageLoadingInfo = <span class="keyword">new</span> ImageLoadingInfo(uri, imageAware, targetSize, memoryCacheKey,  </div><div class="line">                options, listener, progressListener, engine.getLockForUri(uri));  </div><div class="line">        LoadAndDisplayImageTask displayTask = <span class="keyword">new</span> LoadAndDisplayImageTask(engine, imageLoadingInfo,  </div><div class="line">                defineHandler(options));  </div><div class="line">        <span class="keyword">if</span> (options.isSyncLoading()) &#123;  </div><div class="line">            displayTask.run();  </div><div class="line">        &#125; <span class="keyword">else</span> &#123;  </div><div class="line">            engine.submit(displayTask);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>从上面的代码可以看到displayImage这个方法中比较核心的几个类依次是ImageLoaderConfigura</strong></p>
+<pre><code>void submit(final LoadAndDisplayImageTask task) {
+    taskDistributor.execute(new Runnable() {
+        @Override
+        public void run() {
+            //先从本地缓存中读取已有的缓存
+            File image = configuration.diskCache.get(task.getLoadingUri());
+            boolean isImageCachedOnDisk = image != null &amp;&amp; image.exists();
+            initExecutorsIfNeed();
+            //若有的话就从另外的线程去读
+            if (isImageCachedOnDisk) {
+                taskExecutorForCachedImages.execute(task);
+            } else {
+                taskExecutor.execute(task);
+            }
+        }
+    });
+}
+</code></pre><p>从engine的submit方法中看出，最终的加载显示的过程还是在LoadAndDisplayImageTask这个类中（废话。。）。下面我们来整体的看看这个Task类。首先来看它的run方法</p>
+<pre><code>@Override
+public void run() {
+    /*
+        最主要的就是通过engine类检查 
+        是否有线程池是否处于pause状态，若处于，则wait/
+        另外这个方法还检查了 当前持有的view对象是非被GC 
+        是否被用于其他image等 若是的话侧return
+    */
+    if (waitIfPaused()) return;
+    //你在options 中设置的delay
+    if (delayIfNeed()) return;
+
+    ReentrantLock loadFromUriLock = imageLoadingInfo.loadFromUriLock;
+    L.d(LOG_START_DISPLAY_IMAGE_TASK, memoryCacheKey);
+    if (loadFromUriLock.isLocked()) {
+        L.d(LOG_WAITING_FOR_IMAGE_LOADED, memoryCacheKey);
+    }
+
+    loadFromUriLock.lock();
+    Bitmap bmp;
+    try {
+        checkTaskNotActual();
+
+        bmp = configuration.memoryCache.get(memoryCacheKey);
+        if (bmp == null || bmp.isRecycled()) {
+            bmp = tryLoadBitmap();
+            if (bmp == null) return; // listener callback already was fired
+
+            checkTaskNotActual();
+            checkTaskInterrupted();
+
+            if (options.shouldPreProcess()) {
+                L.d(LOG_PREPROCESS_IMAGE, memoryCacheKey);
+                //处理bitmap
+                bmp = options.getPreProcessor().process(bmp);
+                if (bmp == null) {
+                    L.e(ERROR_PRE_PROCESSOR_NULL, memoryCacheKey);
+                }
+            }
+
+            if (bmp != null &amp;&amp; options.isCacheInMemory()) {
+                L.d(LOG_CACHE_IMAGE_IN_MEMORY, memoryCacheKey);
+                configuration.memoryCache.put(memoryCacheKey, bmp);
+            }
+        } else {
+            loadedFrom = LoadedFrom.MEMORY_CACHE;
+            L.d(LOG_GET_IMAGE_FROM_MEMORY_CACHE_AFTER_WAITING, memoryCacheKey);
+        }
+
+        if (bmp != null &amp;&amp; options.shouldPostProcess()) {
+            L.d(LOG_POSTPROCESS_IMAGE, memoryCacheKey);
+            bmp = options.getPostProcessor().process(bmp);
+            if (bmp == null) {
+                L.e(ERROR_POST_PROCESSOR_NULL, memoryCacheKey);
+            }
+        }
+        checkTaskNotActual();
+        checkTaskInterrupted();
+    } catch (TaskCancelledException e) {
+        fireCancelEvent();
+        return;
+    } finally {
+        loadFromUriLock.unlock();
+    }
+    //最后，downBitmap完成，就要去显示了，又是交到另一个bitmap中去了
+    DisplayBitmapTask displayBitmapTask = new DisplayBitmapTask(bmp, imageLoadingInfo, engine, loadedFrom);
+    runTask(displayBitmapTask, syncLoading, handler, engine);
+}
+</code></pre><p>从上面的代码可以看到 run方法的逻辑还是比较清晰的，下面看一下 tryLoadBitmap方法<br>    private Bitmap tryLoadBitmap() throws TaskCancelledException {<br>        Bitmap bitmap = null;<br>        try {<br>            //又是检查缓存..<br>            File imageFile = configuration.diskCache.get(uri);<br>            if (imageFile != null &amp;&amp; imageFile.exists() &amp;&amp; imageFile.length() &gt; 0) {<br>                L.d(LOG_LOAD_IMAGE_FROM_DISK_CACHE, memoryCacheKey);<br>                loadedFrom = LoadedFrom.DISC_CACHE;</p>
+<pre><code>            checkTaskNotActual();
+            //包裹成 “file://”形式，吐槽：真心不明白为什么要多次一举，因为在读取文件的时候又把这个scheme给去掉了
+            bitmap = decodeImage(Scheme.FILE.wrap(imageFile.getAbsolutePath()));
+        }
+        if (bitmap == null || bitmap.getWidth() &lt;= 0 || bitmap.getHeight() &lt;= 0) {
+            L.d(LOG_LOAD_IMAGE_FROM_NETWORK, memoryCacheKey);
+
+            loadedFrom = LoadedFrom.NETWORK;
+
+            String imageUriForDecoding = uri;
+            /*
+                这一块的逻辑就是 若果有配置了缓存的逻辑，那么就从网络上拿下Bitmap对象，然后保存到本地
+                保存到本地后。ImageUri就是本地的Uri 即以 “file://”开头的Sceme.
+            */
+            if (options.isCacheOnDisk() &amp;&amp; tryCacheImageOnDisk()) {
+                imageFile = configuration.diskCache.get(uri);
+                if (imageFile != null) {
+                    imageUriForDecoding = Scheme.FILE.wrap(imageFile.getAbsolutePath());
+                }
+            }
+
+            checkTaskNotActual();
+            //很明显的,最终无论走的 从网络取bitmap还是本地，都是走的这个方法
+            bitmap = decodeImage(imageUriForDecoding);
+
+            if (bitmap == null || bitmap.getWidth() &lt;= 0 || bitmap.getHeight() &lt;= 0) {
+                fireFailEvent(FailType.DECODING_ERROR, null);
+            }
+        }
+    } catch (IllegalStateException e) {
+        fireFailEvent(FailType.NETWORK_DENIED, null);
+    } catch (TaskCancelledException e) {
+        throw e;
+    } catch (IOException e) {
+        L.e(e);
+        fireFailEvent(FailType.IO_ERROR, e);
+    } catch (OutOfMemoryError e) {
+        L.e(e);
+        fireFailEvent(FailType.OUT_OF_MEMORY, e);
+    } catch (Throwable e) {
+        L.e(e);
+        fireFailEvent(FailType.UNKNOWN, e);
+    }
+    return bitmap;
+}
+</code></pre><p>可以看的出来，最后的 拿bitmap都是交给 的decoder.decode方法，这个decoder的类是怎样的哪？ 我们可以招到 ImageDecoder这个和其实现 BaseImageDecoder类，这个BaseImageDecoder的类，就是默认的decode实现。 看代码</p>
+<pre><code>public Bitmap decode(ImageDecodingInfo decodingInfo) throws IOException {
+    Bitmap decodedBitmap;
+    ImageFileInfo imageInfo;
+    /*
+        拿到InputStream 流，有各种得到iS的方法。基本用法全部在BaseImageDownLoader这里面。
+        当然你也可以通过实现ImageDownLoader来定义自己的方法
+    */
+    InputStream imageStream = getImageStream(decodingInfo);
+    if (imageStream == null) {
+        L.e(ERROR_NO_IMAGE_STREAM, decodingInfo.getImageKey());
+        return null;
+    }
+    try {
+        //下面就是通过你自动定义的Options 来定义解析Bitmap的options。最后解析出来 就OK了
+        imageInfo = defineImageSizeAndRotation(imageStream, decodingInfo);
+        imageStream = resetStream(imageStream, decodingInfo);
+        Options decodingOptions = prepareDecodingOptions(imageInfo.imageSize, decodingInfo);
+        decodedBitmap = BitmapFactory.decodeStream(imageStream, null, decodingOptions);
+    } finally {
+        IoUtils.closeSilently(imageStream);
+    }
+
+    if (decodedBitmap == null) {
+        L.e(ERROR_CANT_DECODE_IMAGE, decodingInfo.getImageKey());
+    } else {
+        decodedBitmap = considerExactScaleAndOrientatiton(decodedBitmap, decodingInfo, imageInfo.exif.rotation,
+                imageInfo.exif.flipHorizontal);
+    }
+    return decodedBitmap;
+}
+</code></pre><p> 看上面的getImageStream方法，我们知道，ImageLoader不仅可以加载网络图片。还可以加载本地图片，甚至视频文件的一帧作为等等。最终的就是通过这个getStream调用的ImageDownLoader实现的。其基本实现是BaseImageDownLoader，我们可以看一下其里面的几个方法</p>
+<pre><code>public InputStream getStream(String imageUri, Object extra) throws IOException {
+    switch (Scheme.ofUri(imageUri)) {
+        case HTTP:
+        case HTTPS:
+            return getStreamFromNetwork(imageUri, extra);
+        case FILE:
+            return getStreamFromFile(imageUri, extra);
+        case CONTENT:
+            return getStreamFromContent(imageUri, extra);
+        case ASSETS:
+            return getStreamFromAssets(imageUri, extra);
+        case DRAWABLE:
+            return getStreamFromDrawable(imageUri, extra);
+        case UNKNOWN:
+        default:
+            return getStreamFromOtherSource(imageUri, extra);
+    }
+}
+</code></pre><p>上面的代码，就是通过Sceme 头来判断我到底改怎么去获取图片。网络，本地。Content，Assert文件还是…… 下面就是拿 NetWork 和本地File作为的源码看一下，其他的请读者自己研究<br>从网络获取</p>
+<pre><code>protected InputStream getStreamFromNetwork(String imageUri, Object extra) throws IOException {
+    //创建 UrlConnection
+    HttpURLConnection conn = createConnection(imageUri, extra);
+
+    int redirectCount = 0;
+    //如果遇到重定向，最大重定向数目为5，
+    while (conn.getResponseCode() / 100 == 3 &amp;&amp; redirectCount &lt; MAX_REDIRECT_COUNT) {
+        conn = createConnection(conn.getHeaderField(&quot;Location&quot;), extra);
+        redirectCount++;
+    }
+
+    InputStream imageStream;
+    try {
+        imageStream = conn.getInputStream();
+    } catch (IOException e) {
+        // Read all data to allow reuse connection (http://bit.ly/1ad35PY)
+        IoUtils.readAndCloseStream(conn.getErrorStream());
+        throw e;
+    }
+    // ResponseCode 不是200 ，肯定有错
+    if (!shouldBeProcessed(conn)) {
+        IoUtils.closeSilently(imageStream);
+        throw new IOException(&quot;Image request failed with response code &quot; + conn.getResponseCode());
+    }
+    //生成buffer，供BitmapFactory 使用
+    return new ContentLengthInputStream(new BufferedInputStream(imageStream, BUFFER_SIZE), conn.getContentLength());
+}
+</code></pre><p>从本地读的代码比较简单，这里就不加注释了</p>
+<pre><code>protected InputStream getStreamFromFile(String imageUri, Object extra) throws IOException {
+    String filePath = Scheme.FILE.crop(imageUri);
+    if (isVideoFileUri(imageUri)) {
+        return getVideoThumbnailStream(filePath);
+    } else {
+        BufferedInputStream imageStream = new BufferedInputStream(new FileInputStream(filePath), BUFFER_SIZE);
+        return new ContentLengthInputStream(imageStream, (int) new File(filePath).length());
+    }
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/02/ImageLoder/" data-id="civ0lw1q70005zgn9li3jcqtz" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-音视频编解码项目笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -417,7 +865,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/音视频编解码项目笔记/" data-id="civ0kxga70001von9v4c10jcz" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/11/02/音视频编解码项目笔记/" data-id="civ0lw1q50004zgn9p9ccs33w" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -563,7 +1011,7 @@ public class ReentranLockExample {
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/多线程概念/" data-id="civ0kxga90002von9kqygon02" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/11/02/多线程概念/" data-id="civ0lw1py0003zgn9yeb7g1w8" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -608,7 +1056,7 @@ public class ReentranLockExample {
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/hello-world/" data-id="civ0kxga30000von9k2l1j003" class="article-share-link">Delen</a>
+      <a data-url="http://yoursite.com/2016/11/02/hello-world/" data-id="civ0lw1pr0001zgn9c574c2i2" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -633,7 +1081,7 @@ public class ReentranLockExample {
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archieven</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li></ul>
     </div>
@@ -643,9 +1091,21 @@ public class ReentranLockExample {
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recente berichten</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/11/02/EventBus源码阅读笔记/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/02/配置MySql遇到的一点坑/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/02/ImageLoder/">ImageLoder源码阅读笔记</a>
+          </li>
         
           <li>
             <a href="/2016/11/02/音视频编解码项目笔记/">(no title)</a>
@@ -653,10 +1113,6 @@ public class ReentranLockExample {
         
           <li>
             <a href="/2016/11/02/多线程概念/">多线程概念</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/02/hello-world/">搭建Github page笔记遇到的坑</a>
           </li>
         
       </ul>
@@ -672,7 +1128,7 @@ public class ReentranLockExample {
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
