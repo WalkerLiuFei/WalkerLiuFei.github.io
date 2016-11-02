@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>项目中的音视频编解码笔记 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="最近的项目是一个智能摄像头的项目，对于我们Android客户端来讲，肯定核心的是就是音视频编解码了。对于硬件端，也就是摄像头端，在我接手项目的时候，他们都已经订好了技术方案。往客户端（iOS,Android，PC）三端传输的数据是音视频分开的。音频通过G711u，视频通过H264。我们客户端这边需要做的就是解码H264拿到未压缩的视频帧，和转码G711u到PCM可以播放 *
 视频解码，一开始由于项">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="项目中的音视频编解码笔记">
 <meta property="og:url" content="http://yoursite.com/2016/11/02/音视频编解码项目笔记/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="最近的项目是一个智能摄像头的项目，对于我们Android客户端来讲，肯定核心的是就是音视频编解码了。对于硬件端，也就是摄像头端，在我接手项目的时候，他们都已经订好了技术方案。往客户端（iOS,Android，PC）三端传输的数据是音视频分开的。音频通过G711u，视频通过H264。我们客户端这边需要做的就是解码H264拿到未压缩的视频帧，和转码G711u到PCM可以播放 *
 视频解码，一开始由于项">
-<meta property="og:updated_time" content="2016-11-02T07:05:52.466Z">
+<meta property="og:updated_time" content="2016-11-02T07:35:41.994Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="项目中的音视频编解码笔记">
 <meta name="twitter:description" content="最近的项目是一个智能摄像头的项目，对于我们Android客户端来讲，肯定核心的是就是音视频编解码了。对于硬件端，也就是摄像头端，在我接手项目的时候，他们都已经订好了技术方案。往客户端（iOS,Android，PC）三端传输的数据是音视频分开的。音频通过G711u，视频通过H264。我们客户端这边需要做的就是解码H264拿到未压缩的视频帧，和转码G711u到PCM可以播放 *
 视频解码，一开始由于项">
   
@@ -55,9 +55,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -75,6 +75,16 @@
   </div>
   <div class="article-inner">
     
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      项目中的音视频编解码笔记
+    </h1>
+  
+
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -422,7 +432,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/音视频编解码项目笔记/" data-id="civ0lw1q50004zgn9p9ccs33w" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/11/02/音视频编解码项目笔记/" data-id="civ0lw1q50004zgn9p9ccs33w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -432,7 +442,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
 <nav id="article-nav">
   
     <a href="/2016/11/02/ImageLoder/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Récent</strong>
+      <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
           ImageLoder源码阅读笔记
@@ -442,7 +452,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
   
   
     <a href="/2016/11/02/多线程概念/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Ancien</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">多线程概念</div>
     </a>
   
@@ -475,12 +485,12 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2016/11/02/EventBus源码阅读笔记/">(no title)</a>
+            <a href="/2016/11/02/EventBus源码阅读笔记/">EventBus 源码阅读笔记</a>
           </li>
         
           <li>
@@ -492,7 +502,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
           </li>
         
           <li>
-            <a href="/2016/11/02/音视频编解码项目笔记/">(no title)</a>
+            <a href="/2016/11/02/音视频编解码项目笔记/">项目中的音视频编解码笔记</a>
           </li>
         
           <li>
@@ -512,7 +522,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
