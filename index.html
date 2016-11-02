@@ -48,9 +48,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -97,7 +97,46 @@
 <ul>
 <li>下面是Semaphore类的基本使用，很简单，注释也已经可能详细。</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SemaphoreExample</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">2</span>); <span class="comment">//同时允许两个线程访问同步资源</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(String threadName)</span></span>&#123;</div><div class="line">            <span class="keyword">super</span>(threadName);</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>.run();</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                    semaphore.acquire(); <span class="comment">//线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" get the lock success and executing the syn code current time is: "</span> + System.currentTimeMillis()/<span class="number">1000</span>);</div><div class="line">                    Thread.sleep(<span class="number">5000</span>); <span class="comment">//这里只是做个模拟动作,模拟一个执行时长为5 秒的动作</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" executed syn code over and release the permit"</span>);</div><div class="line">                    semaphore.release();</div><div class="line">                    Thread.sleep(<span class="number">1000</span>); <span class="comment">//释放完之后模仿去做其他操作,而不是循环的去获取锁</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		<span class="comment">//我们创建四个工作线程来循环获取信号量</span></div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread(<span class="string">"Thread One"</span>);</div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Two"</span>);</div><div class="line">        MyThread thread3 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Three"</span>);</div><div class="line">        MyThread thread4 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Four"</span>);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line">        thread3.start();</div><div class="line">        thread4.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<pre>
+public class SemaphoreExample {
+    private static Semaphore semaphore = new Semaphore(2); //同时允许两个线程访问同步资源
+    private static int count = 0;
+    static class MyThread extends Thread{
+        public MyThread(String threadName){
+            super(threadName);
+        }
+        @Override
+        public void run() {
+            super.run();
+            try {
+                while (true) {
+                    semaphore.acquire(); //线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里
+                    System.out.println(Thread.currentThread().getName() + " get the lock success and executing the syn code current time is: " + System.currentTimeMillis()/1000);
+                    Thread.sleep(5000); //这里只是做个模拟动作,模拟一个执行时长为5 秒的动作
+                    System.out.println(Thread.currentThread().getName() + " executed syn code over and release the permit");
+                    semaphore.release();
+                    Thread.sleep(1000); //释放完之后模仿去做其他操作,而不是循环的去获取锁
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void main(String[] args){
+        //我们创建四个工作线程来循环获取信号量
+        MyThread thread1 = new MyThread("Thread One");
+        MyThread thread2 = new MyThread("Thread Two");
+        MyThread thread3 = new MyThread("Thread Three");
+        MyThread thread4 = new MyThread("Thread Four");
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread4.start();
+    }
+}
+</pre>
+
 <p><strong>Console 中的输出信息</strong></p>
 <pre>
 Thread One get the lock success and executing the syn code current time is: 1478067374
@@ -158,7 +197,7 @@ public class ReentranLockExample {
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/多线程概念/" data-id="civ0kg0tv0001s4n9e310rdx6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/11/02/多线程概念/" data-id="civ0kt9dp0001u8n9vwd9zos6" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -182,7 +221,7 @@ public class ReentranLockExample {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/hello-world/">Hello World</a>
+      <a class="article-title" href="/2016/11/02/hello-world/">搭建Github page笔记遇到的坑</a>
     </h1>
   
 
@@ -190,20 +229,20 @@ public class ReentranLockExample {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <h2 id="配置Hexo遇到的坑"><a href="#配置Hexo遇到的坑" class="headerlink" title="配置Hexo遇到的坑"></a>配置Hexo遇到的坑</h2><ol>
+<li>在配置hexo的_config.yml文件时 <pre>
+ deploy:
+   type: git //前面要加空格！
+   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
+   branch: master
+ </pre></li>
+<li>每次提交新文章的时候，hexo会清空github仓库（坑！），所以我在其他地方提交的文件，例如定向文件CNAME会被清空掉，所以这个文件药房你的hexo博客目录下面的source文件夹下！</li>
+</ol>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/02/hello-world/" data-id="civ0kg0th0000s4n9s8wr8680" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/11/02/hello-world/" data-id="civ0kt9dk0000u8n9bkqx0xp5" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -238,7 +277,7 @@ public class ReentranLockExample {
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -247,7 +286,7 @@ public class ReentranLockExample {
           </li>
         
           <li>
-            <a href="/2016/11/02/hello-world/">Hello World</a>
+            <a href="/2016/11/02/hello-world/">搭建Github page笔记遇到的坑</a>
           </li>
         
       </ul>
@@ -263,7 +302,7 @@ public class ReentranLockExample {
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
