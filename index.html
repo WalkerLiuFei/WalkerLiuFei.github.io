@@ -191,7 +191,7 @@ dependencies {
 
 
 <p>gradle配置文件需要注意两个地方(添加注解的地方)第一个是添加Spring-boot-gradle-plugin的依赖和jar包的依赖。这两个依赖足够我们来开发最最基本的Restful应用和javaWeb应用（注意这里最最基本，不涉及dao层(⊙﹏⊙)b）。。。</p>
-<h2 id="编写你的应用"><a href="#编写你的应用" class="headerlink" title="编写你的应用"></a>编写你的应用</h2><p>###Application:应用入口类<br>第一步编写你的应用入口类</p>
+<h2 id="编写你的应用"><a href="#编写你的应用" class="headerlink" title="编写你的应用"></a>编写你的应用</h2><h3 id="Application-应用入口类"><a href="#Application-应用入口类" class="headerlink" title="Application:应用入口类"></a>Application:应用入口类</h3><p>第一步编写你的应用入口类</p>
 <pre>
 @SpringBootApplication
 public class Application {
@@ -263,7 +263,7 @@ keytool -genkey -alias walker_server -keyalg RSA -keystore walker_server.jks
 拷贝你生成的XXX.jks文件到你工程的resource文件夹下面<br>
 然后配置的application.properties添加以下代码
 <pre>
-#将Https端口映射到8444 ，端口号可以根据你自己的喜好和系统环境配置
+# 将Https端口映射到8444 ，端口号可以根据你自己的喜好和系统环境配置
 server.port = 8444
 server.ssl.key-store = classpath:walker_server.jks  // 注意将jks文件改成你的jks文件名字
 server.ssl.key-store-password = 3252860 //这里的password是你生成ssl证书时第一次输入的密码
