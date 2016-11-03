@@ -202,11 +202,9 @@ public class Application {
     }
 }
 </pre>
-这里需要注意的的是**@SpringBootApplicaiton**这个注解，这个注解相当于自动完成了注解@CompontScan ，@Auto-Configuration等等注解的功能，真正的实现了SpringBoot开箱即用的功能，节省大量繁琐的操作
 
-### 编写你的Controller控制器
-
-<pre>
+<p>这里需要注意的的是<strong>@SpringBootApplicaiton</strong>这个注解，这个注解相当于自动完成了注解@CompontScan ，@Auto-Configuration等等注解的功能，真正的实现了SpringBoot开箱即用的功能，节省大量繁琐的操作</p>
+<h3 id="编写你的Controller控制器"><a href="#编写你的Controller控制器" class="headerlink" title="编写你的Controller控制器"></a>编写你的Controller控制器</h3><pre>
 //Restful 服务的注解,方便快捷！
 @RestController
 public class MyControllers {
@@ -217,7 +215,8 @@ public class MyControllers {
     }
 }
 </pre>
-其中Person类是个bean类。
+
+<p>其中Person类是个bean类。</p>
 <pre>
 public class Person {
 
@@ -247,21 +246,17 @@ public class Person {
 
 }
 </pre>
-到这里基本上就可以运行的应用了，我们通过Applicaiton的main函数来跑一下，观察到控制台输出的信息
-![]("./embeddedtomcat.png" "console 输出")
-图例标出的就是启动SpringBoot 内置Tomcat容器的信息，这可能会消除一些你的疑问，为什么没有部署到Tomcat这个应用就可以访问。
 
-现在我们通过浏览器访问就可以访问了
-
-## 配置你的SSL
-利用keytool生成SSL证书可以参考下面的命令:
+<p>到这里基本上就可以运行的应用了，我们通过Applicaiton的main函数来跑一下，观察到控制台输出的信息</p>
+<p><img src="&quot;/assets/embeddedtomcat.png&quot;" alt="" title="console 输出"></p>
+<p>图例标出的就是启动SpringBoot 内置Tomcat容器的信息，这可能会消除一些你的疑问，为什么没有部署到Tomcat这个应用就可以访问。</p>
+<p>现在我们通过浏览器访问就可以访问了</p>
+<h2 id="配置你的SSL"><a href="#配置你的SSL" class="headerlink" title="配置你的SSL"></a>配置你的SSL</h2><p>利用keytool生成SSL证书可以参考下面的命令:</p>
 <pre>
 keytool -genkey -alias walker_server -keyalg RSA -keystore walker_server.jks
 </pre>
-上面的命令的含义是生成一个 文件名叫做"walker_server.jks"的公匙文件，证书的别名为walker_server。加密算法指定为RSA。
-另外在生成证书时一定要记牢设置的密码！<br>
-拷贝你生成的XXX.jks文件到你工程的resource文件夹下面<br>
-然后配置的application.properties添加以下代码
+
+<p>上面的命令的含义是生成一个 文件名叫做”walker_server.jks”的公匙文件，证书的别名为walker_server。加密算法指定为RSA。<br>另外在生成证书时一定要记牢设置的密码！<br><br>拷贝你生成的XXX.jks文件到你工程的resource文件夹下面<br><br>然后配置的application.properties添加以下代码</p>
 <pre>
 # 将Https端口映射到8444 ，端口号可以根据你自己的喜好和系统环境配置
 server.port = 8444
@@ -270,19 +265,23 @@ server.ssl.key-store-password = 3252860 //这里的password是你生成ssl证书
 server.ssl.key-password = 3252860   //这里的password是你生成ssl证书时第二次次输入的密码
 </pre>
 现在运行你的应用，打开浏览器访问"https://localhost:8444/getInfo"
-![](httpsrequest.png)
+
+![](/assets/httpsrequest.png)
 
 如果你用过12306的话，你一定对这个界面不会感到陌生。为什么会出现这样的界面呐？原因是12306和我们现在配置的server都是自生成的SSL证书进行的双向验证，而一般的网站都是通过CA机构颁发的证书来进行的验证。两种验证方式具体的区别已经优缺点请自行Google.....
 <br><br>
 点击信任后看到的界面
 
-![](brosucces.png)
+![](/assets/brosucces.png)
 
 <br><br><br><br>
+
 # 附：Android端访问Https服务的配置
+
 >Android这边对于Https链接的访问一般都是正常的，不需要什么特殊配置。但是前提是这个Https的SSL证书第三方CA机构颁发，我们的SSL证书是自己生成的，自然不满足这个前提条件。所以还是需要一些配置。这里用Andriod中应用 最广的OkHttp3来做示范。
 
 下面是生成一个包含公匙的证书的命令，XXX.jks就是上面生成的公匙文件，storepass是你的密码
+
 <pre>keytool -export -alias zhy_server -file xxxx.cer 
  -keystore XXXX.jks  
  -storepass XXXXX    //你的store密码 
