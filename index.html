@@ -448,135 +448,20 @@ public class NullHostNameVerifier implements HostnameVerifier {
     <div class="article-entry" itemprop="articleBody">
       
         <p>1：getDefault方法，明显看的出来这是单例模式的得到单例对象的方法</p>
-<pre><code>/** Convenience singleton for apps using a process-wide EventBus instance. */
-public static EventBus getDefault() {
-    if (defaultInstance == null) {
-        synchronized (EventBus.class) {
-            if (defaultInstance == null) {
-                defaultInstance = new EventBus();
-            }
-        }
-    }
-    return defaultInstance;
-}
-</code></pre><p>2:先来看看register具体实现方法。是的，反射！ 对于findSubscriberMethods方法,它里面有一个MethodCache 的HashMap（最新的版本作者改成了ConcurrentHashMap来保证线程安全，）这个HashMap的key是注册类，Value是通过反射得到的Subscribe方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//Convenience singleton for apps using a process-wide EventBus instance. </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBus <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">synchronized</span> (EventBus.class) &#123;</div><div class="line">            <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">                defaultInstance = <span class="keyword">new</span> EventBus();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> defaultInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2:先来看看register具体实现方法。是的，反射！ 对于findSubscriberMethods方法,它里面有一个MethodCache 的HashMap（最新的版本作者改成了ConcurrentHashMap来保证线程安全，）这个HashMap的key是注册类，Value是通过反射得到的Subscribe方法。</p>
 <pre><code>private synchronized void register(Object subscriber, boolean sticky, int priority) {
     List&lt;SubscriberMethod&gt; subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriber.getClass());
     for (SubscriberMethod subscriberMethod : subscriberMethods) {
         subscribe(subscriber, subscriberMethod, sticky, priority);
     }
 }
-</code></pre><p>3：Subsrcibe 方法：<br>   // 必须在保证线程安全的情况下调用</p>
-<pre><code>private void subscribe(Object subscriber, SubscriberMethod subscriberMethod) {
-    //得到事件类型，（这个东西就是POST 和 subcribe 想对应的那个类）
-    Class&lt;?&gt; eventType = subscriberMethod.eventType;
-    Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
-    //通过Map拿到线程安全的随机访问List
-    CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);
-    if (subscriptions == null) {
-        subscriptions = new CopyOnWriteArrayList&lt;&gt;();
-        subscriptionsByEventType.put(eventType, subscriptions);
-    } else {
-        if (subscriptions.contains(newSubscription)) {
-            throw new EventBusException(&quot;Subscriber &quot; + subscriber.getClass() + &quot; already registered to event &quot;
-                    + eventType);
-        }
-    }
-    //根据优先级进行插入
-    int size = subscriptions.size();
-    for (int i = 0; i &lt;= size; i++) {
-        if (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) {
-            subscriptions.add(i, newSubscription);
-            break;
-        }
-    }
-    //插入订阅者订阅的消息
-    List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);
-    if (subscribedEvents == null) {
-        subscribedEvents = new ArrayList&lt;&gt;();
-        typesBySubscriber.put(subscriber, subscribedEvents);
-    }
-    subscribedEvents.add(eventType);
-    //拿到SubsriberMethod
-    if (subscriberMethod.sticky) {
-    /*
-        在默认情况下，Subsricb的超类也会被通知，将这个纳入到订阅接受的考虑情况会提高事件的发布效率
-        在这个开关off掉，会提高 20%的事件发布接受效率
-    */
-          if (eventInheritance) {
-    /*
-       这个参数是新版EventBus添加的，这个参数的意义
-    &lt;span style=&quot;white-space:pre&quot;&gt;    &lt;/span&gt;            
-                注：因为有很多粘性时间，遍历所有的事件会降低效率
-       新版的EventBus改变了存储结构 使用了 Class -&gt; List&lt;Class&gt; 的Map结构，
-    */
-            Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();
-            for (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) {
-                Class&lt;?&gt; candidateEventType = entry.getKey();
-                if (eventType.isAssignableFrom(candidateEventType)) {
-                    Object stickyEvent = entry.getValue();
-                    checkPostStickyEventToSubscription(newSubscription, stickyEvent);
-                }
-            }
-        } else {
-            Object stickyEvent = stickyEvents.get(eventType);
-            checkPostStickyEventToSubscription(newSubscription, stickyEvent);
-        }
-    }
-}
-</code></pre><p>4：最后看下Post方法：<br>看一下形式就发现和Handler的实现原理非常类似。Looper,消息队列等等。。</p>
-<pre><code>// Posts the given event to the event bus. 
-public void post(Object event) {
-    PostingThreadState postingState = currentPostingThreadState.get();
-    List&lt;Object&gt; eventQueue = postingState.eventQueue;
-    eventQueue.add(event);
-
-    if (!postingState.isPosting) {
-        postingState.isMainThread = Looper.getMainLooper() == Looper.myLooper();
-        postingState.isPosting = true;
-        if (postingState.canceled) {
-            throw new EventBusException(&quot;Internal error. Abort state was not reset&quot;);
-        }
-        try {
-            while (!eventQueue.isEmpty()) {
-                postSingleEvent(eventQueue.remove(0), postingState);
-            }
-        } finally {
-            postingState.isPosting = false;
-            postingState.isMainThread = false;
-        }
-    }
-}
-</code></pre><p>最后找到具体实现方法</p>
-<pre>
-   private void postToSubscription(Subscription subscription, Object event, boolean isMainThread) {
-        switch (subscription.subscriberMethod.threadMode) {
-            case PostThread:
-                invokeSubscriber(subscription, event);
-                break;
-            case MainThread:
-                if (isMainThread) {
-                    invokeSubscriber(subscription, event);
-                } else {
-                    mainThreadPoster.enqueue(subscription, event);
-                }
-                break;
-            case BackgroundThread:
-                if (isMainThread) {
-                    backgroundPoster.enqueue(subscription, event);
-                } else {
-                    invokeSubscriber(subscription, event);
-                }
-                break;
-            case Async:
-                asyncPoster.enqueue(subscription, event);
-                break;
-            default:
-                throw new IllegalStateException("Unknown thread mode: " + subscription.subscriberMethod.threadMode);
-        }
-    }
-</pre>
-
+</code></pre><p>3：Subsrcibe 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">  <span class="comment">// 必须在保证线程安全的情况下调用</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(Object subscriber, SubscriberMethod subscriberMethod)</span> </span>&#123;</div><div class="line"><span class="comment">//得到事件类型，（这个东西就是POST 和 subcribe 想对应的那个类）</span></div><div class="line">      Class&lt;?&gt; eventType = subscriberMethod.eventType;</div><div class="line">      Subscription newSubscription = <span class="keyword">new</span> Subscription(subscriber, subscriberMethod);</div><div class="line"><span class="comment">//通过Map拿到线程安全的随机访问List</span></div><div class="line">      CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);</div><div class="line">      <span class="keyword">if</span> (subscriptions == <span class="keyword">null</span>) &#123;</div><div class="line">          subscriptions = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</div><div class="line">          subscriptionsByEventType.put(eventType, subscriptions);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">if</span> (subscriptions.contains(newSubscription)) &#123;</div><div class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Subscriber "</span> + subscriber.getClass() + <span class="string">" already registered to event "</span></div><div class="line">                      + eventType);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line"><span class="comment">//根据优先级进行插入</span></div><div class="line">      <span class="keyword">int</span> size = subscriptions.size();</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= size; i++) &#123;</div><div class="line">          <span class="keyword">if</span> (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) &#123;</div><div class="line">              subscriptions.add(i, newSubscription);</div><div class="line">              <span class="keyword">break</span>;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line"><span class="comment">//插入订阅者订阅的消息</span></div><div class="line">      List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);</div><div class="line">      <span class="keyword">if</span> (subscribedEvents == <span class="keyword">null</span>) &#123;</div><div class="line">          subscribedEvents = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">          typesBySubscriber.put(subscriber, subscribedEvents);</div><div class="line">      &#125;</div><div class="line">      subscribedEvents.add(eventType);</div><div class="line"><span class="comment">//拿到SubsriberMethod</span></div><div class="line">      <span class="keyword">if</span> (subscriberMethod.sticky) &#123;</div><div class="line"><span class="comment">/*</span></div><div class="line">	在默认情况下，Subsricb的超类也会被通知，将这个纳入到订阅接受的考虑情况会提高事件的发布效率</div><div class="line">	在这个开关off掉，会提高 20%的事件发布接受效率</div><div class="line">*/</div><div class="line">            <span class="keyword">if</span> (eventInheritance) &#123;</div><div class="line"><span class="comment">/*</span></div><div class="line">   这个参数是新版EventBus添加的，这个参数的意义</div><div class="line">&lt;span style="white-space:pre"&gt;	&lt;/span&gt;			</div><div class="line">                  注：因为有很多粘性时间，遍历所有的事件会降低效率</div><div class="line">   新版的EventBus改变了存储结构 使用了 Class -&gt; List&lt;Class&gt; 的Map结构，</div><div class="line">*/</div><div class="line">              Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();</div><div class="line">              <span class="keyword">for</span> (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) &#123;</div><div class="line">                  Class&lt;?&gt; candidateEventType = entry.getKey();</div><div class="line">                  <span class="keyword">if</span> (eventType.isAssignableFrom(candidateEventType)) &#123;</div><div class="line">                      Object stickyEvent = entry.getValue();</div><div class="line">                      checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">                  &#125;</div><div class="line">              &#125;</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">              Object stickyEvent = stickyEvents.get(eventType);</div><div class="line">              checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>4：最后看下Post方法：<br>看一下形式就发现和Handler的实现原理非常类似。Looper,消息队列等等。。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// Posts the given event to the event bus. </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">post</span><span class="params">(Object event)</span> </span>&#123;</div><div class="line">    PostingThreadState postingState = currentPostingThreadState.get();</div><div class="line">    List&lt;Object&gt; eventQueue = postingState.eventQueue;</div><div class="line">    eventQueue.add(event);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!postingState.isPosting) &#123;</div><div class="line">        postingState.isMainThread = Looper.getMainLooper() == Looper.myLooper();</div><div class="line">        postingState.isPosting = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span> (postingState.canceled) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Internal error. Abort state was not reset"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">while</span> (!eventQueue.isEmpty()) &#123;</div><div class="line">                postSingleEvent(eventQueue.remove(<span class="number">0</span>), postingState);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            postingState.isPosting = <span class="keyword">false</span>;</div><div class="line">            postingState.isMainThread = <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后找到具体实现方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">postToSubscription</span><span class="params">(Subscription subscription, Object event, <span class="keyword">boolean</span> isMainThread)</span> </span>&#123;</div><div class="line">     <span class="keyword">switch</span> (subscription.subscriberMethod.threadMode) &#123;</div><div class="line">         <span class="keyword">case</span> PostThread:</div><div class="line">             invokeSubscriber(subscription, event);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> MainThread:</div><div class="line">             <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                 invokeSubscriber(subscription, event);</div><div class="line">             &#125; <span class="keyword">else</span> &#123;</div><div class="line">                 mainThreadPoster.enqueue(subscription, event);</div><div class="line">             &#125;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> BackgroundThread:</div><div class="line">             <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                 backgroundPoster.enqueue(subscription, event);</div><div class="line">             &#125; <span class="keyword">else</span> &#123;</div><div class="line">                 invokeSubscriber(subscription, event);</div><div class="line">             &#125;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> Async:</div><div class="line">             asyncPoster.enqueue(subscription, event);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">default</span>:</div><div class="line">             <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown thread mode: "</span> + subscription.subscriberMethod.threadMode);</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>前面已经说过subscription包含了所有执行需要的东西，大致有:subscriber, subscriberMethod（method, threadMode, eventType）, priority；<br>那么这个方法：第一步根据threadMode去判断应该在哪个线程去执行该方法；<br>case PostThread。<br>直接反射调用；也就是说在当前的线程直接调用该方法；<br>case MainThread:<br>首先去判断当前如果是UI线程，则直接调用；否则： mainThreadPoster.enqueue(subscription, event);把当前的方法加入到队列，然后直接通过handler去发送一个消息，在handler的handleMessage中，去执行我们的方法。说白了就是通过Handler去发送消息，然后执行的。<br>     case BackgroundThread:<br>如果当前非UI线程，则直接调用；如果是UI线程，则将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用<br>executorService = Executors.newCachedThreadPool();。<br>     case Async:将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用；线程池与BackgroundThread用的是同一个。<br>这么说BackgroundThread和Async有什么区别呢？<br>    BackgroundThread中的任务，一个接着一个去调用，中间使用了一个布尔型变量handlerActive进行的控制。<br>Async则会动态控制并发。</p>
 <p>register会把当前类中匹配的方法，通过反射得到存入一个map。Map的键值分别是订阅者和其所有的订阅方法类（这个方法类包含了优先级，执行线程，和EventType等），而post会根据实参去map查找进行反射调用。</p>
 
