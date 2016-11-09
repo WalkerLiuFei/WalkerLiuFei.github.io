@@ -20,7 +20,7 @@
 信号量又称为信号灯，它是用来协调不同进程间的数据对象的，而最主要的应用是共享内存方式的线程间通信。本质上，信号量是一个计数器，它用来记录对某个资源（如共享内存）的存取状况。
 
 信号量的操作流程&amp;emsp;&amp;emsp;信号量相当于一个计数器，如果线程想要访问某个资源，则先要获得这个资源的信号量，并且信号量内部的计数器减1 ，信号量内部的计数器大于0则意味着有可以使用的资源,当线程使用">
-<meta property="og:updated_time" content="2016-11-02T06:54:16.498Z">
+<meta property="og:updated_time" content="2016-11-07T01:12:11.606Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多线程概念">
 <meta name="twitter:description" content="基础概念信号量
@@ -169,101 +169,14 @@
 <ul>
 <li>下面是Semaphore类的基本使用，很简单，注释也已经可能详细。</li>
 </ul>
-<pre>
-public class SemaphoreExample {
-    private static Semaphore semaphore = new Semaphore(2); //同时允许两个线程访问同步资源
-    private static int count = 0;
-    static class MyThread extends Thread{
-        public MyThread(String threadName){
-            super(threadName);
-        }
-        @Override
-        public void run() {
-            super.run();
-            try {
-                while (true) {
-                    semaphore.acquire(); //线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里
-                    System.out.println(Thread.currentThread().getName() + " get the lock success and executing the syn code current time is: " + System.currentTimeMillis()/1000);
-                    Thread.sleep(5000); //这里只是做个模拟动作,模拟一个执行时长为5 秒的动作
-                    System.out.println(Thread.currentThread().getName() + " executed syn code over and release the permit");
-                    semaphore.release();
-                    Thread.sleep(1000); //释放完之后模仿去做其他操作,而不是循环的去获取锁
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public static void main(String[] args){
-        //我们创建四个工作线程来循环获取信号量
-        MyThread thread1 = new MyThread("Thread One");
-        MyThread thread2 = new MyThread("Thread Two");
-        MyThread thread3 = new MyThread("Thread Three");
-        MyThread thread4 = new MyThread("Thread Four");
-        thread1.start();
-        thread2.start();
-        thread3.start();
-        thread4.start();
-    }
-}
-</pre>
-
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SemaphoreExample</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">2</span>); <span class="comment">//同时允许两个线程访问同步资源</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(String threadName)</span></span>&#123;</div><div class="line">            <span class="keyword">super</span>(threadName);</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>.run();</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                    semaphore.acquire(); <span class="comment">//线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" get the lock success and executing the syn code current time is: "</span> + System.currentTimeMillis()/<span class="number">1000</span>);</div><div class="line">                    Thread.sleep(<span class="number">5000</span>); <span class="comment">//这里只是做个模拟动作,模拟一个执行时长为5 秒的动作</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" executed syn code over and release the permit"</span>);</div><div class="line">                    semaphore.release();</div><div class="line">                    Thread.sleep(<span class="number">1000</span>); <span class="comment">//释放完之后模仿去做其他操作,而不是循环的去获取锁</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		<span class="comment">//我们创建四个工作线程来循环获取信号量</span></div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread(<span class="string">"Thread One"</span>);</div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Two"</span>);</div><div class="line">        MyThread thread3 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Three"</span>);</div><div class="line">        MyThread thread4 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Four"</span>);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line">        thread3.start();</div><div class="line">        thread4.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>Console 中的输出信息</strong></p>
-<pre>
-Thread One get the lock success and executing the syn code current time is: 1478067374
-Thread Two get the lock success and executing the syn code current time is: 1478067374
-Thread Two executed syn code over and release the permit
-Thread One executed syn code over and release the permit
-Thread Three get the lock success and executing the syn code current time is: 1478067379
-Thread Four get the lock success and executing the syn code current time is: 1478067379
-Thread Four executed syn code over and release the permit
-Thread Three executed syn code over and release the permit
-Thread One get the lock success and executing the syn code current time is: 1478067384
-Thread Two get the lock success and executing the syn code current time is: 1478067384
-</pre>
-&emsp;&emsp; 通过控制台输出的信息，第五行。我们在初始化Semaphore时传入的permits值为2，就是指两个线程同时访问，只有当已经当获取到信号量的线程显式的释放掉信号量后，后续等待访问的线程才能访问同步资源
-
-## 互斥锁
->互斥锁，相对于信号量更多的被应用在实战当中，互斥锁在java中的实现就是 ReetranLock , 在访问一个同步资源时，它的对象需要通过方法 tryLock() 获得这个锁，如果失败，返回 false，成功返回true。根据返回的信息来判断是否要访问这个被同步的资源。
-
-
-<pre>
-public class ReentranLockExample {  
-    private static ReentrantLock reentrantLock = new ReentrantLock();  
-    static class MyThread extends Thread{  
-
-        @Override  
-        public void run() {  
-            super.run();  
-            try {  
-                while (true){  
-                    //不同于Semaphore的acquire 方法，这个tryLock询问是立即返回不会造成线程堵塞的
-                    boolean result = reentrantLock.tryLock();  
-                    if (result){  
-                        System.out.println(Thread.currentThread().getName() + "get the lock success and run the syn code " + count ++);  
-                        reentrantLock.unlock();  
-                    }else{  
-                        System.out.println(Thread.currentThread().getName() + "get the lock failed and run the syn code " + count);  
-                    }  
-                    System.out.println(Thread.currentThread().getName() + "run the asyntronized code  " + count);  
-                    Thread.sleep(500);  
-                }  
-
-            } catch (InterruptedException e) {  
-                e.printStackTrace();  
-            }  
-        }  
-    }  
-    public static void main(String[] args){  
-        MyThread thread1 = new MyThread();  
-        MyThread thread2 = new MyThread();  
-        thread1.start();  
-        thread2.start();  
-    }  
-}  
-</pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two executed syn code over and release the permit</div><div class="line">Thread One executed syn code over and release the permit</div><div class="line">Thread Three get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four executed syn code over and release the permit</div><div class="line">Thread Three executed syn code over and release the permit</div><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067384</div><div class="line">Thrad Two get the lock success and executing the syn code current time is: 1478067384</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 通过控制台输出的信息，第五行。我们在初始化Semaphore时传入的permits值为2，就是指两个线程同时访问，只有当已经当获取到信号量的线程显式的释放掉信号量后，后续等待访问的线程才能访问同步资源</p>
+<h2 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h2><blockquote>
+<p>互斥锁，相对于信号量更多的被应用在实战当中，互斥锁在java中的实现就是 ReetranLock , 在访问一个同步资源时，它的对象需要通过方法 tryLock() 获得这个锁，如果失败，返回 false，成功返回true。根据返回的信息来判断是否要访问这个被同步的资源。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentranLockExample</span> </span>&#123;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ReentrantLock reentrantLock = <span class="keyword">new</span> ReentrantLock();  </div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;  </div><div class="line">  </div><div class="line">        <span class="meta">@Override</span>  </div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">            <span class="keyword">super</span>.run();  </div><div class="line">            <span class="keyword">try</span> &#123;  </div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;  </div><div class="line">                    <span class="comment">//不同于Semaphore的acquire 方法，这个tryLock询问是立即返回不会造成线程堵塞的</span></div><div class="line">                    <span class="keyword">boolean</span> result = reentrantLock.tryLock();  </div><div class="line">                    <span class="keyword">if</span> (result)&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock success and run the syn code "</span> + count ++);  </div><div class="line">                        reentrantLock.unlock();  </div><div class="line">                    &#125;<span class="keyword">else</span>&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock failed and run the syn code "</span> + count);  </div><div class="line">                    &#125;  </div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">"run the asyntronized code  "</span> + count);  </div><div class="line">                    Thread.sleep(<span class="number">500</span>);  </div><div class="line">                &#125;  </div><div class="line">  </div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;  </div><div class="line">                e.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;  </div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread();  </div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread();  </div><div class="line">        thread1.start();  </div><div class="line">        thread2.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>互斥锁在Java上应用很广，比如Syntronized代码块，读写锁等。</p>
 
       

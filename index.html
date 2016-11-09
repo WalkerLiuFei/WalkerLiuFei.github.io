@@ -126,6 +126,194 @@
       <div class="body-wrap">
         
   
+    <article id="post-WebSocket协议笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>客户端发出的握手信息类似：</p>
+<figure class="highlight java"><figcaption><span>[]</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">GET /chat HTTP/<span class="number">1.1</span></div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http:<span class="comment">//example.com</span></div><div class="line">Sec-WebSocket-Protocol: chat, superchat</div><div class="line">Sec-WebSocket-Version: <span class="number">13</span></div></pre></td></tr></table></figure>
+<p>服务端回应的握手信息类式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
+<p>文／mconintet（简书作者）<br>原文链接：<a href="http://www.jianshu.com/p/867274a5e054" target="_blank" rel="external">http://www.jianshu.com/p/867274a5e054</a><br>著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/09/WebSocket协议笔记/" class="archive-article-date">
+  	<time datetime="2016-11-09T01:09:02.667Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-09</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/08/Stomp和WebSocket协议/">WebSocket协议和Stomp协议</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Stomp协议基础"><a href="#Stomp协议基础" class="headerlink" title="Stomp协议基础"></a>Stomp协议基础</h1><ul>
+<li>Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8</li>
+<li>类似Http协议，Stomp是同样是基于帧的协议</li>
+<li>Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束</li>
+<li>COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义<pre>
+COMMAND
+header1:value1
+header2:value2
+Body^@
+</pre></li>
+<li><p>对于body，只有send，message和ERROR帧有body，其他所有帧都没有body。并且这三个帧的也必须携带 content-length的header。</p>
+</li>
+<li><p>Stomp client通过Connect frame与server建立流或者TCP链接</p>
+</li>
+</ul>
+<pre>
+CONNECT
+accept-version:1.2
+host:stomp.github.org
+^@
+</pre>
+
+<ul>
+<li>然后server返回给connected frame给client</li>
+</ul>
+<pre>
+CONNECTED
+version:1.2
+^@
+</pre>
+
+<p>或者相应ERROR Frame给client说明为什么被拒绝</p>
+<ul>
+<li>对于Stomp 1.1以后的版本，Connected frame必须包含accept-version header. 它的值为client所支持的Stomp版本号，如果client和server不支持共同的版本协议。server返回类似下面的ERROR frame并断开连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ERROR</div><div class="line">version:1.2,2.1</div><div class="line">content-type:text/plain</div><div class="line"></div><div class="line">Supported protocol versions are 1.2 2.1^@</div></pre></td></tr></table></figure>
+<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><blockquote>
+<p>心跳被用于测试底层TCP连接的可用性，确保远程服务处于活动状态,一般是作为header出现在connect frame中。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CONNECT</div><div class="line">heart-beat:&lt;cx&gt;,&lt;cy&gt;</div></pre></td></tr></table></figure>
+<p>header-beat 头的两个值都是为数字，</p>
+<ul>
+<li>第一个数字表示发送方能做什么，为0表示不能发送心跳，其他值表保证两次心跳的最小毫秒数</li>
+<li>第二个数字代表发送方能获得什么: 0表示它不想接收心跳 ,否则它表示两次心跳期望的毫秒数 </li>
+</ul>
+<p>如果接受者在规定的时间内没有收到新数据，表明连接已经断开</p>
+<h2 id="Client-Frame"><a href="#Client-Frame" class="headerlink" title="Client Frame"></a>Client Frame</h2><ul>
+<li><strong>SEND</strong>: 必须要包含Body和destination的header</li>
+<li><strong>SUBSCRIBE</strong> ：同样需要destination的header,表示订阅的目的地 </li>
+<li>UNSUBSCRIBE：携带id header</li>
+<li>BEGIN</li>
+<li>COMMIT</li>
+<li>ABORT</li>
+<li>ACK：用于通知server，你发来的消息我已经消费。</li>
+<li>NACK</li>
+<li>DISCONNECT</li>
+</ul>
+<h2 id="Message-Frame"><a href="#Message-Frame" class="headerlink" title="Message Frame"></a>Message Frame</h2><ul>
+<li>Message：下面是一个最基本的messageframe，另外如果frame Body携带信息的话，header应该带有content type和content length</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">MESSAGE</div><div class="line">subscription:0</div><div class="line">message-id:007    </div><div class="line">destination:/queue/a  </div><div class="line">content-type:text/plain </div><div class="line"></div><div class="line">hello queue a^@</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/08/Stomp和WebSocket协议/" class="archive-article-date">
+  	<time datetime="2016-11-08T02:42:10.839Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-代码规范" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-代码规范"><a href="#title-代码规范" class="headerlink" title="title:代码规范"></a>title:代码规范</h2><blockquote>
+<p>不懂编程的人能看的懂得代码是最好的代码！</p>
+</blockquote>
+<h1 id="From-lt-lt-effecttive-java-gt-gt"><a href="#From-lt-lt-effecttive-java-gt-gt" class="headerlink" title="From &lt;&lt; effecttive java &gt;&gt;"></a>From &lt;&lt; effecttive java &gt;&gt;</h1><h1 id="个人总结"><a href="#个人总结" class="headerlink" title="个人总结"></a>个人总结</h1><ul>
+<li>工具类要有<strong>final</strong>修饰符！避免被继承</li>
+<li>严格遵守驼峰式的命名规则！</li>
+<li></li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/07/代码规范/" class="archive-article-date">
+  	<time datetime="2016-11-07T01:18:36.305Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-leetcode #451 Frequency String Sort" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -957,101 +1145,14 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
 <ul>
 <li>下面是Semaphore类的基本使用，很简单，注释也已经可能详细。</li>
 </ul>
-<pre>
-public class SemaphoreExample {
-    private static Semaphore semaphore = new Semaphore(2); //同时允许两个线程访问同步资源
-    private static int count = 0;
-    static class MyThread extends Thread{
-        public MyThread(String threadName){
-            super(threadName);
-        }
-        @Override
-        public void run() {
-            super.run();
-            try {
-                while (true) {
-                    semaphore.acquire(); //线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里
-                    System.out.println(Thread.currentThread().getName() + " get the lock success and executing the syn code current time is: " + System.currentTimeMillis()/1000);
-                    Thread.sleep(5000); //这里只是做个模拟动作,模拟一个执行时长为5 秒的动作
-                    System.out.println(Thread.currentThread().getName() + " executed syn code over and release the permit");
-                    semaphore.release();
-                    Thread.sleep(1000); //释放完之后模仿去做其他操作,而不是循环的去获取锁
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public static void main(String[] args){
-        //我们创建四个工作线程来循环获取信号量
-        MyThread thread1 = new MyThread("Thread One");
-        MyThread thread2 = new MyThread("Thread Two");
-        MyThread thread3 = new MyThread("Thread Three");
-        MyThread thread4 = new MyThread("Thread Four");
-        thread1.start();
-        thread2.start();
-        thread3.start();
-        thread4.start();
-    }
-}
-</pre>
-
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SemaphoreExample</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">2</span>); <span class="comment">//同时允许两个线程访问同步资源</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(String threadName)</span></span>&#123;</div><div class="line">            <span class="keyword">super</span>(threadName);</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>.run();</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                    semaphore.acquire(); <span class="comment">//线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" get the lock success and executing the syn code current time is: "</span> + System.currentTimeMillis()/<span class="number">1000</span>);</div><div class="line">                    Thread.sleep(<span class="number">5000</span>); <span class="comment">//这里只是做个模拟动作,模拟一个执行时长为5 秒的动作</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" executed syn code over and release the permit"</span>);</div><div class="line">                    semaphore.release();</div><div class="line">                    Thread.sleep(<span class="number">1000</span>); <span class="comment">//释放完之后模仿去做其他操作,而不是循环的去获取锁</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		<span class="comment">//我们创建四个工作线程来循环获取信号量</span></div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread(<span class="string">"Thread One"</span>);</div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Two"</span>);</div><div class="line">        MyThread thread3 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Three"</span>);</div><div class="line">        MyThread thread4 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Four"</span>);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line">        thread3.start();</div><div class="line">        thread4.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><strong>Console 中的输出信息</strong></p>
-<pre>
-Thread One get the lock success and executing the syn code current time is: 1478067374
-Thread Two get the lock success and executing the syn code current time is: 1478067374
-Thread Two executed syn code over and release the permit
-Thread One executed syn code over and release the permit
-Thread Three get the lock success and executing the syn code current time is: 1478067379
-Thread Four get the lock success and executing the syn code current time is: 1478067379
-Thread Four executed syn code over and release the permit
-Thread Three executed syn code over and release the permit
-Thread One get the lock success and executing the syn code current time is: 1478067384
-Thread Two get the lock success and executing the syn code current time is: 1478067384
-</pre>
-&emsp;&emsp; 通过控制台输出的信息，第五行。我们在初始化Semaphore时传入的permits值为2，就是指两个线程同时访问，只有当已经当获取到信号量的线程显式的释放掉信号量后，后续等待访问的线程才能访问同步资源
-
-## 互斥锁
->互斥锁，相对于信号量更多的被应用在实战当中，互斥锁在java中的实现就是 ReetranLock , 在访问一个同步资源时，它的对象需要通过方法 tryLock() 获得这个锁，如果失败，返回 false，成功返回true。根据返回的信息来判断是否要访问这个被同步的资源。
-
-
-<pre>
-public class ReentranLockExample {  
-    private static ReentrantLock reentrantLock = new ReentrantLock();  
-    static class MyThread extends Thread{  
-
-        @Override  
-        public void run() {  
-            super.run();  
-            try {  
-                while (true){  
-                    //不同于Semaphore的acquire 方法，这个tryLock询问是立即返回不会造成线程堵塞的
-                    boolean result = reentrantLock.tryLock();  
-                    if (result){  
-                        System.out.println(Thread.currentThread().getName() + "get the lock success and run the syn code " + count ++);  
-                        reentrantLock.unlock();  
-                    }else{  
-                        System.out.println(Thread.currentThread().getName() + "get the lock failed and run the syn code " + count);  
-                    }  
-                    System.out.println(Thread.currentThread().getName() + "run the asyntronized code  " + count);  
-                    Thread.sleep(500);  
-                }  
-
-            } catch (InterruptedException e) {  
-                e.printStackTrace();  
-            }  
-        }  
-    }  
-    public static void main(String[] args){  
-        MyThread thread1 = new MyThread();  
-        MyThread thread2 = new MyThread();  
-        thread1.start();  
-        thread2.start();  
-    }  
-}  
-</pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two executed syn code over and release the permit</div><div class="line">Thread One executed syn code over and release the permit</div><div class="line">Thread Three get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four executed syn code over and release the permit</div><div class="line">Thread Three executed syn code over and release the permit</div><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067384</div><div class="line">Thrad Two get the lock success and executing the syn code current time is: 1478067384</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 通过控制台输出的信息，第五行。我们在初始化Semaphore时传入的permits值为2，就是指两个线程同时访问，只有当已经当获取到信号量的线程显式的释放掉信号量后，后续等待访问的线程才能访问同步资源</p>
+<h2 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h2><blockquote>
+<p>互斥锁，相对于信号量更多的被应用在实战当中，互斥锁在java中的实现就是 ReetranLock , 在访问一个同步资源时，它的对象需要通过方法 tryLock() 获得这个锁，如果失败，返回 false，成功返回true。根据返回的信息来判断是否要访问这个被同步的资源。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentranLockExample</span> </span>&#123;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ReentrantLock reentrantLock = <span class="keyword">new</span> ReentrantLock();  </div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;  </div><div class="line">  </div><div class="line">        <span class="meta">@Override</span>  </div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">            <span class="keyword">super</span>.run();  </div><div class="line">            <span class="keyword">try</span> &#123;  </div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;  </div><div class="line">                    <span class="comment">//不同于Semaphore的acquire 方法，这个tryLock询问是立即返回不会造成线程堵塞的</span></div><div class="line">                    <span class="keyword">boolean</span> result = reentrantLock.tryLock();  </div><div class="line">                    <span class="keyword">if</span> (result)&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock success and run the syn code "</span> + count ++);  </div><div class="line">                        reentrantLock.unlock();  </div><div class="line">                    &#125;<span class="keyword">else</span>&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock failed and run the syn code "</span> + count);  </div><div class="line">                    &#125;  </div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">"run the asyntronized code  "</span> + count);  </div><div class="line">                    Thread.sleep(<span class="number">500</span>);  </div><div class="line">                &#125;  </div><div class="line">  </div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;  </div><div class="line">                e.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;  </div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread();  </div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread();  </div><div class="line">        thread1.start();  </div><div class="line">        thread2.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>互斥锁在Java上应用很广，比如Syntronized代码块，读写锁等。</p>
 
       

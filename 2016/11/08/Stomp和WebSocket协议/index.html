@@ -6,30 +6,33 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Solution of Leetcode | Walker的博客</title>
+  <title>WebSocket协议和Stomp协议 | Walker的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Solution of leetcode #451
-自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！
-
-下面是具体实现！
-123456789101112131415161718192021222324252627282930public String frequencySort(String s) &amp;#123;">
+  <meta name="description" content="Stomp协议基础
+Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8
+类似Http协议，Stomp是同样是基于帧的协议
+Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束
+COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义
+C">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Solution of Leetcode">
-<meta property="og:url" content="http://yoursite.com/2016/11/07/leetcode #451 Frequency String Sort/index.html">
+<meta property="og:title" content="WebSocket协议和Stomp协议">
+<meta property="og:url" content="http://yoursite.com/2016/11/08/Stomp和WebSocket协议/index.html">
 <meta property="og:site_name" content="Walker的博客">
-<meta property="og:description" content="Solution of leetcode #451
-自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！
-
-下面是具体实现！
-123456789101112131415161718192021222324252627282930public String frequencySort(String s) &amp;#123;">
-<meta property="og:updated_time" content="2016-11-07T01:07:08.487Z">
+<meta property="og:description" content="Stomp协议基础
+Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8
+类似Http协议，Stomp是同样是基于帧的协议
+Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束
+COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义
+C">
+<meta property="og:updated_time" content="2016-11-08T03:15:24.188Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Solution of Leetcode">
-<meta name="twitter:description" content="Solution of leetcode #451
-自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！
-
-下面是具体实现！
-123456789101112131415161718192021222324252627282930public String frequencySort(String s) &amp;#123;">
+<meta name="twitter:title" content="WebSocket协议和Stomp协议">
+<meta name="twitter:description" content="Stomp协议基础
+Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8
+类似Http协议，Stomp是同样是基于帧的协议
+Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束
+COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义
+C">
   
   
     <link rel="icon" href="/assets/header.jpg">
@@ -140,7 +143,7 @@
 </nav>
 
       <div class="body-wrap">
-        <article id="post-leetcode #451 Frequency String Sort" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -150,7 +153,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Solution of Leetcode
+      WebSocket协议和Stomp协议
     </h1>
   
 
@@ -158,20 +161,74 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Solution-of-leetcode-451"><a href="#Solution-of-leetcode-451" class="headerlink" title="Solution of leetcode #451"></a>Solution of leetcode #451</h1><blockquote>
-<p>自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！</p>
+        <h1 id="Stomp协议基础"><a href="#Stomp协议基础" class="headerlink" title="Stomp协议基础"></a>Stomp协议基础</h1><ul>
+<li>Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8</li>
+<li>类似Http协议，Stomp是同样是基于帧的协议</li>
+<li>Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束</li>
+<li>COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义<pre>
+COMMAND
+header1:value1
+header2:value2
+Body^@
+</pre></li>
+<li><p>对于body，只有send，message和ERROR帧有body，其他所有帧都没有body。并且这三个帧的也必须携带 content-length的header。</p>
+</li>
+<li><p>Stomp client通过Connect frame与server建立流或者TCP链接</p>
+</li>
+</ul>
+<pre>
+CONNECT
+accept-version:1.2
+host:stomp.github.org
+^@
+</pre>
+
+<ul>
+<li>然后server返回给connected frame给client</li>
+</ul>
+<pre>
+CONNECTED
+version:1.2
+^@
+</pre>
+
+<p>或者相应ERROR Frame给client说明为什么被拒绝</p>
+<ul>
+<li>对于Stomp 1.1以后的版本，Connected frame必须包含accept-version header. 它的值为client所支持的Stomp版本号，如果client和server不支持共同的版本协议。server返回类似下面的ERROR frame并断开连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ERROR</div><div class="line">version:1.2,2.1</div><div class="line">content-type:text/plain</div><div class="line"></div><div class="line">Supported protocol versions are 1.2 2.1^@</div></pre></td></tr></table></figure>
+<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><blockquote>
+<p>心跳被用于测试底层TCP连接的可用性，确保远程服务处于活动状态,一般是作为header出现在connect frame中。</p>
 </blockquote>
-<p>下面是具体实现！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">frequencySort</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> == s || <span class="number">0</span> == s.length() )</div><div class="line">          <span class="keyword">return</span> s;</div><div class="line">      <span class="keyword">char</span>[] array = s.toCharArray();</div><div class="line"></div><div class="line">      Arrays.sort(array);</div><div class="line"></div><div class="line">      List&lt;StringBuilder&gt; elements = <span class="keyword">new</span> ArrayList&lt;StringBuilder&gt;();</div><div class="line">      elements.add(<span class="keyword">new</span> StringBuilder().append(array[<span class="number">0</span>]));</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>;index &lt; array.length;index++)&#123;</div><div class="line">          <span class="keyword">char</span> c = array[index];</div><div class="line">          StringBuilder strBuilder = elements.get(<span class="number">0</span>);</div><div class="line">          <span class="keyword">if</span> (strBuilder.charAt(<span class="number">0</span>) == c)</div><div class="line">              strBuilder.append(c);</div><div class="line">          <span class="keyword">else</span></div><div class="line">              elements.add(<span class="number">0</span>,<span class="keyword">new</span> StringBuilder().append(c));</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      Collections.sort(elements, <span class="keyword">new</span> Comparator&lt;StringBuilder&gt;() &#123;</div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(StringBuilder o1, StringBuilder o2)</span> </span>&#123;</div><div class="line">              <span class="keyword">return</span> o2.length() - o1.length();</div><div class="line">          &#125;</div><div class="line">      &#125;);</div><div class="line"></div><div class="line">      StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">      <span class="keyword">for</span> (StringBuilder element : elements)</div><div class="line">          stringBuilder.append(element);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> stringBuilder.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>leetcode 上的runtime 最后是23ms！算法思想很简单，就是先排序。然后利用排序好的字符串进行divide形成list，排序号list里面的元素后进行重装即可。很简单…</p>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>算法实现实现起来其实蛮简单，不过重要的是理解java底层的排序算法实现。这正是下一步要做的工作！ </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CONNECT</div><div class="line">heart-beat:&lt;cx&gt;,&lt;cy&gt;</div></pre></td></tr></table></figure>
+<p>header-beat 头的两个值都是为数字，</p>
+<ul>
+<li>第一个数字表示发送方能做什么，为0表示不能发送心跳，其他值表保证两次心跳的最小毫秒数</li>
+<li>第二个数字代表发送方能获得什么: 0表示它不想接收心跳 ,否则它表示两次心跳期望的毫秒数 </li>
+</ul>
+<p>如果接受者在规定的时间内没有收到新数据，表明连接已经断开</p>
+<h2 id="Client-Frame"><a href="#Client-Frame" class="headerlink" title="Client Frame"></a>Client Frame</h2><ul>
+<li><strong>SEND</strong>: 必须要包含Body和destination的header</li>
+<li><strong>SUBSCRIBE</strong> ：同样需要destination的header,表示订阅的目的地 </li>
+<li>UNSUBSCRIBE：携带id header</li>
+<li>BEGIN</li>
+<li>COMMIT</li>
+<li>ABORT</li>
+<li>ACK：用于通知server，你发来的消息我已经消费。</li>
+<li>NACK</li>
+<li>DISCONNECT</li>
+</ul>
+<h2 id="Message-Frame"><a href="#Message-Frame" class="headerlink" title="Message Frame"></a>Message Frame</h2><ul>
+<li>Message：下面是一个最基本的messageframe，另外如果frame Body携带信息的话，header应该带有content type和content length</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">MESSAGE</div><div class="line">subscription:0</div><div class="line">message-id:007    </div><div class="line">destination:/queue/a  </div><div class="line">content-type:text/plain </div><div class="line"></div><div class="line">hello queue a^@</div></pre></td></tr></table></figure>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/07/leetcode #451 Frequency String Sort/" class="archive-article-date">
-  	<time datetime="2016-11-07T00:57:29.459Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
+      <a href="/2016/11/08/Stomp和WebSocket协议/" class="archive-article-date">
+  	<time datetime="2016-11-08T02:42:10.839Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-08</time>
 </a>
       
       
@@ -184,7 +241,7 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/11/07/代码规范/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/11/09/WebSocket协议笔记/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
@@ -194,8 +251,8 @@
     </a>
   
   
-    <a href="/2016/11/03/快速搭建一个支持HttpsAndroid后台(服务端)/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">快速搭建一个支持Https的服务（附有Android访问Https链接的配置）</div>
+    <a href="/2016/11/07/代码规范/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title"></div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -229,7 +286,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="leetcode #451 Frequency String Sort" data-title="Solution of Leetcode" data-url="http://yoursite.com/2016/11/07/leetcode #451 Frequency String Sort/"></div>
+	<div class="ds-thread" data-thread-key="Stomp和WebSocket协议" data-title="WebSocket协议和Stomp协议" data-url="http://yoursite.com/2016/11/08/Stomp和WebSocket协议/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
