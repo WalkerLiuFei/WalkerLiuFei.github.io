@@ -11,7 +11,7 @@
   <meta name="description" content="Server端
 Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：WebSocket Support
 
-WebSocket基础服务利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们">
+利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搭建一个最简单的WebSocket服务">
 <meta property="og:url" content="http://yoursite.com/2016/11/10/WebSocket服务/index.html">
@@ -19,14 +19,14 @@ WebSocket基础服务利用Spring Boot搭建一个最简单的WebSocket服务，
 <meta property="og:description" content="Server端
 Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：WebSocket Support
 
-WebSocket基础服务利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们">
-<meta property="og:updated_time" content="2016-11-10T08:48:00.183Z">
+利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库">
+<meta property="og:updated_time" content="2016-11-10T08:49:08.621Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搭建一个最简单的WebSocket服务">
 <meta name="twitter:description" content="Server端
 Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：WebSocket Support
 
-WebSocket基础服务利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们">
+利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库">
   
   
     <link rel="icon" href="/assets/header.jpg">
@@ -160,7 +160,7 @@ WebSocket基础服务利用Spring Boot搭建一个最简单的WebSocket服务，
 <h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
 <p>Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#websocket" target="_blank" rel="external">WebSocket Support</a></p>
 </blockquote>
-<h2 id="WebSocket基础服务"><a href="#WebSocket基础服务" class="headerlink" title="WebSocket基础服务"></a>WebSocket基础服务</h2><p>利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库。</p>
+<p>利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    compile group: &apos;org.springframework.boot&apos;, name: &apos;spring-boot-starter-websocket&apos;, version: &apos;1.4.1.RELEASE&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocket</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">implements</span> <span class="title">WebSocketConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">//当webSocket</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandlers</span><span class="params">(WebSocketHandlerRegistry registry)</span> </span>&#123;</div><div class="line">        registry.addHandler(myHandler(),<span class="string">"/hello"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandler <span class="title">myHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyHandler();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h1 id="Client端"><a href="#Client端" class="headerlink" title="Client端"></a>Client端</h1><p>client端利用 java-client这个第三方的库来实现</p>
