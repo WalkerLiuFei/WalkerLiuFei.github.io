@@ -126,6 +126,53 @@
       <div class="body-wrap">
         
   
+    <article id="post-WebSocket With Stomp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-搭建一个配合Stomp消息的WebSocket服务"><a href="#title-搭建一个配合Stomp消息的WebSocket服务" class="headerlink" title="title:搭建一个配合Stomp消息的WebSocket服务"></a>title:搭建一个配合Stomp消息的WebSocket服务</h2><h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
+<p><a href="http://blog.109yxlm.cc/2016/11/10/WebSocket%E6%9C%8D%E5%8A%A1/" target="_blank" rel="external">最简单的WebSocket服务</a></p>
+</blockquote>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocketMessageBroker</span><span class="comment">//这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息。</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketMessageConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Spring的Web消息功能基于消息代理（message broker）</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">//配置消息代理,客户端在监听相应信息时加加上这个前缀</span></div><div class="line">        registry.enableSimpleBroker(<span class="string">"/client"</span>);</div><div class="line">        <span class="comment">//所有带有"/app*"前缀的请求都会被映射到带有@MessageMapping注解的方法中去</span></div><div class="line">        registry.setApplicationDestinationPrefixes(<span class="string">"/app"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 这些路径即为Stomp 监听WebSocket的路径。</div><div class="line">         * 客户端在配置websocket url时应为 : "ws://localhost:8081/hello/websocket"</div><div class="line">         */</div><div class="line">        registry.addEndpoint(<span class="string">"/hello"</span>,<span class="string">"/client"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>@EnableWebSocketMessageBroker 这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息</li>
+<li>重写的registerEndPoint里面添加的Endpoint,将“/hello”注册为<strong>STOMP端点</strong>。这个路径与之前发送和接收消息的<strong>目的地路径</strong>有所不同。这是一个端点，客户端在订阅或发布消息到目的地路径前，要通过websocket连接该端点。</li>
+<li>通过重载configureMessageBroker()方法配置了一个简单的消息代理。所以消息代理将会处理前缀为“/client”的消息,除此之外，发往应用程序的消息将会带有“/app”前缀</li>
+<li>所有目的地以“/app”打头的消息都将会路由到带有@MessageMapping注解的方法中，而不会发布到代理队列或主题中。</li>
+</ul>
+<h2 id="处理来自客户端的STOMP消息"><a href="#处理来自客户端的STOMP消息" class="headerlink" title="处理来自客户端的STOMP消息"></a>处理来自客户端的STOMP消息</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageController</span> </span>&#123;</div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/hello"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/welcome"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> WelcomeMessage <span class="title">greeting</span><span class="params">(HelloMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WelcomeMessage(<span class="string">"welcome "</span> + message.getName() + <span class="string">"!"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/schedule"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/schedule"</span>)  </div><div class="line">    <span class="function"><span class="keyword">public</span> ScheduleTaskMessage <span class="title">schedule</span><span class="params">(ScheduleTaskMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        System.out.println(<span class="string">"schedule task message "</span> + message.getContent());</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        message.setContent(<span class="string">"I already received the message："</span>+message.getContent());</div><div class="line">        <span class="keyword">return</span> message;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在本例中，这个目的地也就是“/app/hello”和“/app/schedul“ 的消息，“/app”前缀是隐含的，因为我们将其配置为应用的目的地前缀，并发送消息到指定的路径。注意，发送的路径要以在 SimpleBroker开头。不带Stomp接受不到。在这里是以“client开头的”</p>
+<h1 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h1>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/WebSocket With Stomp/" class="archive-article-date">
+  	<time datetime="2016-11-10T08:50:12.932Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-WebSocket服务" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -831,390 +878,6 @@ public class NullHostNameVerifier implements HostnameVerifier {
       
       <a href="/2016/11/02/ImageLoder/" class="archive-article-date">
   	<time datetime="2016-11-02T07:14:05.378Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-音视频编解码项目笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/音视频编解码项目笔记/">项目中的音视频编解码笔记</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近的项目是一个智能摄像头的项目，对于我们Android客户端来讲，肯定核心的是就是音视频编解码了。对于硬件端，也就是摄像头端，在我接手项目的时候，他们都已经订好了技术方案。往客户端（iOS,Android，PC）三端传输的数据是音视频分开的。音频通过G711u，视频通过H264。我们客户端这边需要做的就是解码H264拿到未压缩的视频帧，和转码G711u到PCM可以播放 <em>*</em></p>
-<p>视频解码，一开始由于项目紧张，人员也比较缺，这边没有懂视频的解码。所以当时就随便在网络上搜罗了一个H264的解码器（只有SO库），没想到的是竟然可以用。所以本着互联网思维（这里省略100个呵呵），我们就临时用了这个解码器，虽然效果不理想但是还算可以用。后来到了项目中期，我们开始自己学习写解码器。这里推荐三个搭建<a href="http://lib.csdn.net/base/15" title="undefined" target="_blank" rel="external">Android</a> Stuido 搭建NDK开发环境的文章。</p>
-<ol>
-<li><a href="http://www.jianshu.com/p/e689d0196a17" target="_blank" rel="external">超级简单的Android Studio jni 实现(无需命令行)</a></li>
-<li><a href="http://www.jianshu.com/p/7844aafe897d" target="_blank" rel="external">Android Studio使用gradle-experimental构建NDK工程(无需Android.mk、Application.mk文件)</a></li>
-<li><a href="http://www.jianshu.com/p/178a2169b7ff" target="_blank" rel="external">Android Studio NDk调试(基于gradle-experimental插件与LLDB)</a></li>
-</ol>
-<p>下面是我的Gradle的配置,供大家参考</p>
-<pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px;">apply plugin: 'com.android.model.application'
-
-model {
-    android {
-        compileSdkVersion 23
-        buildToolsVersion "23.0.3"
-
-        defaultConfig.with {
-            applicationId "liufei.person.ffmpegproject"
-            minSdkVersion.apiLevel = 15
-            targetSdkVersion.apiLevel = 23
-        }
-    }
-    android.ndk {
-        moduleName = "MyLibrary"
-        ldLibs.addAll(['android', 'log'])
-    }
-
-    repositories {
-        MyLibrary(PrebuiltLibraries) {
-
-            ffmpeg {
-                binaries.withType(SharedLibraryBinary) {
-                    sharedLibraryFile = file("src/main/jni/libffmpeg.so");
-                }
-            }
-        }
-    }
-    android.productFlavors {
-        create("arm") {
-            ndk.abiFilters.add("armeabi")
-        }
-        create("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-        }
-        // To include all cpu architectures, leaves abiFilters emptycreate("all")
-    }
-    android.sources {
-        main {
-            jni {
-                exportedHeaders  {
-                    srcDir "src/main/jni/include"
-                }
-                dependencies{
-                    library "ffmpeg"
-
-                }
-            }
-        }
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.txt'))
-        }
-    }
-
-}
-
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:cardview-v7:23.+'
-    compile 'com.android.support:design:23.2.1'
-}
-
-</pre>
-
-<p>在搭建好环境后，就是视频编解码的相关知识，这里推荐<a href="http://blog.csdn.net/leixiaohua1020?viewmode=contents" target="_blank" rel="external">雷霄骅(leixiaohua1020)的专栏</a>,里面对于音视频编码的讲解真的是面面俱到，并且例子很丰富。对我这样的音视频编解码的新手真的很有帮助。通过阅读和总结雷神的例子，结合我的实际需求，下面是我自己实现的H264视频的解码程序</p>
-<pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px;">unsigned int *rgb_2_pix = NULL;
-unsigned int *r_2_pix = NULL;
-unsigned int *g_2_pix = NULL;
-unsigned int *b_2_pix = NULL;
-
-typedef struct DecoderContext {
-    int color_format;
-    struct AVCodec *codec;
-    struct AVCodecContext *codec_ctx;
-    struct AVFrame *src_frame;
-    struct AVFrame *dst_frame;
-    struct SwsContext *convert_ctx;
-    int frame_ready;
-    long timeBase;
-    int frameIndex;
-} DecoderContext;
-
-static void set_ctx(JNIEnv *env, jobject thiz, void *ctx) {
-    jclass cls = (*env)->GetObjectClass(env, thiz);
-    //最后一个参数的含义表示这个属性的类型为 int
-    jfieldID fid = (*env)->GetFieldID(env, cls, "cdata", "I");
-    //为fid 设值为ctx...相当于给个映射 和java层，然后在get
-    (*env)->SetIntField(env, thiz, fid, (jint) ctx);
-}
-static long getCurrentTimeStamp(){
-    //得到的单位是 nanosecond 级别的，所以要除以1000
-    clock_t t = clock();
-    return t / 1000;
-}
-static void *get_ctx(JNIEnv *env, jobject thiz) {
-    jclass cls = (*env)->GetObjectClass(env, thiz);
-    jfieldID fid = (*env)->GetFieldID(env, cls, "cdata", "I");
-    return (void *) (*env)->GetIntField(env, thiz, fid);
-}
-
-static void av_log_callback(void *ptr, int level, const char *fmt, __va_list vl) {
-    static char line[1024] = {0};
-    vsnprintf(line, sizeof(line), fmt, vl);
-    D(line);
-}
-
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    av_register_all();
-    av_log_set_callback(av_log_callback);
-    return JNI_VERSION_1_4;
-}
-
-JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
-
-}
-/*
- * thiz 是调用这个Jni接口函数的java object
- */
-JNIEXPORT void JNICALL Java_person_walker_natives_H264Decoder_nativeInit(JNIEnv *env, jobject thiz,
-                                                                       jint color_format) {
-    D("get into init method");
-    DecoderContext *ctx = calloc(1, sizeof(DecoderContext));
-
-    D("Creating native H264 decoder context");
-
-    switch (color_format) {
-        case COLOR_FORMAT_YUV420:
-            ctx->color_format = PIX_FMT_YUV420P;
-            break;
-        case COLOR_FORMAT_RGB565LE:
-            ctx->color_format = PIX_FMT_RGB565LE;
-            break;
-        case COLOR_FORMAT_BGR32:
-            ctx->color_format = PIX_FMT_BGR32;
-            break;
-    }
-    ctx->codec = avcodec_find_decoder(CODEC_ID_H264);
-    ctx->codec_ctx = avcodec_alloc_context3(ctx->codec);
-    //ctx->codec_ctx->pix_fmt = PIX_FMT_YUV420P;
-    //ctx->codec_ctx->flags2 |= CODEC_FLAG2_CHUNKS;
-
-    ctx->src_frame = av_frame_alloc();
-    ctx->dst_frame = av_frame_alloc();
-    ctx->timeBase = getCurrentTimeStamp();
-    ctx->frameIndex = 0;
-    avcodec_open2(ctx->codec_ctx, ctx->codec, NULL);
-    //为这个对象的cdata设置数据
-    set_ctx(env, thiz, ctx);
-}
-
-JNIEXPORT void JNICALL Java_person_walker_natives_H264Decoder_nativeDestroy(JNIEnv *env,
-                                                                          jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-
-    D("Destroying native H264 decoder context");
-
-    avcodec_close(ctx->codec_ctx);
-    avcodec_free_context(&(ctx->codec_ctx));
-    av_free(ctx->src_frame);
-    av_free(ctx->dst_frame);
-    free(ctx);
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_consumeNalUnitsFromDirectBuffer(
-        JNIEnv *env, jobject thiz,
-        jbyteArray nal_units, jint num_bytes, jlong pkt_pts) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    void *buf = NULL;
-    if (nal_units == NULL) {
-        D("Received null buffer, sending empty packet to decoder");
-    }
-    else {
-        buf  = (*env) -> GetByteArrayElements(env,nal_units,0);
-        if (buf == NULL) {
-            /*  buf = (*env)->GetByteArrayElements(env, nal_units);
-              if (buf == NULL) {*/
-            D("Error getting direct buffer address");
-            (*env)->ReleaseByteArrayElements(env, nal_units, buf, 0);
-            return -1;
-        }
-    }
-    long pts = getCurrentTimeStamp() - ctx->timeBase;
-    //将buf,这里指的是传入进来的H264数据组合成packet 结构体对象
-    AVPacket packet = {
-            .data = (uint8_t *) buf,
-            .size = num_bytes,
-    };
-
-    int frameFinished = 0;
-    //将packet里面的数据decode解码到 ctx->指向的src_frame中去，AvCodecContext已经初始化 在init时候
-    //作用是解码一帧数据
-    int res = avcodec_decode_video2(ctx->codec_ctx, ctx->src_frame, &frameFinished, &packet);
-    //int res2 = avcodec_decode_video2(ctx->codec_ctx, ctx->src_frame, &frameFinished, &packet);
-    if (frameFinished)
-        ctx->frame_ready = 1;
-    D("goted frame is : %d", frameFinished);
-    (*env)->ReleaseByteArrayElements(env, nal_units, buf, 0);
-
-    return res;
-}
-
-JNIEXPORT jboolean JNICALL Java_person_walker_natives_H264Decoder_isFrameReady(JNIEnv *env,
-                                                                             jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return ctx->frame_ready ? JNI_TRUE : JNI_FALSE;
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_getWidth(JNIEnv *env, jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return ctx->codec_ctx->width;
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_getHeight(JNIEnv *env, jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return ctx->codec_ctx->height;
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_getOutputByteSize(JNIEnv *env,
-                                                                              jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return avpicture_get_size(ctx->color_format, ctx->codec_ctx->width, ctx->codec_ctx->height);
-}
-
-JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFrameToDirectBuffer
-        (JNIEnv *env, jobject thiz, jbyteArray out_buffer, jint out_len) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-
-/*  if (!ctx->frame_ready)
-  return -1;*/
-
-    void *out_buf = (*env)->GetByteArrayElements(env, out_buffer, 0);
-    if (out_buf == NULL) {
-        D("Error getting direct buffer address");
-        return -2;
-    }
-
-    // long out_buf_len = i
-
-    int pic_buf_size = avpicture_get_size(ctx->color_format, ctx->codec_ctx->width,
-                                          ctx->codec_ctx->height);
-
-    if (out_len </pre>
-
-<h2 id="音频解码"><a href="#音频解码" class="headerlink" title="音频解码"></a><a name="t0" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>音频解码</h2><p>其实我们工程里面并有涉及到音频解码的内容，更多是音频的转码和编码压缩。这里重点说一下音频的压缩编码。因为我们的项目里面确实是用到了G711u转码到PCM的内容，但是我们是利用的网络上开源的代码，这里就不详细说了。对于PCM编码.我们后来是放弃了FFMpeg利用的ANdroid 新推出的mediacodec API.下面上代码</p>
-<h3 id="Mediacodec-初始化"><a href="#Mediacodec-初始化" class="headerlink" title="Mediacodec 初始化"></a><a name="t1" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>Mediacodec 初始化</h3><pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;">    private void initMediaCodec() {
-        //查找机器所支持的编码器
-        try {
-            mAebi = new MediaCodec.BufferInfo();
-            presentationTimeUs = System.currentTimeMillis();
-            mediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_AUDIO_AAC);
-            MediaFormat aformat = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, 8000, 1);
-            aformat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
-            aformat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 0);
-            aformat.setInteger(MediaFormat.KEY_BIT_RATE, 24000);
-            mediaCodec.configure(aformat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-            mediaCodec.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }`re>
-
-</pre>
-
-<h3 id="编码过程"><a href="#编码过程" class="headerlink" title="编码过程"></a><a name="t2" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>编码过程</h3><pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;">        try {
-            ByteBuffer[] inBuffers = mediaCodec.getInputBuffers();
-            ByteBuffer[] outBuffers = mediaCodec.getOutputBuffers();
-
-            if (true) {
-                int inBufferIndex = 0;
-                inBufferIndex = mediaCodec.dequeueInputBuffer(-1);
-                //Log.i(TAG, String.format("try to dequeue input vbuffer, ii=%d", inBufferIndex));
-                if (inBufferIndex >= 0) {
-           //这个inBuffers是我们保存原始PCM的buffer数组
-                    ByteBuffer bb = inBuffers[inBufferIndex];
-                    bb.clear();
-                    bb.put(bytes, 0, size);
-                    long pts = System.currentTimeMillis() - presentationTimeUs;
-                    mediaCodec.queueInputBuffer(inBufferIndex, 0, size, pts, 0);
-                }
-            }
-
-            while (true) {
-                int outBufferIndex = mediaCodec.dequeueOutputBuffer(mAebi, 0);
-                if (outBufferIndex >= 0) {
-                    ByteBuffer bb = outBuffers[outBufferIndex];
-
-                    int outPacketSize = mAebi.size + 7;//头部大小加buffer大小
-                    bb.position(mAebi.offset);
-                    bb.limit(mAebi.offset + mAebi.size);
-                    byte[] outBytes = new byte[outPacketSize];
-        //对于PCM编码，一定不要忘记为AAC数据加上ADT头
-                    addADTStoPacket(outBytes, outPacketSize);
-                    bb.get(outBytes, 7, mAebi.size);
-                    bb.position(mAebi.offset);
-                    mPcmDatas.offer(outBytes, 100, TimeUnit.MILLISECONDS);
-                    mediaCodec.releaseOutputBuffer(outBufferIndex, false);
-                } else {
-                    break;
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-        }
-</pre>
-
-<p>// (Must match defines in person.walker.androidh264decoder.H264Decoder.java)</p>
-<p>//short *tmp_pic=NULL;</p>
-<h3 id="为编码好的AAC数据添加AAC头"><a href="#为编码好的AAC数据添加AAC头" class="headerlink" title="为编码好的AAC数据添加AAC头"></a><a name="t3" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>为编码好的AAC数据添加AAC头</h3><pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;">/**
-     * AAC每个数据块钱都要添加ADTS头，不然播放不了
-     *
-     * @param packet
-     * @param packetLen
-     */
-    private void addADTStoPacket(byte[] packet, int packetLen) {
-        int profile = 2; // AAC LC
-        int freqIdx = 11; // 8KHz
-        int chanCfg = 1; // 单声道
-
-        // fill in ADTS data
-        packet[0] = (byte) 0xFF;
-        packet[1] = (byte) 0xF9;
-        packet[2] = (byte) (((profile - 1) </pre>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a name="t4" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>总结</h2><hr>
-<p>从项目一开始设计到音视频编码，到自学完成入门，再到应用到项目中，前前后后也花了不少时间。一开始以为音视频编解码是一个很是高大上工程，但是真正接触到才体会到，虽然音视频编解码确实是很高深，但是使用起来并不困难，因为前人已经为你走过了很多路，能让你快速掌握并且应用到项目中。即使遇到问题，也可以通过各种问答社区例如stackoverflow 寻找到解决办法。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/02/音视频编解码项目笔记/" class="archive-article-date">
-  	<time datetime="2016-11-02T07:05:24.722Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
 </a>
       
       
