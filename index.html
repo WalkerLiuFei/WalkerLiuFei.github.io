@@ -132,10 +132,19 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/10/WebSocket With Stomp/">搭建一个配合Stomp消息的WebSocket服务</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-搭建一个配合Stomp消息的WebSocket服务"><a href="#title-搭建一个配合Stomp消息的WebSocket服务" class="headerlink" title="title:搭建一个配合Stomp消息的WebSocket服务"></a>title:搭建一个配合Stomp消息的WebSocket服务</h2><h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
+        <h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
 <p><a href="http://blog.109yxlm.cc/2016/11/10/WebSocket%E6%9C%8D%E5%8A%A1/" target="_blank" rel="external">最简单的WebSocket服务</a></p>
 </blockquote>
 <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocketMessageBroker</span><span class="comment">//这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息。</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketMessageConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Spring的Web消息功能基于消息代理（message broker）</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">//配置消息代理,客户端在监听相应信息时加加上这个前缀</span></div><div class="line">        registry.enableSimpleBroker(<span class="string">"/client"</span>);</div><div class="line">        <span class="comment">//所有带有"/app*"前缀的请求都会被映射到带有@MessageMapping注解的方法中去</span></div><div class="line">        registry.setApplicationDestinationPrefixes(<span class="string">"/app"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 这些路径即为Stomp 监听WebSocket的路径。</div><div class="line">         * 客户端在配置websocket url时应为 : "ws://localhost:8081/hello/websocket"</div><div class="line">         */</div><div class="line">        registry.addEndpoint(<span class="string">"/hello"</span>,<span class="string">"/client"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
