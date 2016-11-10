@@ -8,16 +8,37 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Walker的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title:WebSocket协议笔记握手客户端发出的握手信息类似：12345678GET /chat HTTP/1.1Host: server.example.comUpgrade: websocketConnection: UpgradeSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==Origin: http://example.com">
+  <meta name="description" content="title:lambda 表达式笔记遍历
+以前的循环方式
+
+123for (String player : players) &amp;#123;       System.out.print(player + &quot;; &quot;);  &amp;#125;
+
+使用 lambda 表达式以及函数操作(functional operation)
+
+1234567891011121314151617181920players">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Walker的博客">
-<meta property="og:url" content="http://yoursite.com/2016/11/09/WebSocket协议笔记/index.html">
+<meta property="og:url" content="http://yoursite.com/2016/11/10/lambda表达式/index.html">
 <meta property="og:site_name" content="Walker的博客">
-<meta property="og:description" content="title:WebSocket协议笔记握手客户端发出的握手信息类似：12345678GET /chat HTTP/1.1Host: server.example.comUpgrade: websocketConnection: UpgradeSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==Origin: http://example.com">
-<meta property="og:updated_time" content="2016-11-10T08:47:44.968Z">
+<meta property="og:description" content="title:lambda 表达式笔记遍历
+以前的循环方式
+
+123for (String player : players) &amp;#123;       System.out.print(player + &quot;; &quot;);  &amp;#125;
+
+使用 lambda 表达式以及函数操作(functional operation)
+
+1234567891011121314151617181920players">
+<meta property="og:updated_time" content="2016-11-10T02:08:54.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Walker的博客">
-<meta name="twitter:description" content="title:WebSocket协议笔记握手客户端发出的握手信息类似：12345678GET /chat HTTP/1.1Host: server.example.comUpgrade: websocketConnection: UpgradeSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==Origin: http://example.com">
+<meta name="twitter:description" content="title:lambda 表达式笔记遍历
+以前的循环方式
+
+123for (String player : players) &amp;#123;       System.out.print(player + &quot;; &quot;);  &amp;#125;
+
+使用 lambda 表达式以及函数操作(functional operation)
+
+1234567891011121314151617181920players">
   
   
     <link rel="icon" href="/assets/header.jpg">
@@ -128,7 +149,7 @@
 </nav>
 
       <div class="body-wrap">
-        <article id="post-WebSocket协议笔记" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-lambda表达式" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -137,32 +158,28 @@
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h1><h2 id="客户端发出的握手信息类似："><a href="#客户端发出的握手信息类似：" class="headerlink" title="客户端发出的握手信息类似："></a>客户端发出的握手信息类似：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">GET /chat HTTP/1.1</div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http://example.com                //源标示</div><div class="line">Sec-WebSocket-Protocol: chat, superchat   //子协议选项</div><div class="line">Sec-WebSocket-Version: 13</div></pre></td></tr></table></figure>
+<h2 id="title-lambda-表达式笔记"><a href="#title-lambda-表达式笔记" class="headerlink" title="title:lambda 表达式笔记"></a>title:lambda 表达式笔记</h2><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><ul>
+<li>以前的循环方式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li>第5行：sec-WebSocket-Key: </li>
-<li>第6行：Origin头，表明源标示</li>
-<li>第7行：Sec-WebSocket-protocol。子协议选项，用于标示客户端和服务端使用的是哪一种子协议 </li>
+<li>使用 lambda 表达式以及函数操作(functional operation)</li>
 </ul>
-<h2 id="服务端回应的握手信息类式："><a href="#服务端回应的握手信息类式：" class="headerlink" title="服务端回应的握手信息类式："></a>服务端回应的握手信息类式：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));</div><div class="line">```  </div><div class="line">   </div><div class="line">+ 在 Java 8 中使用双冒号操作符(double colon operator)</div><div class="line"></div><div class="line">```  </div><div class="line">players.forEach(System.out::println);</div><div class="line">```   </div><div class="line"></div><div class="line">## 匿名内部类</div><div class="line"></div><div class="line">+ 原来的表达式</div><div class="line"></div><div class="line">```  </div><div class="line">btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() &#123;  </div><div class="line">          @Override  </div><div class="line">          public void handle(ActionEvent event) &#123;  </div><div class="line">              System.out.println(&quot;Hello World!&quot;);   </div><div class="line">          &#125;  </div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
 <ul>
-<li>第4行：Sec-WebSocket-Accept标示server是否接受了client的请求。这个值必须要不为空，并且符合client Request请求的规则才算是满足了请求</li>
-<li>第5行：返回的子协议，必须是client请求时携带的子协议之一</li>
-<li>服务端的返回也可以携带cookie信息</li>
+<li>lambda表达式</li>
 </ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li><p>WebSocket类似于Http，同样是一个基于TCP的应用层协议，它和HTTP的关系就是请求可以作为一个升级请求（Upgrade request）经由 HTTP 服务器解释（也就是可以使用 Nginx 反向代理一个 WebSocket）。</p>
-</li>
-<li><p>握手信息的头字段是没有顺序要求的</p>
-</li>
-<li>关闭握手的操作可以是任何一端主动发出，因为WebSocket的通信本就是全双工的</li>
-</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">btn.setOnAction(event -&gt; System.out.println(&quot;Hello World!&quot;));</div><div class="line">```  </div><div class="line"></div><div class="line">## 集合排序</div><div class="line"></div><div class="line">+ 原表达式</div><div class="line"></div><div class="line">``` </div><div class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </div><div class="line">Arrays.sort(players, sortByName);</div><div class="line">```  </div><div class="line">  </div><div class="line">+ lambda表达式</div><div class="line"></div><div class="line">```  </div><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));</div><div class="line">```  </div><div class="line"></div><div class="line">## Stream</div><div class="line"></div><div class="line">创建一个简单的集合作为例子</div></pre></td></tr></table></figure>
+<p>List<testbean> beans = new ArrayList<testbean>();<br>int count = 0;<br>while (count++ &lt; 50)<br>    beans.add(new TestBean(count,”我的是ID为”+ count +”的成员”));<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### filter</div><div class="line"></div><div class="line">filter比较简单，例如下面的例子。遍历所有id号大于20的元素并输出</div></pre></td></tr></table></figure></testbean></testbean></p>
+<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean);<br>        });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">###  map</div><div class="line"></div><div class="line">将testBean 映射为它的content.</div></pre></td></tr></table></figure></p>
+<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .map(TestBean::getContent)<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean); //输出的的内容为testbean的content内容<br>        });<br>```</p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/09/WebSocket协议笔记/" class="archive-article-date">
-  	<time datetime="2016-11-09T01:09:02.667Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-09</time>
+      <a href="/2016/11/10/lambda表达式/" class="archive-article-date">
+  	<time datetime="2016-11-10T01:23:39.915Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
 </a>
       
       
@@ -175,18 +192,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/11/10/lambda表达式/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/11/10/WebSocket服务/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          (no title)
+          搭建一个最简单的WebSocket服务
         
       </div>
     </a>
   
   
-    <a href="/2016/11/08/Stomp和WebSocket协议/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">WebSocket协议和Stomp协议</div>
+    <a href="/2016/11/09/WebSocket协议笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title"></div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -220,7 +237,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="WebSocket协议笔记" data-title="" data-url="http://yoursite.com/2016/11/09/WebSocket协议笔记/"></div>
+	<div class="ds-thread" data-thread-key="lambda表达式" data-title="" data-url="http://yoursite.com/2016/11/10/lambda表达式/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

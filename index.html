@@ -126,6 +126,113 @@
       <div class="body-wrap">
         
   
+    <article id="post-WebSocket服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/10/WebSocket服务/">搭建一个最简单的WebSocket服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+</blockquote>
+<h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
+<p>Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#websocket" target="_blank" rel="external">WebSocket Support</a></p>
+</blockquote>
+<h2 id="WebSocket基础服务"><a href="#WebSocket基础服务" class="headerlink" title="WebSocket基础服务"></a>WebSocket基础服务</h2><p>利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    compile group: &apos;org.springframework.boot&apos;, name: &apos;spring-boot-starter-websocket&apos;, version: &apos;1.4.1.RELEASE&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocket</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">implements</span> <span class="title">WebSocketConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">//当webSocket</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandlers</span><span class="params">(WebSocketHandlerRegistry registry)</span> </span>&#123;</div><div class="line">        registry.addHandler(myHandler(),<span class="string">"/hello"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandler <span class="title">myHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyHandler();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Client端"><a href="#Client端" class="headerlink" title="Client端"></a>Client端</h1><p>client端利用 java-client这个第三方的库来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile group: &apos;org.java-websocket&apos;, name: &apos;Java-WebSocket&apos;, version: &apos;1.3.0&apos;</div></pre></td></tr></table></figure>
+<p>然后继承实现一个WebSocketCLient类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleWebSocket</span> <span class="keyword">extends</span> <span class="title">WebSocketClient</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExampleWebSocket</span><span class="params">(URI serverURI)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(serverURI,<span class="keyword">new</span> Draft_17());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(ServerHandshake handshakedata)</span> </span>&#123;</div><div class="line">        Iterator&lt;String&gt; stringIterator = handshakedata.iterateHttpFields();</div><div class="line">        <span class="keyword">while</span> (stringIterator.hasNext())&#123;</div><div class="line">            String name = stringIterator.next();</div><div class="line">            System.out.println(name+<span class="string">" "</span>+handshakedata.getFieldValue(name</div><div class="line">            ));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(String message)</span> </span>&#123;</div><div class="line">        System.out.println(message);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClose</span><span class="params">(<span class="keyword">int</span> code, String reason, <span class="keyword">boolean</span> remote)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"closed:"</span>+reason);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Exception ex)</span> </span>&#123;</div><div class="line">        System.out.println(ex.getMessage());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后通过 url进行连接。 注意，这url的路径 /hello就是你在Server端配置的监听路径。另外后继的/webSocket指明这是个WebSocket链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">exampleWebSocket = new ExampleWebSocket(new URI(&quot;ws://127.0.0.1:8081/hello/websocket&quot;));</div><div class="line">exampleWebSocket.connect();</div></pre></td></tr></table></figure></p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="" git@github.com:walkerliufei="" websocketaction.git="">源码</a></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/WebSocket服务/" class="archive-article-date">
+  	<time datetime="2016-11-10T07:50:00.580Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-lambda表达式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-lambda-表达式笔记"><a href="#title-lambda-表达式笔记" class="headerlink" title="title:lambda 表达式笔记"></a>title:lambda 表达式笔记</h2><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><ul>
+<li>以前的循环方式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>使用 lambda 表达式以及函数操作(functional operation)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));</div><div class="line">```  </div><div class="line">   </div><div class="line">+ 在 Java 8 中使用双冒号操作符(double colon operator)</div><div class="line"></div><div class="line">```  </div><div class="line">players.forEach(System.out::println);</div><div class="line">```   </div><div class="line"></div><div class="line">## 匿名内部类</div><div class="line"></div><div class="line">+ 原来的表达式</div><div class="line"></div><div class="line">```  </div><div class="line">btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() &#123;  </div><div class="line">          @Override  </div><div class="line">          public void handle(ActionEvent event) &#123;  </div><div class="line">              System.out.println(&quot;Hello World!&quot;);   </div><div class="line">          &#125;  </div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>lambda表达式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">btn.setOnAction(event -&gt; System.out.println(&quot;Hello World!&quot;));</div><div class="line">```  </div><div class="line"></div><div class="line">## 集合排序</div><div class="line"></div><div class="line">+ 原表达式</div><div class="line"></div><div class="line">``` </div><div class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </div><div class="line">Arrays.sort(players, sortByName);</div><div class="line">```  </div><div class="line">  </div><div class="line">+ lambda表达式</div><div class="line"></div><div class="line">```  </div><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));</div><div class="line">```  </div><div class="line"></div><div class="line">## Stream</div><div class="line"></div><div class="line">创建一个简单的集合作为例子</div></pre></td></tr></table></figure>
+<p>List<testbean> beans = new ArrayList<testbean>();<br>int count = 0;<br>while (count++ &lt; 50)<br>    beans.add(new TestBean(count,”我的是ID为”+ count +”的成员”));<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### filter</div><div class="line"></div><div class="line">filter比较简单，例如下面的例子。遍历所有id号大于20的元素并输出</div></pre></td></tr></table></figure></testbean></testbean></p>
+<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean);<br>        });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">###  map</div><div class="line"></div><div class="line">将testBean 映射为它的content.</div></pre></td></tr></table></figure></p>
+<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .map(TestBean::getContent)<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean); //输出的的内容为testbean的content内容<br>        });<br>```</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/lambda表达式/" class="archive-article-date">
+  	<time datetime="2016-11-10T01:23:39.915Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-WebSocket协议笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -135,11 +242,25 @@
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>客户端发出的握手信息类似：</p>
-<figure class="highlight java"><figcaption><span>[]</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">GET /chat HTTP/<span class="number">1.1</span></div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http:<span class="comment">//example.com</span></div><div class="line">Sec-WebSocket-Protocol: chat, superchat</div><div class="line">Sec-WebSocket-Version: <span class="number">13</span></div></pre></td></tr></table></figure>
-<p>服务端回应的握手信息类式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
-<p>文／mconintet（简书作者）<br>原文链接：<a href="http://www.jianshu.com/p/867274a5e054" target="_blank" rel="external">http://www.jianshu.com/p/867274a5e054</a><br>著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。</p>
+<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h1><h2 id="客户端发出的握手信息类似："><a href="#客户端发出的握手信息类似：" class="headerlink" title="客户端发出的握手信息类似："></a>客户端发出的握手信息类似：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">GET /chat HTTP/1.1</div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http://example.com                //源标示</div><div class="line">Sec-WebSocket-Protocol: chat, superchat   //子协议选项</div><div class="line">Sec-WebSocket-Version: 13</div></pre></td></tr></table></figure>
+<ul>
+<li>第5行：sec-WebSocket-Key: </li>
+<li>第6行：Origin头，表明源标示</li>
+<li>第7行：Sec-WebSocket-protocol。子协议选项，用于标示客户端和服务端使用的是哪一种子协议 </li>
+</ul>
+<h2 id="服务端回应的握手信息类式："><a href="#服务端回应的握手信息类式：" class="headerlink" title="服务端回应的握手信息类式："></a>服务端回应的握手信息类式：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
+<ul>
+<li>第4行：Sec-WebSocket-Accept标示server是否接受了client的请求。这个值必须要不为空，并且符合client Request请求的规则才算是满足了请求</li>
+<li>第5行：返回的子协议，必须是client请求时携带的子协议之一</li>
+<li>服务端的返回也可以携带cookie信息</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li><p>WebSocket类似于Http，同样是一个基于TCP的应用层协议，它和HTTP的关系就是请求可以作为一个升级请求（Upgrade request）经由 HTTP 服务器解释（也就是可以使用 Nginx 反向代理一个 WebSocket）。</p>
+</li>
+<li><p>握手信息的头字段是没有顺序要求的</p>
+</li>
+<li>关闭握手的操作可以是任何一端主动发出，因为WebSocket的通信本就是全双工的</li>
+</ul>
 
       
     </div>
@@ -1113,126 +1234,10 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
 
 
   
-    <article id="post-多线程概念" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/多线程概念/">多线程概念</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h1><h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><blockquote>
-<p>信号量又称为信号灯，它是用来协调不同进程间的数据对象的，而最主要的应用是共享内存方式的线程间通信。本质上，信号量是一个计数器，它用来记录对某个资源（如共享内存）的存取状况。</p>
-</blockquote>
-<h3 id="信号量的操作流程"><a href="#信号量的操作流程" class="headerlink" title="信号量的操作流程"></a>信号量的操作流程</h3><p>&emsp;&emsp;信号量相当于一个计数器，如果线程想要访问某个资源，则先要获得这个资源的信号量，并且信号量内部的计数器减1 ，信号量内部的计数器大于0则意味着有可以使用的资源,当线程使用完某个资源时，必须释放这个资源的信号量。</p>
-<ul>
-<li>测试控制该资源的信号量。 </li>
-<li>若此信号量的值为正，则允许进行使用该资源。进程将信号量减1。</li>
-<li>若此信号量为0，则该资源目前不可用，进程进入睡眠状态，直至信号量值大于0，线程被唤醒，转入步骤（1）。 </li>
-<li>当线程程不再使用一个信号量控制的资源时，信号量值加1。如果此时有进程正在睡眠等待此信号量，则唤醒此进程。 </li>
-</ul>
-<h3 id="信号量概念在Java中的应用"><a href="#信号量概念在Java中的应用" class="headerlink" title="信号量概念在Java中的应用"></a>信号量概念在Java中的应用</h3><p>&emsp;&emsp; 信号量在java中的应用是类<strong>Semaphore</strong>，其位于包<strong>concurrent</strong>下面。</p>
-<ul>
-<li>下面是Semaphore类的基本使用，很简单，注释也已经可能详细。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SemaphoreExample</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">2</span>); <span class="comment">//同时允许两个线程访问同步资源</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(String threadName)</span></span>&#123;</div><div class="line">            <span class="keyword">super</span>(threadName);</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>.run();</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                    semaphore.acquire(); <span class="comment">//线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" get the lock success and executing the syn code current time is: "</span> + System.currentTimeMillis()/<span class="number">1000</span>);</div><div class="line">                    Thread.sleep(<span class="number">5000</span>); <span class="comment">//这里只是做个模拟动作,模拟一个执行时长为5 秒的动作</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" executed syn code over and release the permit"</span>);</div><div class="line">                    semaphore.release();</div><div class="line">                    Thread.sleep(<span class="number">1000</span>); <span class="comment">//释放完之后模仿去做其他操作,而不是循环的去获取锁</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		<span class="comment">//我们创建四个工作线程来循环获取信号量</span></div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread(<span class="string">"Thread One"</span>);</div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Two"</span>);</div><div class="line">        MyThread thread3 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Three"</span>);</div><div class="line">        MyThread thread4 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Four"</span>);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line">        thread3.start();</div><div class="line">        thread4.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>Console 中的输出信息</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two executed syn code over and release the permit</div><div class="line">Thread One executed syn code over and release the permit</div><div class="line">Thread Three get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four executed syn code over and release the permit</div><div class="line">Thread Three executed syn code over and release the permit</div><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067384</div><div class="line">Thrad Two get the lock success and executing the syn code current time is: 1478067384</div></pre></td></tr></table></figure>
-<p>&emsp;&emsp; 通过控制台输出的信息，第五行。我们在初始化Semaphore时传入的permits值为2，就是指两个线程同时访问，只有当已经当获取到信号量的线程显式的释放掉信号量后，后续等待访问的线程才能访问同步资源</p>
-<h2 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h2><blockquote>
-<p>互斥锁，相对于信号量更多的被应用在实战当中，互斥锁在java中的实现就是 ReetranLock , 在访问一个同步资源时，它的对象需要通过方法 tryLock() 获得这个锁，如果失败，返回 false，成功返回true。根据返回的信息来判断是否要访问这个被同步的资源。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentranLockExample</span> </span>&#123;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ReentrantLock reentrantLock = <span class="keyword">new</span> ReentrantLock();  </div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;  </div><div class="line">  </div><div class="line">        <span class="meta">@Override</span>  </div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">            <span class="keyword">super</span>.run();  </div><div class="line">            <span class="keyword">try</span> &#123;  </div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;  </div><div class="line">                    <span class="comment">//不同于Semaphore的acquire 方法，这个tryLock询问是立即返回不会造成线程堵塞的</span></div><div class="line">                    <span class="keyword">boolean</span> result = reentrantLock.tryLock();  </div><div class="line">                    <span class="keyword">if</span> (result)&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock success and run the syn code "</span> + count ++);  </div><div class="line">                        reentrantLock.unlock();  </div><div class="line">                    &#125;<span class="keyword">else</span>&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock failed and run the syn code "</span> + count);  </div><div class="line">                    &#125;  </div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">"run the asyntronized code  "</span> + count);  </div><div class="line">                    Thread.sleep(<span class="number">500</span>);  </div><div class="line">                &#125;  </div><div class="line">  </div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;  </div><div class="line">                e.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;  </div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread();  </div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread();  </div><div class="line">        thread1.start();  </div><div class="line">        thread2.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>互斥锁在Java上应用很广，比如Syntronized代码块，读写锁等。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/02/多线程概念/" class="archive-article-date">
-  	<time datetime="2016-11-02T03:49:42.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/hello-world/">搭建Github page笔记遇到的坑</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="配置Hexo遇到的坑"><a href="#配置Hexo遇到的坑" class="headerlink" title="配置Hexo遇到的坑"></a>配置Hexo遇到的坑</h2><ol>
-<li>在配置hexo的_config.yml文件时 <pre>
- deploy:
-   type: git //前面要加空格！
-   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
-   branch: master
- </pre></li>
-<li>每次提交新文章的时候，hexo会清空github仓库（坑！），所以我在其他地方提交的文件，例如定向文件CNAME会被清空掉，所以这个文件药房你的hexo博客目录下面的source文件夹下！</li>
-</ol>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/02/hello-world/" class="archive-article-date">
-  	<time datetime="2016-11-02T02:54:31.743Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
