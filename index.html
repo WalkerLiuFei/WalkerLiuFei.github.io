@@ -126,6 +126,67 @@
       <div class="body-wrap">
         
   
+    <article id="post-Trie树" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/29/Trie树/">字典树</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="字典树-trie"><a href="#字典树-trie" class="headerlink" title="字典树(trie)"></a>字典树(trie)</h1><hr>
+<blockquote>
+<p>在leetcode 上刷题遇到的一种数据结构，以前没听说过，怪我孤陋寡闻，经过了解发现应用还是很广的。觉得有必要记录下<br><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank" rel="external"> leetcode 208</a></p>
+</blockquote>
+<ul>
+<li>概念<ul>
+<li>根节点不包含字符串 </li>
+<li>从根节点到某一叶子节点，路径上组成的所有字符就是该节点对应的字符串</li>
+<li>每个节点的公共前缀作为一个字符节点保存 </li>
+</ul>
+</li>
+<li>应用<ul>
+<li>词频统计：比hash或者堆要节省空间，</li>
+<li>前缀匹配：前缀匹配的算法复杂度是O(1)， 要查找匹配前缀字符串的长度</li>
+</ul>
+</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span></span>&#123;</div><div class="line">    TrieNode[] childs = <span class="keyword">new</span> TrieNode[<span class="number">26</span>]; <span class="comment">// a-z</span></div><div class="line">    <span class="keyword">int</span> count; <span class="comment">//frequence;</span></div><div class="line">    <span class="keyword">char</span> prefix; <span class="comment">//当前节点的字符前缀</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix; </div><div class="line">        count = <span class="number">1</span>; <span class="comment">//root 的count 初始化为0，所以要</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addCount</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.count++;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrefix</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TrieNode root;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</div><div class="line">         root = <span class="keyword">new</span> TrieNode();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (searchNode.childs[currentChar-<span class="string">'a'</span>] == <span class="keyword">null</span>)      <span class="comment">//如果这个前缀的还是null，那么新建插入一个</span></div><div class="line">                searchNode.childs[currentChar-<span class="string">'a'</span>] = <span class="keyword">new</span> TrieNode(currentChar);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                node.count++;</div><div class="line">            searchNode = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> childCount = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (TrieNode trieNode : searchNode.childs)&#123;</div><div class="line">            <span class="keyword">if</span> (trieNode == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            childCount += trieNode.count;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> searchNode.count &gt; childCount;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; prefix.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = prefix.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/29/Trie树/" class="archive-article-date">
+  	<time datetime="2016-11-29T07:51:31.906Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-29</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-最近的Leercode题解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -144,20 +205,52 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="backtracking-回溯算法"><a href="#backtracking-回溯算法" class="headerlink" title="backtracking (回溯算法)"></a>backtracking (回溯算法)</h1><h1 id="字典树-trie"><a href="#字典树-trie" class="headerlink" title="字典树(trie)"></a>字典树(trie)</h1><ul>
-<li>概念<ul>
-<li>根节点不包含字符串 </li>
-<li>从根节点到某一叶子节点，路径上组成的所有字符就是该节点对应的字符串</li>
-<li>每个节点的公共前缀作为一个字符节点保存 </li>
+        <h1 id="backtracking-回溯算法"><a href="#backtracking-回溯算法" class="headerlink" title="backtracking (回溯算法)"></a>backtracking (回溯算法)</h1><hr>
+<p>回溯算法属于暴力解法。一般配合 DFS或者BFS使用，通过适当的剪枝来实现降低时间复杂度</p>
+<h2 id="Generate-Parentheses"><a href="#Generate-Parentheses" class="headerlink" title=" Generate Parentheses"></a><a href="https://leetcode.com/problems/generate-parentheses/" target="_blank" rel="external"> Generate Parentheses</a></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"> List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">generateParenthesis</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    backTracking(<span class="number">2</span>*n,n,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="string">"("</span>); <span class="comment">//长度为2*nde 字符串满足条件！</span></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">    <span class="comment">/*</span></div><div class="line">      思路：</div><div class="line">      1:利用indicateFlag 标示是否添加 右括号。左括号添加一次加一，右括号添加一次减一。不能为 负数！</div><div class="line">      2:构建一个char[2n-1] 的状态空间。每次都去尝试左括号和右括号。不满足的话就回到上一次的状态。</div><div class="line">        其实想层次遍历二叉树一样。利用BFS！队列</div><div class="line">     3 : 假设左子 为右半括号，右子为左半括号</div><div class="line">     */</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">backTracking</span><span class="params">(<span class="keyword">int</span> resLength,<span class="keyword">int</span> paraNum, <span class="keyword">int</span> leftAdded,<span class="keyword">int</span> rightAdded,<span class="keyword">int</span> flag, String cont)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (flag &lt; <span class="number">0</span> || rightAdded &gt; paraNum || leftAdded &gt; paraNum) <span class="comment">//这里就是实现的剪枝，不满足条件的，就不继续执行下去</span></div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">if</span> (cont.length() == resLength)&#123;</div><div class="line">        result.add(cont);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (flag &gt; <span class="number">0</span>)  </div><div class="line">        backTracking(resLength,paraNum,leftAdded,rightAdded+<span class="number">1</span>,flag-<span class="number">1</span>,cont+<span class="string">")"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (flag &gt;=<span class="number">0</span>)</div><div class="line">        backTracking(resLength,paraNum,leftAdded+<span class="number">1</span>,rightAdded,flag+<span class="number">1</span>,cont+<span class="string">"("</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Combination-Sum"><a href="#Combination-Sum" class="headerlink" title="Combination Sum"></a><a href="https://leetcode.com/problems/combination-sum/" target="_blank" rel="external">Combination Sum</a></h2><ul>
+<li>这个题解和其他Combination Sum的题目都很相似，利用DFS，经过适当剪枝，将满足条件的结果加入集合。。。。</li>
 </ul>
-</li>
-<li>应用<ul>
-<li>词频统计：比hash或者堆要节省空间，</li>
-<li>前缀匹配：前缀匹配的算法复杂度是O(1)</li>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; combinationSum(<span class="keyword">int</span>[] candidates, <span class="keyword">int</span> target) &#123;</div><div class="line">    <span class="keyword">if</span> (candidates.length &lt; <span class="number">1</span>)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; candidates.length; index++)&#123;  <span class="comment">//利用一个外部循环可以减少递归的次数</span></div><div class="line">        List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        list.add(candidates[index]);</div><div class="line">        recursive(result, list, candidates, target,index,candidates[index]);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">recursive</span><span class="params">(List&lt;List&lt;Integer&gt;&gt; result, List&lt;Integer&gt; list, <span class="keyword">int</span>[] candidates, <span class="keyword">int</span> target, <span class="keyword">int</span> restrict,<span class="keyword">int</span> currentValue)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (currentValue == target)&#123;</div><div class="line">        result.add(list);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> index2 = restrict;index2 &lt; candidates.length;index2++)&#123;</div><div class="line">        <span class="keyword">int</span> value = currentValue + candidates[index2];</div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (value &lt;= target)&#123;</div><div class="line">            list.add(candidates[index2]); <span class="comment">// add the element</span></div><div class="line">            ArrayList newList = <span class="keyword">new</span> ArrayList();</div><div class="line">            newList.addAll(list);</div><div class="line">            recursive(result, newList, candidates, target,index2,value);</div><div class="line">            list.remove(list.size() - <span class="number">1</span>); <span class="comment">// remove the top element</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Restore-IP-Addresses"><a href="#Restore-IP-Addresses" class="headerlink" title="Restore IP Addresses"></a><a href="https://leetcode.com/problems/restore-ip-addresses/" target="_blank" rel="external">Restore IP Addresses</a></h2><ul>
+<li>这个题解最需要注意的是IP地址后面的3个节点不能以0开头，一开始做题就卡到这里了</li>
 </ul>
-</li>
-</ul>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span></span>&#123;</div><div class="line">    TrieNode[] childs = <span class="keyword">new</span> TrieNode[<span class="number">26</span>]; <span class="comment">// a-z</span></div><div class="line">    <span class="keyword">int</span> count; <span class="comment">//frequence;</span></div><div class="line">    <span class="keyword">char</span> prefix; <span class="comment">//当前节点的字符前缀</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix;</div><div class="line">        count = <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addCount</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.count++;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrefix</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TrieNode root;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</div><div class="line">         root = <span class="keyword">new</span> TrieNode();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (searchNode.childs[currentChar-<span class="string">'a'</span>] == <span class="keyword">null</span>)      <span class="comment">//如果这个前缀的还是null，那么新建插入一个</span></div><div class="line">                searchNode.childs[currentChar-<span class="string">'a'</span>] = <span class="keyword">new</span> TrieNode(currentChar);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                node.count++;</div><div class="line">            searchNode = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> childCount = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (TrieNode trieNode : searchNode.childs)&#123;</div><div class="line">            <span class="keyword">if</span> (trieNode == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            childCount += trieNode.count;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> searchNode.count &gt; childCount;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; prefix.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = prefix.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<pre><code class="Java"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">restoreIpAddresses</span><span class="params">(String s)</span> </span>{
+     List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();
+     StringBuilder builder = <span class="keyword">new</span> StringBuilder();
+     dfs(s, result, builder, <span class="number">0</span>);
+     <span class="keyword">return</span> result;
+ }
+
+ <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(String restString, List&lt;String&gt; result, StringBuilder builder, <span class="keyword">int</span> currentLength)</span> </span>{
+     <span class="keyword">if</span> (restString.length() + currentLength &lt; <span class="number">4</span>) <span class="comment">//剩余字符串的长度不足以形成一个有效的IP 地址</span>
+         <span class="keyword">return</span>;
+     <span class="keyword">if</span> (currentLength == <span class="number">3</span> 
+                 &amp;&amp; (restString.length() &lt; <span class="number">4</span> 
+                         &amp;&amp; Integer.parseInt(restString) &lt;= <span class="number">255</span>)) {
+         <span class="keyword">if</span> (restString.length() &gt;<span class="number">1</span> &amp;&amp; restString.startsWith(<span class="string">"0"</span>))
+             <span class="keyword">return</span>;
+         StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder(builder);
+         String value = stringBuilder.append(restString).toString();
+         result.add(value);
+         <span class="keyword">return</span>;
+     } <span class="keyword">else</span> <span class="keyword">if</span> (currentLength &gt;= <span class="number">3</span>) <span class="comment">//不满的情况，&gt;= 3，大于 255 ||</span>
+         <span class="keyword">return</span>;
+     <span class="keyword">int</span> limit = Math.min(<span class="number">3</span>, restString.length());
+     <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>; index &lt;= limit; index++) {
+         String sub = restString.substring(<span class="number">0</span>, index);
+         <span class="keyword">if</span> (sub.startsWith(<span class="string">"0"</span>) &amp;&amp; sub.length() &gt; <span class="number">1</span>)
+             <span class="keyword">continue</span>;
+         <span class="keyword">if</span> (index == <span class="number">3</span> &amp;&amp; (sub.length() &gt; <span class="number">3</span> || Integer.parseInt(sub) &gt; <span class="number">255</span>))
+             <span class="keyword">continue</span>;
+         builder.append(sub);
+         builder.append(<span class="string">"."</span>);
+         dfs(restString.substring(index, restString.length()), result, builder, currentLength + <span class="number">1</span>);    <span class="comment">//剪切第0个字符</span>
+         builder.delete(builder.length() - index - <span class="number">1</span>, builder.length());
+     }
+ }
+</code></pre>
+
       
     </div>
     <div class="article-info article-info-index">
@@ -708,57 +801,6 @@ version:1.2
       
       <a href="/2016/11/07/代码规范/" class="archive-article-date">
   	<time datetime="2016-11-07T01:18:36.305Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-leetcode #451 Frequency String Sort" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/07/leetcode #451 Frequency String Sort/">Solution of Leetcode</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Solution-of-leetcode-451"><a href="#Solution-of-leetcode-451" class="headerlink" title="Solution of leetcode #451"></a>Solution of leetcode #451</h1><blockquote>
-<p>自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！</p>
-</blockquote>
-<p>下面是具体实现！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">frequencySort</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> == s || <span class="number">0</span> == s.length() )</div><div class="line">          <span class="keyword">return</span> s;</div><div class="line">      <span class="keyword">char</span>[] array = s.toCharArray();</div><div class="line"></div><div class="line">      Arrays.sort(array);</div><div class="line"></div><div class="line">      List&lt;StringBuilder&gt; elements = <span class="keyword">new</span> ArrayList&lt;StringBuilder&gt;();</div><div class="line">      elements.add(<span class="keyword">new</span> StringBuilder().append(array[<span class="number">0</span>]));</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>;index &lt; array.length;index++)&#123;</div><div class="line">          <span class="keyword">char</span> c = array[index];</div><div class="line">          StringBuilder strBuilder = elements.get(<span class="number">0</span>);</div><div class="line">          <span class="keyword">if</span> (strBuilder.charAt(<span class="number">0</span>) == c)</div><div class="line">              strBuilder.append(c);</div><div class="line">          <span class="keyword">else</span></div><div class="line">              elements.add(<span class="number">0</span>,<span class="keyword">new</span> StringBuilder().append(c));</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      Collections.sort(elements, <span class="keyword">new</span> Comparator&lt;StringBuilder&gt;() &#123;</div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(StringBuilder o1, StringBuilder o2)</span> </span>&#123;</div><div class="line">              <span class="keyword">return</span> o2.length() - o1.length();</div><div class="line">          &#125;</div><div class="line">      &#125;);</div><div class="line"></div><div class="line">      StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">      <span class="keyword">for</span> (StringBuilder element : elements)</div><div class="line">          stringBuilder.append(element);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> stringBuilder.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>leetcode 上的runtime 最后是23ms！算法思想很简单，就是先排序。然后利用排序好的字符串进行divide形成list，排序号list里面的元素后进行重装即可。很简单…</p>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>算法实现实现起来其实蛮简单，不过重要的是理解java底层的排序算法实现。这正是下一步要做的工作！ </p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/07/leetcode #451 Frequency String Sort/" class="archive-article-date">
-  	<time datetime="2016-11-07T00:57:29.459Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
 </a>
       
       
