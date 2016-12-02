@@ -126,6 +126,334 @@
       <div class="body-wrap">
         
   
+    <article id="post-字节码文件分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-Spring源码分析之ASM（零）"><a href="#title-Spring源码分析之ASM（零）" class="headerlink" title="title:Spring源码分析之ASM（零）"></a>title:Spring源码分析之ASM（零）</h2><h1 id="字节码文件"><a href="#字节码文件" class="headerlink" title="字节码文件"></a>字节码文件</h1><blockquote>
+<p>想要了解ASM必须要对Class（字节码）文件有个清楚的认识</p>
+</blockquote>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>java虚拟机并不和包括java在内的任何语言绑定，它只和Class 文件这种特定的二进制文件格式所关联。Clas文件并不关心你的Class文件从哪里来。你可以用任何编译器（包括你自己编写的编译器来生成Class文件，只要符合JVM的规范即可） <br></p>
+<p>字节码文件是一组以8位字节为基础单位的二进制流。其包含了java虚拟机指令集和符号表以及其他若干辅助信息，其文件格式采用类似C结构体的伪结构来存储数据，伪结构推分为两类<strong>无符号数</strong>和<strong>表</strong></p>
+<p>字节码文件的结构：</p>
+<p>任何一个Class文件都对应着唯一一个类或者接口信息。但是返过来讲类或者接口并不一定都得定义在文件里（类和接口也可以通过类加载器直接生成）。</p>
+<p>Class文件中存储的信息几乎都是Runtime的必要数据，没有空隙存在</p>
+<p>共有设计和私有设计是ASM可以实现的理论基础。</p>
+<ul>
+<li>Class文件中的一些概念<ul>
+<li>无符号数：用来描述数字，索引    引用，数量值，或按照UTF-8编码的字符串值。所有</li>
+<li>表： </li>
+<li>魔数：Class文件的头四个字节：<strong>OXCAFEBABE</strong>，用来标示一个Class文件</li>
+<li>版本号：第五和第六个字节标示次版本号，第七个字节标示主版本号</li>
+<li>常量池：第八个字节，Class的文件的资源仓库。Class文件空间中占用文件空间最大的数据项目之一，也是第一个表类型数据项目，并且其内部每一项常量都是一个表<ul>
+<li>字面量：接近于Java语言层面的常量概念，如文本字符串，声明为final的常量值等</li>
+<li>符号引用：编译原理方面的概念，包括下面三类常量<ul>
+<li>类和接口的全限定名</li>
+<li>字段的名称和描述符</li>
+<li>方法的名称和描述符</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Java在进行javac编译的时候，并不像C和C++那样有”连接”,这一步奏，而是在虚拟机加载Class文件的时候进行动态链接。也就是说<strong>Class文件不会保存各个方法，字段的最终内存布局信息</strong>。因此这些字段，方法的符号引用不经过运行期转换的话就无法得到真正的内存地址。</p>
+<ul>
+<li>常量池中个各种符号引用,后面的数值标示其值 <ul>
+<li>UTF8 = 1      </li>
+<li>Integer = 3 </li>
+<li>Float = 4 </li>
+<li>Long = 5</li>
+<li>Double = 6</li>
+<li>Class = 7</li>
+<li>String = 8</li>
+<li>Fieldref = 9</li>
+<li>Methodref = 10   </li>
+<li>InterfaceMethod = 11 ….接口中方法符号的引用</li>
+<li>NameAndType = 12 … 字段或方法的部分符号引用</li>
+<li>MethodHandle = 15 ….方法句柄</li>
+<li>MethodType = 16 …. 标示方法类型</li>
+<li>InvokeDynamic = 18….标示一个动态方法调用点  </li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>访问标志：在常量池结束后，紧接着就是两个字节的访问标志位<ul>
+<li>public： 0X0001</li>
+<li>FINAL:0X0010</li>
+<li>super:0x0020    不必纠结这个标示位，以后Java 1.02 之后基本上都是为 1 的</li>
+<li>interface:0X0200</li>
+<li>abstract:0X0400</li>
+<li>synthetic:0X1000  ：标示这个类并非由用户代码产生</li>
+<li>annotation：0X2000 ： 标示这是一个注解</li>
+</ul>
+</li>
+</ul>
+<h2 id="类索引，父类索引与接口索引"><a href="#类索引，父类索引与接口索引" class="headerlink" title="类索引，父类索引与接口索引"></a>类索引，父类索引与接口索引</h2><ul>
+<li>类索引和父类索引都是一个U2类型的数据，接口是一组U2类型数据的集合，Class文件中由这三项数据来确定这个类的继承关系。因为Java中的继承是单继承的，但是接口实现的”多实现“的，所以父类只有一个索引值，而接口有多个索引值</li>
+</ul>
+<h2 id="字段表集合（field）"><a href="#字段表集合（field）" class="headerlink" title="字段表集合（field）"></a>字段表集合（field）</h2><p> 字段表用于描述接口或者类中声明的变量，字段包括类级变量以及实例级变量</p>
+<pre>
+
+field_info {
+    u2             access_flags;
+    u2             name_index;
+    u2             descriptor_index;
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+
+</pre>
+
+
+<ul>
+<li>字段表修饰符在Class文件中的值,从下面各个修饰符的值来说，public，private，protect只能选其中一个，final，volatile態同事选择<ul>
+<li>public 0x0001</li>
+<li>private 0x0002</li>
+<li>protected 0x0003</li>
+<li>static 0x0004</li>
+<li>final 0x0010</li>
+<li>volatile 0x0040</li>
+<li>transient 0x0080</li>
+<li>synthetic 0x1000  是否为编译器自动生成</li>
+<li>enum 0x4000</li>
+</ul>
+</li>
+</ul>
+<p>全限定名 ： Lperson/walker/TestClass;就是一个全限定名，一般需要以字符“；”来标示结束。<br>简单名称：没有类型和参数修饰的方法或者字段名。</p>
+<ul>
+<li>基本数据类型和Class文件的秒数规则，一定不陌生，这前世JNI C文件中和JAVA的对应信息<ul>
+<li>B: Byte</li>
+<li>C: char</li>
+<li>D: double </li>
+<li>F: float</li>
+<li>I: int</li>
+<li>J: long</li>
+<li>S: short</li>
+<li>Z: boolean</li>
+<li>V: void</li>
+<li>L: 对象属性，例如：Ljava/lang/String;</li>
+</ul>
+</li>
+<li>对于数组而言一般是前面加一个”[“作为标示</li>
+<li>对于Java语言来讲，字段是不可重载的，两个不同的字段必须要有不同的命称，但是对于字节码文件来说，字段是可以重载的，就算你名称相同，只要描述符不同就是合法的，</li>
+</ul>
+<h2 id="方法表集合"><a href="#方法表集合" class="headerlink" title="方法表集合"></a>方法表集合</h2><p>因为volatile和transient修饰符是不能修饰方法的，所以方法表的访问标志中没有了volatile和transient标识符，其余和字段的描述基本一致</p>
+<p>方法表的数据结构：</p>
+<pre>
+method_info {
+    u2             access_flags;
+    u2             name_index;
+    u2             descriptor_index;
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+</pre>
+
+<h2 id="属性表集合"><a href="#属性表集合" class="headerlink" title="属性表集合"></a>属性表集合</h2><p>在Class文件中，字段表，方法表都有自己的属性表集合，以用于描述某些场景转有的信息，各个属性表之间没有严格的顺序</p>
+<p>属性表结构</p>
+<pre>
+attribute_info {
+    u2 attribute_name_index;
+    u4 attribute_length;
+    u1 info[attribute_length];
+}
+
+</pre>
++ Jvm解析Class文件必须的五个属性，及其使用的位置和含义
+ + ConstantValue：字段表，final定义的常量值
+ + Code：方法表，java代码编译生成的字节码指令
+ + StackMapTable ： Code属性，Jdk1.6 新增的属性
+ + Exceptions ：
+
+<br>
+
++ 12种被Java se平台Class库识别的属性
+ + InnerClasses
+ + EnclosingMethod
+ + Synthetic
+ + Signature
+ + RuntimeVisibleAnnotations
+ + RuntimeInvisibleAnnotations
+ + RuntimeVisibleParameterAnnotations
+ + RuntimeInvisibleParameterAnnotations
+ + RuntimeVisibleTypeAnnotations
+ + RuntimeInvisibleTypeAnnotations
+ + AnnotationDefault
+ + MethodParameters
+ + BootstrapMethods
+
+<br>
+
+
+
+### code属性
+
+Code属性表保存的信息就是经过javac编译后的java代码方法体中的代码
+
+Code属性表的结构
+
+<pre>
+
+Code_attribute {
+    u2 attribute_name_index;  //指向Constants 的索引
+    u4 attribute_length;
+    u2 max_stack;
+    u2 max_locals;     
+    u4 code_length;
+    u1 code[code_length];
+    u2 exception_table_length;
+    {   u2 start_pc;
+        u2 end_pc;
+        u2 handler_pc;
+        u2 catch_type;
+    } exception_table[exception_table_length];
+    u2 attributes_count;
+    attribute_info attributes[attributes_count];
+}
+
+</pre>
+
+
+<p>对于上面的Code_length,随意其实U4 字节，但是一般只会用到前32位，也就是说虚拟机规范明确规定了一个方法不得超过65535条字节码文指令，所以不要编写太长的方法来为难编译器。另外JSP编译器在编译复杂JSP文件时，某些JSP编译器会将JSP内容和页面输出信息方法放到一个方法中，这也会因为字节码超长造成编译失败。</p>
+<p>JVM 对于局部变量分配的最小单位为Slot，一般为32位的。</p>
+<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><h2 id="Class-File"><a href="#Class-File" class="headerlink" title="Class File"></a>Class File</h2><pre>
+ClassFile {
+    u4             magic;
+    u2             minor_version;
+    u2             major_version;
+    u2             constant_pool_count;
+    cp_info        constant_pool[constant_pool_count-1];
+    u2             access_flags;
+    u2             this_class;
+    u2             super_class; //单继承
+    u2             interfaces_count;
+    u2             interfaces[interfaces_count]; //多实现
+    u2             fields_count;
+    field_info     fields[fields_count];
+    u2             methods_count;
+    method_info    methods[methods_count];
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+</pre>
+
+
+
+<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4" target="_blank" rel="external">constants_info </a></p>
+<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5" target="_blank" rel="external">field_info</a></p>
+<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6" target="_blank" rel="external">method_info</a> </p>
+<h1 id="分析案例"><a href="#分析案例" class="headerlink" title="分析案例"></a>分析案例</h1><p>在这里我们通过分析一小段代码的Class文件来验证我们的知识</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> person.walker;</div><div class="line"></div><div class="line"><span class="keyword">public</span>  <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String constantFiled = <span class="string">"constants"</span>;</div><div class="line">    <span class="keyword">public</span> String filed1;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"I'm Code in Method test "</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testStatic</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"I'm Code in Method testStatic "</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="constants-pool分析"><a href="#constants-pool分析" class="headerlink" title="constants_pool分析"></a>constants_pool分析</h2><p><img src="/assets/class_constants_pool.png" alt="constants_pool"></p>
+<h2 id="class-info-分析"><a href="#class-info-分析" class="headerlink" title="class_info 分析"></a>class_info 分析</h2><p><img src="/assets/class_constants_pool.png" alt="class_info"></p>
+<h2 id="filed-info-分析"><a href="#filed-info-分析" class="headerlink" title="filed_info 分析"></a>filed_info 分析</h2><p><img src="/assets/class_filed_info.png" alt="filed_info"></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/01/字节码文件分析/" class="archive-article-date">
+  	<time datetime="2016-12-01T05:17:04.665Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-01</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-贪心算法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-贪心算法"><a href="#title-贪心算法" class="headerlink" title="title:贪心算法"></a>title:贪心算法</h2><h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p> <em>贪心法</em>，又称贪心算法、贪婪算法、或称贪婪法，是一种在每一步选择中都采取在当前状态下最好或最优（即最有利）的选择，从而希望导致结果是最好或最优的算法。[1]比如在旅行推销员问题中，如果旅行员每次都选择最近的城市，那这就是一种贪心算法。</p>
+<ul>
+<li><strong>与动态规划的区别</strong>：贪心算法与动态规划的不同在于它每对每个子问题的解决方案都做出选择，不能回退。动态规划会保存以前的运算结果。并根据保存的结果对当前进行选择，有回退功能</li>
+<li><strong>贪心算法的应用</strong>：解决一些最优化问题，如求图的最小生成树，求哈夫曼编码等。</li>
+<li><p><strong>贪心算法的五个组成部分</strong></p>
+<ul>
+<li>候选集合C: 从要解决问题中抽象出一个候选集合，问题的最终解都来自与这个解集合中， </li>
+<li>解集合S:随着贪心选择的进行，解集合S不断扩展，直到构成一个满足问题的完整解。</li>
+<li>解决函数solution:检查解集合S是否构成问题的完整解</li>
+<li>选择函数select:即贪心策略，这是贪心法的关键，它指出那个候选对象最有希望构成问题的解，选择函数通常和目标函数有关。</li>
+<li>可行函数feasible：检查解集合中加入一个候选对象是否可行，即解集合扩展后是否满足约束条件。</li>
+</ul>
+</li>
+<li><p><strong>解决贪心问题的一般套路</strong></p>
+<ul>
+<li>建立数学模型描述问题</li>
+<li>把求解的问题组成若干个子问题</li>
+<li>对每一个子问题求解，得到子问题的局部最优解</li>
+<li>合并子问题子问题的最优解，求出全局的最优解</li>
+</ul>
+</li>
+<li><p><strong>伪代码</strong>：</p>
+ <pre> Greedy(C)  //C是问题的输入集合即候选集合
+
+{
+  S={ };  //初始解集合为空集
+  while (not solution(S))  //集合S没有构成问题的一个解
+  {
+     x=select(C);    //在候选集合C中做贪心选择
+     if feasible(S, x)  //判断集合S中加入x后的解是否可行
+        S=S+{x};
+        C=C-{x};
+  }
+</pre>
+
+</li>
+</ul>
+<h1 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h1><h2 id="找零钱"><a href="#找零钱" class="headerlink" title="找零钱"></a>找零钱</h2><p><strong>讲解</strong><br><br>一个小孩买了价值少于1美元的糖，并将1美元的钱交给售货员。售货员希望用数目最少的硬币找给小孩。假设提供了数目不限的面值为2 5美分、1 0美分、5美分、及1美分的硬币。售货员分步骤组成要找的零钱数，每次加入一个硬币。选择硬币时所采用的贪婪准则如下：每一次选择应使零钱数尽量增大。为保证解法的可行性（即：所给的零钱等于要找的零钱数），所选择的硬币不应使零钱总数超过最终所需的数目</p>
+<p><strong>引例分析</strong> <br><br>为使找回的零钱的硬币数最小，不考虑找零钱的所有各种方案，<strong>而是从最大面值的币种开始，按递减的顺序考虑各币种，先尽量用大面值的币种，只当不足大面值币种的金额才会去考虑下一种较小面值的币种。这就是在采用贪婪法。</strong>这种方法在这里之所以总是最优，是因为银行对其发行的硬币种类和硬币面值的巧妙安排。如果只有面值分别为1，5和11单位的硬币，而希望找回总额为15单位的硬币，按贪婪算法，应找1个11单位面值的硬币和4个1单位面值的硬币，共找回5个硬币。但最优的解答应是3个5单位面值的硬币。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/01/贪心算法/" class="archive-article-date">
+  	<time datetime="2016-12-01T05:12:42.058Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-01</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Trie树" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -653,154 +981,6 @@
       
       <a href="/2016/11/09/WebSocket协议笔记/" class="archive-article-date">
   	<time datetime="2016-11-09T01:09:02.667Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-09</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/08/Stomp和WebSocket协议/">WebSocket协议和Stomp协议</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Stomp协议基础"><a href="#Stomp协议基础" class="headerlink" title="Stomp协议基础"></a>Stomp协议基础</h1><ul>
-<li>Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8</li>
-<li>类似Http协议，Stomp是同样是基于帧的协议</li>
-<li>Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束</li>
-<li>COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义<pre>
-COMMAND
-header1:value1
-header2:value2
-Body^@
-</pre></li>
-<li><p>对于body，只有send，message和ERROR帧有body，其他所有帧都没有body。并且这三个帧的也必须携带 content-length的header。</p>
-</li>
-<li><p>Stomp client通过Connect frame与server建立流或者TCP链接</p>
-</li>
-</ul>
-<pre>
-CONNECT
-accept-version:1.2
-host:stomp.github.org
-^@
-</pre>
-
-<ul>
-<li>然后server返回给connected frame给client</li>
-</ul>
-<pre>
-CONNECTED
-version:1.2
-^@
-</pre>
-
-<p>或者相应ERROR Frame给client说明为什么被拒绝</p>
-<ul>
-<li>对于Stomp 1.1以后的版本，Connected frame必须包含accept-version header. 它的值为client所支持的Stomp版本号，如果client和server不支持共同的版本协议。server返回类似下面的ERROR frame并断开连接</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ERROR</div><div class="line">version:1.2,2.1</div><div class="line">content-type:text/plain</div><div class="line"></div><div class="line">Supported protocol versions are 1.2 2.1^@</div></pre></td></tr></table></figure>
-<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><blockquote>
-<p>心跳被用于测试底层TCP连接的可用性，确保远程服务处于活动状态,一般是作为header出现在connect frame中。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CONNECT</div><div class="line">heart-beat:&lt;cx&gt;,&lt;cy&gt;</div></pre></td></tr></table></figure>
-<p>header-beat 头的两个值都是为数字，</p>
-<ul>
-<li>第一个数字表示发送方能做什么，为0表示不能发送心跳，其他值表保证两次心跳的最小毫秒数</li>
-<li>第二个数字代表发送方能获得什么: 0表示它不想接收心跳 ,否则它表示两次心跳期望的毫秒数 </li>
-</ul>
-<p>如果接受者在规定的时间内没有收到新数据，表明连接已经断开</p>
-<h2 id="Client-Frame"><a href="#Client-Frame" class="headerlink" title="Client Frame"></a>Client Frame</h2><ul>
-<li><strong>SEND</strong>: 必须要包含Body和destination的header</li>
-<li><strong>SUBSCRIBE</strong> ：同样需要destination的header,表示订阅的目的地 </li>
-<li>UNSUBSCRIBE：携带id header</li>
-<li>BEGIN</li>
-<li>COMMIT</li>
-<li>ABORT</li>
-<li>ACK：用于通知server，你发来的消息我已经消费。</li>
-<li>NACK</li>
-<li>DISCONNECT</li>
-</ul>
-<h2 id="Message-Frame"><a href="#Message-Frame" class="headerlink" title="Message Frame"></a>Message Frame</h2><ul>
-<li>Message：下面是一个最基本的messageframe，另外如果frame Body携带信息的话，header应该带有content type和content length</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">MESSAGE</div><div class="line">subscription:0</div><div class="line">message-id:007    </div><div class="line">destination:/queue/a  </div><div class="line">content-type:text/plain </div><div class="line"></div><div class="line">hello queue a^@</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/08/Stomp和WebSocket协议/" class="archive-article-date">
-  	<time datetime="2016-11-08T02:42:10.839Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-08</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-代码规范" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-代码规范"><a href="#title-代码规范" class="headerlink" title="title:代码规范"></a>title:代码规范</h2><blockquote>
-<p>不懂编程的人能看的懂得代码是最好的代码！</p>
-</blockquote>
-<h1 id="From-lt-lt-effecttive-java-gt-gt"><a href="#From-lt-lt-effecttive-java-gt-gt" class="headerlink" title="From &lt;&lt; effecttive java &gt;&gt;"></a>From &lt;&lt; effecttive java &gt;&gt;</h1><h1 id="个人总结"><a href="#个人总结" class="headerlink" title="个人总结"></a>个人总结</h1><ul>
-<li>工具类要有<strong>final</strong>修饰符！避免被继承</li>
-<li>严格遵守驼峰式的命名规则！</li>
-<li></li>
-</ul>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/07/代码规范/" class="archive-article-date">
-  	<time datetime="2016-11-07T01:18:36.305Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
 </a>
       
       

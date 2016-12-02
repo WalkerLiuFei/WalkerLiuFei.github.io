@@ -126,6 +126,154 @@
       <div class="body-wrap">
         
   
+    <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/08/Stomp和WebSocket协议/">WebSocket协议和Stomp协议</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Stomp协议基础"><a href="#Stomp协议基础" class="headerlink" title="Stomp协议基础"></a>Stomp协议基础</h1><ul>
+<li>Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8</li>
+<li>类似Http协议，Stomp是同样是基于帧的协议</li>
+<li>Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束</li>
+<li>COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义<pre>
+COMMAND
+header1:value1
+header2:value2
+Body^@
+</pre></li>
+<li><p>对于body，只有send，message和ERROR帧有body，其他所有帧都没有body。并且这三个帧的也必须携带 content-length的header。</p>
+</li>
+<li><p>Stomp client通过Connect frame与server建立流或者TCP链接</p>
+</li>
+</ul>
+<pre>
+CONNECT
+accept-version:1.2
+host:stomp.github.org
+^@
+</pre>
+
+<ul>
+<li>然后server返回给connected frame给client</li>
+</ul>
+<pre>
+CONNECTED
+version:1.2
+^@
+</pre>
+
+<p>或者相应ERROR Frame给client说明为什么被拒绝</p>
+<ul>
+<li>对于Stomp 1.1以后的版本，Connected frame必须包含accept-version header. 它的值为client所支持的Stomp版本号，如果client和server不支持共同的版本协议。server返回类似下面的ERROR frame并断开连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ERROR</div><div class="line">version:1.2,2.1</div><div class="line">content-type:text/plain</div><div class="line"></div><div class="line">Supported protocol versions are 1.2 2.1^@</div></pre></td></tr></table></figure>
+<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><blockquote>
+<p>心跳被用于测试底层TCP连接的可用性，确保远程服务处于活动状态,一般是作为header出现在connect frame中。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CONNECT</div><div class="line">heart-beat:&lt;cx&gt;,&lt;cy&gt;</div></pre></td></tr></table></figure>
+<p>header-beat 头的两个值都是为数字，</p>
+<ul>
+<li>第一个数字表示发送方能做什么，为0表示不能发送心跳，其他值表保证两次心跳的最小毫秒数</li>
+<li>第二个数字代表发送方能获得什么: 0表示它不想接收心跳 ,否则它表示两次心跳期望的毫秒数 </li>
+</ul>
+<p>如果接受者在规定的时间内没有收到新数据，表明连接已经断开</p>
+<h2 id="Client-Frame"><a href="#Client-Frame" class="headerlink" title="Client Frame"></a>Client Frame</h2><ul>
+<li><strong>SEND</strong>: 必须要包含Body和destination的header</li>
+<li><strong>SUBSCRIBE</strong> ：同样需要destination的header,表示订阅的目的地 </li>
+<li>UNSUBSCRIBE：携带id header</li>
+<li>BEGIN</li>
+<li>COMMIT</li>
+<li>ABORT</li>
+<li>ACK：用于通知server，你发来的消息我已经消费。</li>
+<li>NACK</li>
+<li>DISCONNECT</li>
+</ul>
+<h2 id="Message-Frame"><a href="#Message-Frame" class="headerlink" title="Message Frame"></a>Message Frame</h2><ul>
+<li>Message：下面是一个最基本的messageframe，另外如果frame Body携带信息的话，header应该带有content type和content length</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">MESSAGE</div><div class="line">subscription:0</div><div class="line">message-id:007    </div><div class="line">destination:/queue/a  </div><div class="line">content-type:text/plain </div><div class="line"></div><div class="line">hello queue a^@</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/08/Stomp和WebSocket协议/" class="archive-article-date">
+  	<time datetime="2016-11-08T02:42:10.839Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-代码规范" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-代码规范"><a href="#title-代码规范" class="headerlink" title="title:代码规范"></a>title:代码规范</h2><blockquote>
+<p>不懂编程的人能看的懂得代码是最好的代码！</p>
+</blockquote>
+<h1 id="From-lt-lt-effecttive-java-gt-gt"><a href="#From-lt-lt-effecttive-java-gt-gt" class="headerlink" title="From &lt;&lt; effecttive java &gt;&gt;"></a>From &lt;&lt; effecttive java &gt;&gt;</h1><h1 id="个人总结"><a href="#个人总结" class="headerlink" title="个人总结"></a>个人总结</h1><ul>
+<li>工具类要有<strong>final</strong>修饰符！避免被继承</li>
+<li>严格遵守驼峰式的命名规则！</li>
+<li></li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/07/代码规范/" class="archive-article-date">
+  	<time datetime="2016-11-07T01:18:36.305Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-leetcode #451 Frequency String Sort" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -299,7 +447,7 @@ public class Person {
 </pre>
 
 <p>到这里基本上就可以运行的应用了，我们通过Applicaiton的main函数来跑一下，观察到控制台输出的信息</p>
-<p><img src="&quot;/assets/embeddedtomcat.png&quot;" alt="" title="console 输出"></p>
+<p><img src="&quot;/assets/embeddedtomcat.png&quot;" alt="lala" title="console 输出"></p>
 <p>图例标出的就是启动SpringBoot 内置Tomcat容器的信息，这可能会消除一些你的疑问，为什么没有部署到Tomcat这个应用就可以访问。</p>
 <p>现在我们通过浏览器访问就可以访问了</p>
 <h2 id="配置你的SSL"><a href="#配置你的SSL" class="headerlink" title="配置你的SSL"></a>配置你的SSL</h2><p>利用keytool生成SSL证书可以参考下面的命令:</p>
