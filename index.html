@@ -126,7 +126,267 @@
       <div class="body-wrap">
         
   
-    <article id="post-Spring-boot-mybatis" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-面试知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p>like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！</p>
+<h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h2 id="NoSql"><a href="#NoSql" class="headerlink" title="NoSql"></a>NoSql</h2><ul>
+<li>mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？<ul>
+<li></li>
+<li>capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制</li>
+<li></li>
+</ul>
+</li>
+<li>monogoDB 的存储大小限制<ul>
+<li>对于MMAPv1 存储引擎中，DataBase 中的文件数量不能超过16000个，也就是说一个以MMAPv1 作为存储引擎的data base的最大容量为32TB，如果设置了storage.mmapv1.smallFiles 为true,最大容量为8TB（设置这个bool 值后，单个data file 的最大容量会是 512MB）</li>
+<li>对于WiredTiger engine ,内部缓存分为两种，一般的RAM 存储，或者256MB（V .34）。</li>
+</ul>
+</li>
+<li>mongoDB 中的存储引擎有哪些种，各自有什么特点<ul>
+<li>MMAPV1  <ul>
+<li></li>
+<li>存储原理:文档在磁盘中连续存放，文档所占用的磁盘空间包括文档数据所占空间和文档填充，datafile 起始大小为64MB（pre allocate）,当大小超过 64MB后，data file 会通过padding 算法来叠加文档大小</li>
+<li>journal 刷新频率为 100ms，jorunal 用来用来恢复数据库的非正常关闭</li>
+<li>很吃内存，因为数据文件会通过mmap 映射到内存中（基本上是有多少吃多少），所以增大机器内存是提高 mongoDB性能的手段之一</li>
+</ul>
+</li>
+<li>WiredTiger engine v3.2 以后的默认存储引擎<ul>
+<li>支持文档级别的 lock （<code>在代码中怎么实现？</code>）</li>
+<li>快照功能（check point）， 一分钟或者超过2GB的变更日志一次，在写最新快照时，上一个快照已然有效。当 当前快照落地后，会自动删除上一个快照。journal 文件的大小为100MB，当日志文件超过这个大小后，会自动新建一个日志文件</li>
+<li>内部缓存 默认值是：1GB 或 60% of RAM - 1GB，取两值中的较大值</li>
+</ul>
+</li>
+<li>InMemory : 基于内存的存储，不是重点</li>
+</ul>
+</li>
+<li><p>BSON Document 大小限制，有没有 level limit,是多少？</p>
+<ul>
+<li>为避免内存溢出，Bson 最大为 16MB ，如果遇到size 瓶颈，你就需要 GridFS API 来解决</li>
+<li>BSON Document 的level 层级最多100.</li>
+</ul>
+</li>
+<li><p>mongoDB 是基于内存的还是基于硬盘的</p>
+<ul>
+<li>根据存储引擎不同，inmemory 是基于内存。otherwise 基于硬盘的持久化</li>
+</ul>
+</li>
+<li>mongoDB 中的GridFS机制，怎么使用<ul>
+<li>mongoDB 将db 分为 多个 chunk 来分块存储大文件。</li>
+<li>在使用时需要 基于database 新建 新建一个   <code>GridFSBucket</code>，上传文件时需要通过文件流，在java 中也可以使用<code>GridFSUploadStream</code> 来批量上传文件。 上传成功后 会返回一个 fileID,利用这个FileID 实现CURD 等等操作</li>
+<li></li>
+</ul>
+</li>
+<li>mongoDB 的数据文件为什么很大<ul>
+<li>mongoDB 为防止数据碎片采用存储空间预分配的策略</li>
+</ul>
+</li>
+<li>mongoDB 中chunk的概念，操作块（迁移，删除等等需要注意的事项）<ul>
+<li>chunk 用来存储协作一起来存储大的文件</li>
+<li>chunk size 默认为64M,chunk 过小会导致频繁的迁移从而导致性能问题，chunk 过大会导致数据存储的不均衡</li>
+</ul>
+</li>
+<li>mongoDB 中分片的概念<ul>
+<li>分片方式： 内存区域分片，hash分片(类似于 数组和hash表)</li>
+</ul>
+</li>
+<li>mongoDB 中的日志文件应该怎样存储</li>
+<li>mongoDB 中的fsync 操作<ul>
+<li>fsync 命令允许我们刷新所有等待写入的操作刷新数据文件中，它提供了锁的机制，这样会使得备份更加简单。</li>
+<li>fsync 机制并不适合建立一个 read-only 的模式，因为它的读操作也有可能会被block（因为新建立的 connection 需要被授予权限）</li>
+</ul>
+</li>
+<li>mongoDB 中<strong>事务</strong>？！ 如何对 collection ，database 进行加锁？</li>
+<li>mongoDB 中的集群分为那些。各包括那些部分，有什么特点</li>
+<li>什么事oplog？ 有什么用<ul>
+<li>操作日志</li>
+</ul>
+</li>
+<li>getlasterror是什么东西？ 有什么用<br>+ </li>
+<li>sharding 和replication 是怎样工作的。</li>
+<li>数据在什么时候才会扩展到多个分片里？</li>
+<li>当我在视图更新一个正在被迁移的块上的文档时会发生什么？</li>
+<li><a href="https://docs.mongodb.com/manual/reference/limits/" target="_blank" rel="external">mongoDB 的一些局限性</a></li>
+<li><a href="https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod" target="_blank" rel="external">说出几个常用的mongod 命令</a></li>
+<li>mongoDB 中的RDBMS</li>
+<li>dataBase 是怎样保存 collection的？ collection又是怎样保存document的？ </li>
+<li>chunk 默认的大小为 255KB</li>
+<li>bulkwrite ()</li>
+<li><p>目前很多write operation是用返回值的。包括错误信息</p>
+</li>
+<li><p>Document Model 类型</p>
+<ul>
+<li>one to one</li>
+<li>one to many emb</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>read concern ,write concern</li>
+</ul>
+<ul>
+<li>shard 集群，<ul>
+<li><ul>
+
+
+</ul></li>
+</ul>
+</li>
+</ul>
+ <pre>
+    mongod --port 2001 --shardsvr --dbpath shard1/
+    mongod --port 2002 --shardsvr --dbpath shard2/
+ </pre>
+
+
+<ul>
+<li><p>配置服务器：保存集群的元数据，包含各个shard的路由规则\</p>
+<pre>
+mongod --port 3001 --dbpath cfg1/
+mongod --port 3002 --dbpath cfg2/
+mongod --port 3003 --dbpath cfg3/
+</pre>
+
+<ul>
+<li>路由服务器：启动查询路由mongos 服务器 –&gt;</li>
+<li><p><code>mongos --port 5000 --configdb 127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003</code></p>
+</li>
+<li><p>连接mongos，为集群添加数据分片节点。</p>
+</li>
+</ul>
+<pre>
+mongo --port 5000 amdmin
+
+sh.addShard("127.0.0.1:2001")
+sh.addShard("127.0.0.1:2002")
+</pre>
+
+</li>
+</ul>
+<ul>
+<li>如果Shard是Replica Set，添加Shard的命令：  <pre>
+  sh.addShard("rsname/host1:port,host2:port,...")    
+  rsname - 副本集的名字
+  </pre>
+
+
+</li>
+</ul>
+<p> </p>
+<p>—————————-以上 需要在 2017/02/07 完成！—————————</p>
+<h2 id="mongoDB-常用命令"><a href="#mongoDB-常用命令" class="headerlink" title="mongoDB 常用命令"></a>mongoDB 常用命令</h2><ul>
+<li>use XXX (用户名，database)</li>
+<li>db.addUser(“name”,”password”)  //添加用户</li>
+<li>db.getUsers  //查询用户</li>
+<li>db.<code>collectionName</code>.Command : 其中的command 包括 各种对collection 数据的操作。这些也是driver 里面最常用的一些<ul>
+<li>aggreagate  </li>
+<li>distinct</li>
+<li>group</li>
+<li>mapReduce</li>
+<li>find </li>
+<li>insert</li>
+<li>update</li>
+<li>delete</li>
+<li>findAndModify </li>
+<li>getMore  // </li>
+<li>getLastError —-&gt; db.getLastError</li>
+<li>getPrevError —-&gt; db.</li>
+<li>resetError</li>
+<li>eval // 从 mongo 3.0 开始已经deprecate</li>
+<li>parallelCollection</li>
+</ul>
+</li>
+</ul>
+<h2 id="stackoverflow-上的问题"><a href="#stackoverflow-上的问题" class="headerlink" title="stackoverflow 上的问题"></a>stackoverflow 上的问题</h2><ul>
+<li>怎样查询 like。 利用regex..find(“key”,”regex 表达式”)。。。。其实mongoDB的regex 要比mysql的like 强大的多</li>
+<li>利用 <code>collection.find(Filters.where(&quot;this.stars - 20  &gt; 20&quot; )).forEach((Block&lt;? super Document&gt;) System.out::println );</code> 可以查询一些复杂的逻辑表达式 的数据</li>
+<li>mapreduce<br>  + </li>
+<li>group<br>  + </li>
+<li><p>aggreate</p>
+</li>
+<li><p>replica set 的rollback ，其实是主节点进行写操作，从节点没有同步成功。然后主节点出现宕机，或者其他情况退出了当前的cluster。当这个宕机的主节点从新加入到从节点的后，这个former primary 就成了从节点，从节点需要从当前 的主节点进行一次同步，这就是所谓的rollback。</p>
+<h2 id="mongoDB-官网FAQ"><a href="#mongoDB-官网FAQ" class="headerlink" title="mongoDB 官网FAQ"></a>mongoDB 官网FAQ</h2></li>
+<li><p>mongoDB 保存有cache功能</p>
+</li>
+<li>mongoDB 是否支持事务? <ul>
+<li>mongoDB 不支持在 多个文档上的事务，但是支持在单一文档的上的原子操作,利用$isolated 操作符</li>
+<li>原子操作保证在一次读写中，除非出现错误或者异常，其他的client是看不到 的。另外，原子操作</li>
+</ul>
+</li>
+<li>当在建立一个collection上面的Index的时候，collection是不允许读写的。所以建立index的时候尽量将background的属性设置为 true</li>
+<li>mongoDB的索引和mysql的索引有什么不同？ mysql只能建立一个索引的key，而mongodb 可以建立多个规则更flexable</li>
+<li>对于MMAPv1 存储引擎，如果对一个document进行修改导致它存储的空间超过了现有的分配空间。monogodb 会为他新分配一个空间并更新所有indexs.</li>
+<li>mongodb 的锁机制的类型： Mongodb 使用一个readers-writer 锁，允许多个读操作访问数据库，但是只提供唯一写操作。写操作比读操作的优先级更高</li>
+<li>对于MMAPv1 存储引擎，在进行一个读操作的时候，如果当前的document没有在memory中存在，它会将锁ylied，在所要读要读的data被读入内存后，这个操作会再获取这个锁进行操作。</li>
+<li>CURD ，Indexs,Map-Reduce，aggreate 都会获取锁</li>
+<li>那些操作会锁定数据库<ul>
+<li>db.collection.ensureIndex 。在不设置background 为true的时候</li>
+<li>reindex</li>
+<li>compact : 把所有的数据和索引重写并分块，在WiredTiger 存储引擎中，这个命令会将硬盘容量重新分配给操作系统</li>
+<li>再创建一个很大的collection的时候</li>
+<li>db.collection.validate() </li>
+<li>db.copyDatabase()</li>
+</ul>
+</li>
+<li>那些操作会锁定多个数据库<ul>
+<li>journing</li>
+<li>uset.auth</li>
+</ul>
+</li>
+<li>sharding 中的每个分片都有自己独立的读写锁</li>
+<li>在复制集节点中，由于从节点是不允许用户进行写操作的，所以没有必要关心其写的锁。另外就算是对一个cluster 进行写操作，从节点也不是在每时每刻监听主节点的写操作并执行同步，从节点会每分钟(defalut)参考主节点的oplog进行同步</li>
+<li>对一个document的一个读操作在进行时，稍后一个对这个读数据的update操作几乎同时发起。虽然读操作能及时看到写造成的document的更新操作的update version，但是无法实时的数据snap shot.也就是说，读操作会错过读操作期间的数据的更新</li>
+<li>replica Set 和shared 机制应该一起使用，但是replica set架构应该优先于shared机制</li>
+<li>一个复制集如果节点的数量是级数，他就不需要投票节点。</li>
+<li>在复制集架构中，你可以使用不同的存储引擎</li>
+<li>对于wiredTiger存储引擎，当一个机器上运行多个mongod实例 或者mongodb 运行在一个容器中（docker）时你需要降低其cacheSize</li>
+<li>工作复制集代表应用在正常操作进程中使用的所有数据，大部分情况下是所有数据大小的集合，但特殊情况下工作复制集的大小取决于当前正在使用的数据库</li>
+<li>对于unaccessed 的document，mongod 是不会将其映射到内存中，只要能映射到内存中的数据都是可以accesss的</li>
+<li>monogdb 每一分钟从memory 写入到disk一次，对于wireTiger，当journal 容量大于2G时其也进行一次write disk 操作，wireTiger 每100ms 写入journal文件一次</li>
+<li><p>默认存储目录 /data/db 中的数据文件可能要比要插入的data set所占空间要打，原因是</p>
+<ul>
+<li>第一：preallocated data file</li>
+<li>oplog 文件，oplog 文件大小大概是 disk存储的 5%</li>
+<li>journal文件</li>
+</ul>
+</li>
+<li><p>repairdatabase 和 compact命令都可以为monogoDB重新分配内存，但是需要注意这两个命令执行的时候都需要2GB 的临时硬盘容量（2GB —&gt;单个datafile的最大容量）</p>
+</li>
+<li>对于 mmapv1 存储引擎collection 没有所谓的容量大小限制，database是有的，database 最多只能包含16000个datafile，每个datafile 最大2GB</li>
+<li>内存不足会导致pagefault。原因是内存不足导致的从硬盘读取数据不到内存中，遇到这种情况最好就开始考虑sharding 分片了</li>
+<li>一般情况下mongodb是没有连接限制的，除非你对连接进行设置</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/08/面试知识点/" class="archive-article-date">
+  	<time datetime="2017-02-08T10:54:40.116Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-MongoDB学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -136,7 +396,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/05/Spring-boot-mybatis/">Spring boot 结合Mybatis</a>
+      <a class="article-title" href="/2017/01/24/MongoDB学习/">MongoDB学习</a>
     </h1>
   
 
@@ -144,15 +404,96 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://github.com/mybatis/spring-boot-starter" target="_blank" rel="external">仓库地址</a></p>
-<h1 id="库分析"><a href="#库分析" class="headerlink" title="库分析"></a>库分析</h1><p>类似大多数Spring boot的项目，mybatis的Spring-boot 也不过是做一些配置任务而已。在添加库的依赖以后可以看到其pom.xml文件中的依赖信息</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-autoconfigure<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div></pre></td></tr></table></figure>
+        <h1 id="基本的CURD"><a href="#基本的CURD" class="headerlink" title="基本的CURD"></a>基本的CURD</h1><ul>
+<li>mongodb 的MongoDBClient对象表示一个MongoDB的连接池，就算你有多个线程的操作，你也只需要一个对象</li>
+<li>MongoClientOptions可以配置数据库连接的选项。其有类似一个静态的工厂类，可以指定，<strong>应用名，最大连接数，最小连接数，服务选择的超时时间，解码器，编码器等等。</strong></li>
+<li>MongoDB默认连接是通过SSL加密的（Java 7 以上！），如果你必须使用java 6，或者更低的java版本，你必须通过MongoDBClientOptions的<code>sslInvalidHostNameAllowed(true)</code>来disable ssl加密！</li>
+<li><p>MongoDB的标准URI格式 : <code>mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]</code>,</p>
+<ul>
+<li>首先前缀 <code>mongodb://</code>  这是用来标示mongoDB URI的标示符。</li>
+<li><code>[username:password@]</code> 是可选项</li>
+<li>host1 是唯一必须的部分。</li>
+<li>：port 是可选项，默认为：27017</li>
+<li><code>/database</code> 是登录的数据库名字。这个选项只有在 前面 <code>[username:password@]</code>使用时才会使用得到。如果没有的话，默认为admin database 会被使用。</li>
+</ul>
+</li>
+<li><p>对于Capped Collections ，指的是指定容量的collections,类似于 java中 lrucache,根据插入的数据顺序来进行覆盖存储。Capped Collections 的插入速度更高，并且你无法从一个 capped collections 中移除一个document。collections 的最小cap 是4096 byte。mongodb 会确保 query 的 index 等同于 insert 的 index.</p>
+</li>
+<li><p>mongoDB的三种codec 类。</p>
+<ul>
+<li>Document since 3.0</li>
+<li>BasicDBObject</li>
+<li>BsonDocument</li>
+</ul>
+</li>
+<li><p>MongoDB 的Index是在collection 级别上创建的。其类似于Mysql 其默认的index 是”_id”。也就是说排序的标准是按照插入的顺序来的。</p>
+</li>
+</ul>
+<pre>
+    //创建一个 递增的key
+  collection.createIndex(Indexes.ascending("stars"));
+    //默认的query 的顺序依旧是按照 "_id"的值，也就是说插入顺序来的
+   collection.find().forEach((Block<? super Document>) System.out::println);
+    // 但是如果你加上 查找的限制字段。他就会按照字段"stars" 来进行排序显示！ 
+   collection.find(Filters.gt("stars",0)).forEach((Block<? super Document>) System.out::println);
+    // 或者
+    collection.find().sort(Indexes.descending("stars")).forEach((Block<? super  Document>) System.out::println);
+</pre>
+
+<ul>
+<li><p>Text Index ..一个collection 至多含有一个Text Index。</p>
+</li>
+<li><p>projections(Projections.XXX)。。。。<br><code>collection.find().projection(Projections.fields(Projections.include(&quot;stars&quot;),Projections.exclude(&quot;_id&quot;))).forEach((Block&lt;? super Document&gt;) System.out::println);</code><br>projections 内部的fileds 都是Projections 里面一些静态方法。</p>
+</li>
+<li>同上，MongoDB里面的包<code>package com.mongodb.client.model;</code>里面都是一些类似工具类的类。可以用来进行相应的操作</li>
+<li>类似projections的还有sort。。</li>
+</ul>
+<h1 id="MongoDB-Cluster"><a href="#MongoDB-Cluster" class="headerlink" title="MongoDB Cluster"></a>MongoDB Cluster</h1><ul>
+<li><strong>主从架构：</strong>搭建一个主从数据库， slave 会同步master 所有 write的操作。下面是 shell 命令。。<code>注意在本机测试时 需要在不同的命令行窗口打开master 和 slave</code><br><pre><br>#创建一个主从MongDB服务器<br>cd /</pre></li>
+</ul>
+<p>e:</p>
+<p>mkdir monogoDBCluster<br>cd ./monogoDBCluster<br>mkdir Master<br>mkdir Slave</p>
+<p>mongod –port 12002 –master –dbpath ./Master </p>
+<h1 id="源master-来自于-127-0-0-1-2000-。"><a href="#源master-来自于-127-0-0-1-2000-。" class="headerlink" title="源master 来自于 127.0.0.1:2000 。"></a>源master 来自于 127.0.0.1:2000 。</h1><p>mongod –port 12003 –slave –source 127.0.0.1:12002 –dbpath  ./Slave</p>
+<p></p>
+<ul>
+<li><p><strong>副本集架构</strong>：显示启动三个 mongoDB 的实例，并同时制定为 replSet 的名称为 rs0; </p>
+<p><pre><br>#<br>mkdir replicaSet_1<br>mkdir replicaSet_2<br>mkdir replicaSet_3</pre></p>
+</li>
+</ul>
+<p>cmd /k start mongod –port 12004 –dbpath replicaSet_1 –replSet rs0<br>cmd /k start mongod –port 12005 –dbpath replicaSet_2 –replSet rs0<br>cmd /k start mongod –port 12006 –dbpath replicaSet_3 –replSet rs0<br></p>
+<p>然后选择其中一个实例进入 其shell命令界面。初始化replSet集群，并添加secondary。 即，当前这些命令的这个实例会被作为primary。</p>
+<pre>
+mongo --port 12004
+
+rs.initiate()
+rs.add("<hostname>:2002")
+rs.add("<hostname>:2003")
+rs.conf()
+</hostname></hostname></pre>
+
+<p>所有的连接什么的都会在这个上面。在默认情况下，secondary是不允许读和写的。如果你想在secondary 节点上进行读。需要进行相应的设置<br>在java下面三个等级的设置</p>
+<pre>
+        //在client 级别。read 首先是从 secondary 上面进行读
+  MongoClientOptions options = MongoClientOptions.builder().readPreference(
+                                  ReadPreference.secondary()).build();
+    //类似的！
+  MongoClient mongoClient = new MongoClient(
+    new MongoClientURI("mongodb://host1:27017,host2:27017/?readPreference=secondary"));
+// database 级别的设置
+MongoDatabase database = mongoClient.getDatabase("test")
+                         .withReadPreference(ReadPreference.secondary());
+//最后 是collection级别的设置
+MongoCollection<document> collection = database.getCollection("restaurants")
+            .withReadPreference(ReadPreference.secondary());
+</document></pre>
+
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/12/05/Spring-boot-mybatis/" class="archive-article-date">
-  	<time datetime="2016-12-05T07:58:30.696Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-05</time>
+      <a href="/2017/01/24/MongoDB学习/" class="archive-article-date">
+  	<time datetime="2017-01-24T07:24:20.147Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-24</time>
 </a>
       
       
@@ -172,335 +513,7 @@
 
 
   
-    <article id="post-字节码文件分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-Spring源码分析之ASM（零）"><a href="#title-Spring源码分析之ASM（零）" class="headerlink" title="title:Spring源码分析之ASM（零）"></a>title:Spring源码分析之ASM（零）</h2><h1 id="字节码文件"><a href="#字节码文件" class="headerlink" title="字节码文件"></a>字节码文件</h1><blockquote>
-<p>想要了解ASM必须要对Class（字节码）文件有个清楚的认识</p>
-</blockquote>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>java虚拟机并不和包括java在内的任何语言绑定，它只和Class 文件这种特定的二进制文件格式所关联。Clas文件并不关心你的Class文件从哪里来。你可以用任何编译器（包括你自己编写的编译器来生成Class文件，只要符合JVM的规范即可） <br></p>
-<p>字节码文件是一组以8位字节为基础单位的二进制流。其包含了java虚拟机指令集和符号表以及其他若干辅助信息，其文件格式采用类似C结构体的伪结构来存储数据，伪结构推分为两类<strong>无符号数</strong>和<strong>表</strong></p>
-<p>字节码文件的结构：</p>
-<p>任何一个Class文件都对应着唯一一个类或者接口信息。但是返过来讲类或者接口并不一定都得定义在文件里（类和接口也可以通过类加载器直接生成）。</p>
-<p>Class文件中存储的信息几乎都是Runtime的必要数据，没有空隙存在</p>
-<p>共有设计和私有设计是ASM可以实现的理论基础。</p>
-<ul>
-<li>Class文件中的一些概念<ul>
-<li>无符号数：用来描述数字，索引    引用，数量值，或按照UTF-8编码的字符串值。所有</li>
-<li>表： </li>
-<li>魔数：Class文件的头四个字节：<strong>OXCAFEBABE</strong>，用来标示一个Class文件</li>
-<li>版本号：第五和第六个字节标示次版本号，第七个字节标示主版本号</li>
-<li>常量池：第八个字节，Class的文件的资源仓库。Class文件空间中占用文件空间最大的数据项目之一，也是第一个表类型数据项目，并且其内部每一项常量都是一个表<ul>
-<li>字面量：接近于Java语言层面的常量概念，如文本字符串，声明为final的常量值等</li>
-<li>符号引用：编译原理方面的概念，包括下面三类常量<ul>
-<li>类和接口的全限定名</li>
-<li>字段的名称和描述符</li>
-<li>方法的名称和描述符</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>Java在进行javac编译的时候，并不像C和C++那样有”连接”,这一步奏，而是在虚拟机加载Class文件的时候进行动态链接。也就是说<strong>Class文件不会保存各个方法，字段的最终内存布局信息</strong>。因此这些字段，方法的符号引用不经过运行期转换的话就无法得到真正的内存地址。</p>
-<ul>
-<li>常量池中个各种符号引用,后面的数值标示其值 <ul>
-<li>UTF8 = 1      </li>
-<li>Integer = 3 </li>
-<li>Float = 4 </li>
-<li>Long = 5</li>
-<li>Double = 6</li>
-<li>Class = 7</li>
-<li>String = 8</li>
-<li>Fieldref = 9</li>
-<li>Methodref = 10   </li>
-<li>InterfaceMethod = 11 ….接口中方法符号的引用</li>
-<li>NameAndType = 12 … 字段或方法的部分符号引用</li>
-<li>MethodHandle = 15 ….方法句柄</li>
-<li>MethodType = 16 …. 标示方法类型</li>
-<li>InvokeDynamic = 18….标示一个动态方法调用点  </li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>访问标志：在常量池结束后，紧接着就是两个字节的访问标志位<ul>
-<li>public： 0X0001</li>
-<li>FINAL:0X0010</li>
-<li>super:0x0020    不必纠结这个标示位，以后Java 1.02 之后基本上都是为 1 的</li>
-<li>interface:0X0200</li>
-<li>abstract:0X0400</li>
-<li>synthetic:0X1000  ：标示这个类并非由用户代码产生</li>
-<li>annotation：0X2000 ： 标示这是一个注解</li>
-</ul>
-</li>
-</ul>
-<h2 id="类索引，父类索引与接口索引"><a href="#类索引，父类索引与接口索引" class="headerlink" title="类索引，父类索引与接口索引"></a>类索引，父类索引与接口索引</h2><ul>
-<li>类索引和父类索引都是一个U2类型的数据，接口是一组U2类型数据的集合，Class文件中由这三项数据来确定这个类的继承关系。因为Java中的继承是单继承的，但是接口实现的”多实现“的，所以父类只有一个索引值，而接口有多个索引值</li>
-</ul>
-<h2 id="字段表集合（field）"><a href="#字段表集合（field）" class="headerlink" title="字段表集合（field）"></a>字段表集合（field）</h2><p> 字段表用于描述接口或者类中声明的变量，字段包括类级变量以及实例级变量</p>
-<pre>
-
-field_info {
-    u2             access_flags;
-    u2             name_index;
-    u2             descriptor_index;
-    u2             attributes_count;
-    attribute_info attributes[attributes_count];
-}
-
-</pre>
-
-
-<ul>
-<li>字段表修饰符在Class文件中的值,从下面各个修饰符的值来说，public，private，protect只能选其中一个，final，volatile態同事选择<ul>
-<li>public 0x0001</li>
-<li>private 0x0002</li>
-<li>protected 0x0003</li>
-<li>static 0x0004</li>
-<li>final 0x0010</li>
-<li>volatile 0x0040</li>
-<li>transient 0x0080</li>
-<li>synthetic 0x1000  是否为编译器自动生成</li>
-<li>enum 0x4000</li>
-</ul>
-</li>
-</ul>
-<p>全限定名 ： Lperson/walker/TestClass;就是一个全限定名，一般需要以字符“；”来标示结束。<br>简单名称：没有类型和参数修饰的方法或者字段名。</p>
-<ul>
-<li>基本数据类型和Class文件的秒数规则，一定不陌生，这前世JNI C文件中和JAVA的对应信息<ul>
-<li>B: Byte</li>
-<li>C: char</li>
-<li>D: double </li>
-<li>F: float</li>
-<li>I: int</li>
-<li>J: long</li>
-<li>S: short</li>
-<li>Z: boolean</li>
-<li>V: void</li>
-<li>L: 对象属性，例如：Ljava/lang/String;</li>
-</ul>
-</li>
-<li>对于数组而言一般是前面加一个”[“作为标示</li>
-<li>对于Java语言来讲，字段是不可重载的，两个不同的字段必须要有不同的命称，但是对于字节码文件来说，字段是可以重载的，就算你名称相同，只要描述符不同就是合法的，</li>
-</ul>
-<h2 id="方法表集合"><a href="#方法表集合" class="headerlink" title="方法表集合"></a>方法表集合</h2><p>因为volatile和transient修饰符是不能修饰方法的，所以方法表的访问标志中没有了volatile和transient标识符，其余和字段的描述基本一致</p>
-<p>方法表的数据结构：</p>
-<pre>
-method_info {
-    u2             access_flags;
-    u2             name_index;
-    u2             descriptor_index;
-    u2             attributes_count;
-    attribute_info attributes[attributes_count];
-}
-</pre>
-
-<h2 id="属性表集合"><a href="#属性表集合" class="headerlink" title="属性表集合"></a>属性表集合</h2><p>在Class文件中，字段表，方法表都有自己的属性表集合，以用于描述某些场景转有的信息，各个属性表之间没有严格的顺序</p>
-<p>属性表结构</p>
-<pre>
-attribute_info {
-    u2 attribute_name_index;
-    u4 attribute_length;
-    u1 info[attribute_length];
-}
-
-</pre>
-+ Jvm解析Class文件必须的五个属性，及其使用的位置和含义
- + ConstantValue：字段表，final定义的常量值
- + Code：方法表，java代码编译生成的字节码指令
- + StackMapTable ： Code属性，Jdk1.6 新增的属性
- + Exceptions ：
-
-<br>
-
-+ 12种被Java se平台Class库识别的属性
- + InnerClasses
- + EnclosingMethod
- + Synthetic
- + Signature
- + RuntimeVisibleAnnotations
- + RuntimeInvisibleAnnotations
- + RuntimeVisibleParameterAnnotations
- + RuntimeInvisibleParameterAnnotations
- + RuntimeVisibleTypeAnnotations
- + RuntimeInvisibleTypeAnnotations
- + AnnotationDefault
- + MethodParameters
- + BootstrapMethods
-
-<br>
-
-
-
-### code属性
-
-Code属性表保存的信息就是经过javac编译后的java代码方法体中的代码
-
-Code属性表的结构
-
-<pre>
-
-Code_attribute {
-    u2 attribute_name_index;  //指向Constants 的索引
-    u4 attribute_length;
-    u2 max_stack;
-    u2 max_locals;     
-    u4 code_length;
-    u1 code[code_length];
-    u2 exception_table_length;
-    {   u2 start_pc;
-        u2 end_pc;
-        u2 handler_pc;
-        u2 catch_type;
-    } exception_table[exception_table_length];
-    u2 attributes_count;
-    attribute_info attributes[attributes_count];
-}
-
-</pre>
-
-
-<p>对于上面的Code_length,随意其实U4 字节，但是一般只会用到前32位，也就是说虚拟机规范明确规定了一个方法不得超过65535条字节码文指令，所以不要编写太长的方法来为难编译器。另外JSP编译器在编译复杂JSP文件时，某些JSP编译器会将JSP内容和页面输出信息方法放到一个方法中，这也会因为字节码超长造成编译失败。</p>
-<p>JVM 对于局部变量分配的最小单位为Slot，一般为32位的。</p>
-<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><h2 id="Class-File"><a href="#Class-File" class="headerlink" title="Class File"></a>Class File</h2><pre>
-ClassFile {
-    u4             magic;
-    u2             minor_version;
-    u2             major_version;
-    u2             constant_pool_count;
-    cp_info        constant_pool[constant_pool_count-1];
-    u2             access_flags;
-    u2             this_class;
-    u2             super_class; //单继承
-    u2             interfaces_count;
-    u2             interfaces[interfaces_count]; //多实现
-    u2             fields_count;
-    field_info     fields[fields_count];
-    u2             methods_count;
-    method_info    methods[methods_count];
-    u2             attributes_count;
-    attribute_info attributes[attributes_count];
-}
-</pre>
-
-
-
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4" target="_blank" rel="external">constants_info </a></p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5" target="_blank" rel="external">field_info</a></p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6" target="_blank" rel="external">method_info</a> </p>
-<h1 id="分析案例"><a href="#分析案例" class="headerlink" title="分析案例"></a>分析案例</h1><p>在这里我们通过分析一小段代码的Class文件来验证我们的知识</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> person.walker;</div><div class="line"></div><div class="line"><span class="keyword">public</span>  <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String constantFiled = <span class="string">"constants"</span>;</div><div class="line">    <span class="keyword">public</span> String filed1;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"I'm Code in Method test "</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testStatic</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"I'm Code in Method testStatic "</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="constants-pool分析"><a href="#constants-pool分析" class="headerlink" title="constants_pool分析"></a>constants_pool分析</h2><p><img src="/assets/class_constants_pool.png" alt="constants_pool"></p>
-<h2 id="class-info-分析"><a href="#class-info-分析" class="headerlink" title="class_info 分析"></a>class_info 分析</h2><p><img src="/assets/class_constants_pool.png" alt="class_info"></p>
-<h2 id="filed-info-分析"><a href="#filed-info-分析" class="headerlink" title="filed_info 分析"></a>filed_info 分析</h2><p><img src="/assets/class_filed_info.png" alt="filed_info"></p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/01/字节码文件分析/" class="archive-article-date">
-  	<time datetime="2016-12-01T05:17:04.665Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-01</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-贪心算法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-贪心算法"><a href="#title-贪心算法" class="headerlink" title="title:贪心算法"></a>title:贪心算法</h2><h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p> <em>贪心法</em>，又称贪心算法、贪婪算法、或称贪婪法，是一种在每一步选择中都采取在当前状态下最好或最优（即最有利）的选择，从而希望导致结果是最好或最优的算法。[1]比如在旅行推销员问题中，如果旅行员每次都选择最近的城市，那这就是一种贪心算法。</p>
-<ul>
-<li><strong>与动态规划的区别</strong>：贪心算法与动态规划的不同在于它每对每个子问题的解决方案都做出选择，不能回退。动态规划会保存以前的运算结果。并根据保存的结果对当前进行选择，有回退功能</li>
-<li><strong>贪心算法的应用</strong>：解决一些最优化问题，如求图的最小生成树，求哈夫曼编码等。</li>
-<li><p><strong>贪心算法的五个组成部分</strong></p>
-<ul>
-<li>候选集合C: 从要解决问题中抽象出一个候选集合，问题的最终解都来自与这个解集合中， </li>
-<li>解集合S:随着贪心选择的进行，解集合S不断扩展，直到构成一个满足问题的完整解。</li>
-<li>解决函数solution:检查解集合S是否构成问题的完整解</li>
-<li>选择函数select:即贪心策略，这是贪心法的关键，它指出那个候选对象最有希望构成问题的解，选择函数通常和目标函数有关。</li>
-<li>可行函数feasible：检查解集合中加入一个候选对象是否可行，即解集合扩展后是否满足约束条件。</li>
-</ul>
-</li>
-<li><p><strong>解决贪心问题的一般套路</strong></p>
-<ul>
-<li>建立数学模型描述问题</li>
-<li>把求解的问题组成若干个子问题</li>
-<li>对每一个子问题求解，得到子问题的局部最优解</li>
-<li>合并子问题子问题的最优解，求出全局的最优解</li>
-</ul>
-</li>
-<li><p><strong>伪代码</strong>：</p>
- <pre> Greedy(C)  //C是问题的输入集合即候选集合
-
-{
-  S={ };  //初始解集合为空集
-  while (not solution(S))  //集合S没有构成问题的一个解
-  {
-     x=select(C);    //在候选集合C中做贪心选择
-     if feasible(S, x)  //判断集合S中加入x后的解是否可行
-        S=S+{x};
-        C=C-{x};
-  }
-</pre>
-
-</li>
-</ul>
-<h1 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h1><h2 id="找零钱"><a href="#找零钱" class="headerlink" title="找零钱"></a>找零钱</h2><p><strong>讲解</strong><br><br>一个小孩买了价值少于1美元的糖，并将1美元的钱交给售货员。售货员希望用数目最少的硬币找给小孩。假设提供了数目不限的面值为2 5美分、1 0美分、5美分、及1美分的硬币。售货员分步骤组成要找的零钱数，每次加入一个硬币。选择硬币时所采用的贪婪准则如下：每一次选择应使零钱数尽量增大。为保证解法的可行性（即：所给的零钱等于要找的零钱数），所选择的硬币不应使零钱总数超过最终所需的数目</p>
-<p><strong>引例分析</strong> <br><br>为使找回的零钱的硬币数最小，不考虑找零钱的所有各种方案，<strong>而是从最大面值的币种开始，按递减的顺序考虑各币种，先尽量用大面值的币种，只当不足大面值币种的金额才会去考虑下一种较小面值的币种。这就是在采用贪婪法。</strong>这种方法在这里之所以总是最优，是因为银行对其发行的硬币种类和硬币面值的巧妙安排。如果只有面值分别为1，5和11单位的硬币，而希望找回总额为15单位的硬币，按贪婪算法，应找1个11单位面值的硬币和4个1单位面值的硬币，共找回5个硬币。但最优的解答应是3个5单位面值的硬币。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/01/贪心算法/" class="archive-article-date">
-  	<time datetime="2016-12-01T05:12:42.058Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-01</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Trie树" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Netty(二)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -510,7 +523,7 @@ ClassFile {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/29/Trie树/">字典树</a>
+      <a class="article-title" href="/2017/01/18/Netty(二)/">Netty 基础学习（二）</a>
     </h1>
   
 
@@ -518,30 +531,69 @@ ClassFile {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="字典树-trie"><a href="#字典树-trie" class="headerlink" title="字典树(trie)"></a>字典树(trie)</h1><hr>
-<blockquote>
-<p>在leetcode 上刷题遇到的一种数据结构，以前没听说过，怪我孤陋寡闻，经过了解发现应用还是很广的。觉得有必要记录下<br><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank" rel="external"> leetcode 208</a>—<br><a href="https://zh.wikipedia.org/wiki/Trie" target="_blank" rel="external">trie的维基百科</a></p>
-</blockquote>
-<ul>
-<li>概念<ul>
-<li>根节点不包含字符串 </li>
-<li>从根节点到某一叶子节点，路径上组成的所有字符就是该节点对应的字符串</li>
-<li>每个节点的公共前缀作为一个字符节点保存 </li>
+        <ul>
+<li>EventLoop 是来处理channel 中的IO操作，Netty中所有的IO操作默认是异步的，你需要利用ChannleFuture 注册相应ChannleFutureListeners来对异步IO的状态进行监听。</li>
+<li>Netty其实是利用多线程来处理IO事件的，通过源码你会发现，EventLoop其实继承的是ExcutorService。对于NioEventLoopGroup来说，其默认的线程数是2 * CPU核心数。</li>
+<li><strong>Netty 中为什么不需要关心同步问题？</strong></li>
+<li>ServerBootGroup 需要两个EventLoopGroup,用来绑定本地端口。BootStrap需要一个EventLoopGroup …..对于ServerBootGroup来讲，他需要一个EventGroup来处理连接，然后传递给后面子EventGroup。</li>
+<li><p>Channel 是线程安全的，怎么保证线程安全的？</p>
+<h1 id="ChannleHandler"><a href="#ChannleHandler" class="headerlink" title="ChannleHandler"></a>ChannleHandler</h1></li>
+<li><p>每一个ChannelHandler 在从一个ChannlePipeline中移除之前不能添加到另一个ChannlePipline中去,并且一般来讲，每一个ChannelHandler是不允许阻塞IO 的，如果有这方面的需求，你可能需要在添加ChannlePipline的同时添加一个EventLoopGroup</p>
+</li>
+<li>ChannleHandler 中以<code>fireXXX</code>开头的方法都是唤醒Handler所在Pipleling下面的的对应方法，对于Outbound 和inbound的顺序注意区分</li>
+<li>每次添加channelHanndler 到pipline中的时候会有一个ChannleHandlerContext被创建并被分配</li>
+<li>如果你想将一个ChannelHandler的实例添加到不同pipline中，可以通过添加注解<code>@Shareable</code>的方法实现， 不过要注意线程安全的问题</li>
+<li>在channelRead 中你应该及时释放资源<strong>ReferenceCountUtil.release(msg)</strong>不然会造成内存泄露，另外你也可以利用继承SimpleInboundHanlder来替你完成这些工作 </li>
+</ul>
+<h1 id="Netty中的ByteBuf"><a href="#Netty中的ByteBuf" class="headerlink" title="Netty中的ByteBuf"></a>Netty中的ByteBuf</h1><ul>
+<li>ByteBuf实现了ReferenceCount接口。顾名思义其是个计数类，参考JVM垃圾回收机制</li>
+<li>netty ByteBuf 相对于Java Nio ByteBuffer的优势：<ul>
+<li>自定义缓冲类型</li>
+<li>通过一个内置的复合类型实现零拷贝</li>
+<li>扩展性好，比如StringBuffer</li>
+<li>不需要调用flip()来切换读写状态</li>
+<li>读取和写入索引分开</li>
+<li>方法链</li>
+<li>引用计数功能</li>
+<li>Pool（池）的引入</li>
 </ul>
 </li>
-<li>应用<ul>
-<li>词频统计：比hash或者堆要节省空间，</li>
-<li>前缀匹配：前缀匹配的算法复杂度是O(1)， 要查找匹配前缀字符串的长度</li>
+<li>ByteBuf的类型<ul>
+<li>HeapBuffer : 顾名思义，底层存储使用数组的数据结构将数据存储在JVM的堆空间上面—-&gt; ByteBuf.array() 来获取byte[]数据</li>
+<li>DirectBuffer：同Nio 中的Direct Buffer，Netty通过内存池的概念来解决其分配内存和释放内存的复杂的问题，通过间接方式来对directBuffer来读写</li>
 </ul>
 </li>
 </ul>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span></span>&#123;</div><div class="line">    TrieNode[] childs = <span class="keyword">new</span> TrieNode[<span class="number">26</span>]; <span class="comment">// a-z</span></div><div class="line">    <span class="keyword">int</span> count; <span class="comment">//frequence;</span></div><div class="line">    <span class="keyword">char</span> prefix; <span class="comment">//当前节点的字符前缀</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix; </div><div class="line">        count = <span class="number">1</span>; <span class="comment">//root 的count 初始化为0，所以要</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addCount</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.count++;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrefix</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TrieNode root;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</div><div class="line">         root = <span class="keyword">new</span> TrieNode();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (searchNode.childs[currentChar-<span class="string">'a'</span>] == <span class="keyword">null</span>)      <span class="comment">//如果这个前缀的还是null，那么新建插入一个</span></div><div class="line">                searchNode.childs[currentChar-<span class="string">'a'</span>] = <span class="keyword">new</span> TrieNode(currentChar);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                node.count++;</div><div class="line">            searchNode = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> childCount = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (TrieNode trieNode : searchNode.childs)&#123;</div><div class="line">            <span class="keyword">if</span> (trieNode == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            childCount += trieNode.count;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> searchNode.count &gt; childCount;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; prefix.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = prefix.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ByteBuf directBuf = Unpooled.directBuffer(<span class="number">16</span>);</div><div class="line">    directBuf.writeBytes(<span class="string">"I'm datas"</span>.getBytes());</div><div class="line">    <span class="keyword">if</span> (!directBuf.hasArray())&#123; <span class="comment">//如果Bytebuf 的存储状态不是 堆</span></div><div class="line">        <span class="keyword">int</span> len = directBuf.readableBytes(); <span class="comment">// 首先得到其长度</span></div><div class="line">        <span class="keyword">byte</span>[] arr = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</div><div class="line">        directBuf.getBytes(<span class="number">0</span>,arr);</div><div class="line">        System.out.println(<span class="keyword">new</span> String(arr));</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>Composite Buffer： <ul>
+<li>Composite Buffer 的hasArray总是返回false,虽然它有可能会在堆内存上有存储 </li>
+</ul>
+</li>
+<li>对于已读字节，以readerIndex 为准，使用 discardReadBytes，可以清楚【0…readerIndex】区间的字节</li>
+<li>利用ByteBuf的clear 函数来 复位readerIndex和writerIndex为0,clear不会清空ByteBuf的内容，它影响的只是Index。。。</li>
+<li>Netty Buffer包中的工具类<ul>
+<li>BufferAllactor 用来分配ButyBuf实例</li>
+<li>Unpooled 是一个用来创建缓冲区的工具</li>
+<li>ByteBufUtil,其中的 HexDump 用来返回ByteBuf中 16进制信息。可以用来调试</li>
+</ul>
+</li>
+</ul>
+<h1 id="Netty中的编解码"><a href="#Netty中的编解码" class="headerlink" title="Netty中的编解码"></a>Netty中的编解码</h1><ul>
+<li>编码器负责入站，而解码器负责出站。<strong>他们是怎么实现区分入站和出站的区别判断的？</strong></li>
+<li>MessageToByteEncoder和ByteToMessageDecoder是使用最多的编解码类。尝试读这两个类的源码，另外还有MessageToMessageEncode和MessageToMessageDecoder两个类</li>
+</ul>
+<h1 id="Netty-中的Http"><a href="#Netty-中的Http" class="headerlink" title="Netty 中的Http"></a>Netty 中的Http</h1><ul>
+<li>在netty中处理Http请求，需要两个编解码类 分别为 HttpReqestDecoder，HttpRequestDecoder,HttpResponseDecoder,HttpResponseEncoder…其中一般在HttpRequestDecoder和HttpResponseEncoder 用的较多</li>
+<li>Netty Server 处理Request请求时比较底层，没有做过多的封装，需要自行判断握手，信息传递，长连接判断，和trailer header的判断<br>最后在Netty中映射的类分别为 <code>HttpRequst -----&gt; HttpCotent...HttpContent -----&gt; LastHttpContent</code></li>
+</ul>
+<h1 id="测试Neety-代码"><a href="#测试Neety-代码" class="headerlink" title="测试Neety 代码"></a>测试Neety 代码</h1>
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/29/Trie树/" class="archive-article-date">
-  	<time datetime="2016-11-29T07:51:31.906Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-29</time>
+      <a href="/2017/01/18/Netty(二)/" class="archive-article-date">
+  	<time datetime="2017-01-18T05:30:25.306Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-18</time>
 </a>
       
       
@@ -561,7 +613,7 @@ ClassFile {
 
 
   
-    <article id="post-最近的Leercode题解" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-学习Netty" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -571,7 +623,7 @@ ClassFile {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/29/最近的Leercode题解/">最近leetcode刷题总结（16/11/29）</a>
+      <a class="article-title" href="/2017/01/13/学习Netty/">netty 基础学习（一）</a>
     </h1>
   
 
@@ -579,58 +631,106 @@ ClassFile {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="backtracking-回溯算法"><a href="#backtracking-回溯算法" class="headerlink" title="backtracking (回溯算法)"></a>backtracking (回溯算法)</h1><hr>
-<p>回溯算法属于暴力解法。一般配合 DFS或者BFS使用，通过适当的剪枝来实现降低时间复杂度</p>
-<h2 id="Generate-Parentheses"><a href="#Generate-Parentheses" class="headerlink" title=" Generate Parentheses"></a><a href="https://leetcode.com/problems/generate-parentheses/" target="_blank" rel="external"> Generate Parentheses</a></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"> List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">generateParenthesis</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    backTracking(<span class="number">2</span>*n,n,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="string">"("</span>); <span class="comment">//长度为2*nde 字符串满足条件！</span></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">    <span class="comment">/*</span></div><div class="line">      思路：</div><div class="line">      1:利用indicateFlag 标示是否添加 右括号。左括号添加一次加一，右括号添加一次减一。不能为 负数！</div><div class="line">      2:构建一个char[2n-1] 的状态空间。每次都去尝试左括号和右括号。不满足的话就回到上一次的状态。</div><div class="line">        其实想层次遍历二叉树一样。利用BFS！队列</div><div class="line">     3 : 假设左子 为右半括号，右子为左半括号</div><div class="line">     */</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">backTracking</span><span class="params">(<span class="keyword">int</span> resLength,<span class="keyword">int</span> paraNum, <span class="keyword">int</span> leftAdded,<span class="keyword">int</span> rightAdded,<span class="keyword">int</span> flag, String cont)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (flag &lt; <span class="number">0</span> || rightAdded &gt; paraNum || leftAdded &gt; paraNum) <span class="comment">//这里就是实现的剪枝，不满足条件的，就不继续执行下去</span></div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">if</span> (cont.length() == resLength)&#123;</div><div class="line">        result.add(cont);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (flag &gt; <span class="number">0</span>)  </div><div class="line">        backTracking(resLength,paraNum,leftAdded,rightAdded+<span class="number">1</span>,flag-<span class="number">1</span>,cont+<span class="string">")"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (flag &gt;=<span class="number">0</span>)</div><div class="line">        backTracking(resLength,paraNum,leftAdded+<span class="number">1</span>,rightAdded,flag+<span class="number">1</span>,cont+<span class="string">"("</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Combination-Sum"><a href="#Combination-Sum" class="headerlink" title="Combination Sum"></a><a href="https://leetcode.com/problems/combination-sum/" target="_blank" rel="external">Combination Sum</a></h2><ul>
-<li>这个题解和其他Combination Sum的题目都很相似，利用DFS，经过适当剪枝，将满足条件的结果加入集合。。。。</li>
+        <h1 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h1><ul>
+<li><p>建立一个Netty Server的步奏</p>
+<ul>
+<li>需要一个EventLoopGroup 作为ParentEventLoop 来接受外部的request，还有一个EvnentLoop作为Childs 来处理进入的链接</li>
+<li>利用一个BootStrap类group 方法包裹住这两个EventLoop来启动这个服务</li>
+<li>然后利用BootStrap的channel方法指定channel</li>
+<li>然后指定handler。</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; combinationSum(<span class="keyword">int</span>[] candidates, <span class="keyword">int</span> target) &#123;</div><div class="line">    <span class="keyword">if</span> (candidates.length &lt; <span class="number">1</span>)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; candidates.length; index++)&#123;  <span class="comment">//利用一个外部循环可以减少递归的次数</span></div><div class="line">        List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        list.add(candidates[index]);</div><div class="line">        recursive(result, list, candidates, target,index,candidates[index]);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">recursive</span><span class="params">(List&lt;List&lt;Integer&gt;&gt; result, List&lt;Integer&gt; list, <span class="keyword">int</span>[] candidates, <span class="keyword">int</span> target, <span class="keyword">int</span> restrict,<span class="keyword">int</span> currentValue)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (currentValue == target)&#123;</div><div class="line">        result.add(list);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> index2 = restrict;index2 &lt; candidates.length;index2++)&#123;</div><div class="line">        <span class="keyword">int</span> value = currentValue + candidates[index2];</div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (value &lt;= target)&#123;</div><div class="line">            list.add(candidates[index2]); <span class="comment">// add the element</span></div><div class="line">            ArrayList newList = <span class="keyword">new</span> ArrayList();</div><div class="line">            newList.addAll(list);</div><div class="line">            recursive(result, newList, candidates, target,index2,value);</div><div class="line">            list.remove(list.size() - <span class="number">1</span>); <span class="comment">// remove the top element</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Restore-IP-Addresses"><a href="#Restore-IP-Addresses" class="headerlink" title="Restore IP Addresses"></a><a href="https://leetcode.com/problems/restore-ip-addresses/" target="_blank" rel="external">Restore IP Addresses</a></h2><ul>
-<li>这个题解最需要注意的是IP地址后面的3个节点不能以0开头，一开始做题就卡到这里了</li>
+</li>
 </ul>
-<pre><code class="Java"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">restoreIpAddresses</span><span class="params">(String s)</span> </span>{
-     List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();
-     StringBuilder builder = <span class="keyword">new</span> StringBuilder();
-     dfs(s, result, builder, <span class="number">0</span>);
-     <span class="keyword">return</span> result;
- }
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup();  <span class="comment">//用来接受进来的连接</span></div><div class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup(); <span class="comment">//用来处理已经被接受的连接</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</div><div class="line">    b.group(bossGroup,workerGroup)     <span class="comment">//group 之后 boss接受到的连接都会映射到 work上面</span></div><div class="line">            .channel(NioServerSocketChannel.class)</div><div class="line">            .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</div><div class="line">                <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                    ch.pipeline().addLast(<span class="keyword">new</span> DiscardServerHandler())</div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeServerHandler()) <span class="comment">//在这里添加一个新的channel handler.</span></div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeEncoder())</div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeServerHandler2());  <span class="comment">//应该在将Encoder 放在 server handler 之前！</span></div><div class="line">                &#125;</div><div class="line">            &#125;)</div><div class="line">            .option(ChannelOption.SO_BACKLOG,<span class="number">128</span>)   <span class="comment">//为NioServerSocketChannel 设置的选项</span></div><div class="line">            .childOption(ChannelOption.SO_KEEPALIVE,<span class="keyword">true</span>); <span class="comment">//为parent Server group 设置的选项</span></div><div class="line"></div><div class="line">    <span class="comment">//绑定端口，开始接收进来的连接</span></div><div class="line">    ChannelFuture f = b.bind(port).sync();</div><div class="line">    <span class="comment">//等待服务器 Socket 关闭</span></div><div class="line">    f.channel().closeFuture().sync();</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    <span class="comment">//...优雅的关闭。。。这名字，我也是醉了</span></div><div class="line">    workerGroup.shutdownGracefully();</div><div class="line">    bossGroup.shutdownGracefully();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>每个Netty 的Server都需要一个 HandlerAdpater，来处理接收到的消息  ChandleHandlerAdapter<br>+</li>
+</ul>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Netty中的缓冲区"><a href="#Netty中的缓冲区" class="headerlink" title="Netty中的缓冲区"></a>Netty中的缓冲区</h2><p>Netty使用<a href="http://netty.io/5.0/api/io/netty/buffer/package-summary.html#package_description" target="_blank" rel="external">自建的buffer Api,而不是NIO 的byte buffer</a> 来标示一个连续的字节序列。</p>
+<ul>
+<li>如果需要吗，允许使用自定义的缓冲实现。</li>
+<li>复合缓冲类型中内置的透明的零拷贝实现</li>
+<li>开箱即用的动态缓冲类型，具有像StringBuffer一样的动态缓冲能力</li>
+<li>不再需要调用的flip() 方法。</li>
+<li>正常情况下具有比ByteBuffer更快的相应速度</li>
+</ul>
+<h3 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h3><p>ByteBuf 具有丰富的操作集，可以实现快速的协议优化。你可以扩展包装现有的缓冲类型来提供方便的访问。自定义缓冲仍然实现自ByteBuf接口，而不是引入一个不兼容的类型。</p>
+<h3 id="透明的零拷贝"><a href="#透明的零拷贝" class="headerlink" title="透明的零拷贝"></a>透明的零拷贝</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 复合类型与组件类型是兼容的。</span></div><div class="line">ByteBuf message = Unpooled.wrappedBuffer(header, body);</div><div class="line"><span class="comment">// 因此，你甚至可以通过混合复合类型与普通缓冲区来创建一个复合类型。</span></div><div class="line">ByteBuf messageWithFooter = Unpooled.wrappedBuffer(message, footer);</div><div class="line"><span class="comment">// 由于复合类型仍是 ByteBuf，访问其内容很容易，</span></div><div class="line"><span class="comment">//并且访问方法的行为就像是访问一个单独的缓冲区，</span></div><div class="line"><span class="comment">//即使你想访问的区域是跨多个组件。</span></div><div class="line"><span class="comment">//这里的无符号整数读取位于 body 和 footer</span></div><div class="line">messageWithFooter.getUnsignedInt(</div><div class="line">messageWithFooter.readableBytes() - footer.readableBytes() - <span class="number">1</span>);</div></pre></td></tr></table></figure>
+<h3 id="自动增量扩展"><a href="#自动增量扩展" class="headerlink" title="自动增量扩展"></a>自动增量扩展</h3><h3 id="更好的性能"><a href="#更好的性能" class="headerlink" title="更好的性能"></a>更好的性能</h3><p>相对于ByteBuffer ByteBuf的实现 是一个非常薄的字节数组包装器（例如一个字节），它没有复杂的边界检查和索引检查补偿，因此对于JVM的优化缓冲区的访问更加简单。ByteBuf更多是在对缓冲区的切分和重组，它的性能和ByteBuffer几乎相当</p>
+<h2 id="Netty中的IO实现"><a href="#Netty中的IO实现" class="headerlink" title="Netty中的IO实现"></a>Netty中的IO实现</h2><h3 id="更好的API兼容"><a href="#更好的API兼容" class="headerlink" title="更好的API兼容"></a>更好的API兼容</h3><p>不想原生Java 的<strong>IO/NIO/AIO</strong> 的的API，Netty的所有类型的IO 实现都通过同一个接口<a href="http://netty.io/4.0/api/io/netty/channel/package-summary.html#package_description" target="_blank" rel="external">Channel</a>,如果你想切换不的IO实现，只需要很简单的步奏，例如选择一个<a href="http://netty.io/4.0/api/io/netty/bootstrap/ChannelFactory.html" target="_blank" rel="external">ChannelFactory 的实现</a></p>
+<ul>
+<li>基于 NIO 的 TCP/IP 传输 (见 io.netty.channel.nio),</li>
+<li>基于 OIO 的 TCP/IP 传输 (见 io.netty.channel.oio),</li>
+<li>基于 OIO 的 UDP/IP 传输, 和本地传输 (见 io.netty.channel.local)</li>
+</ul>
+<p>并且你还可以继承Channle 添加自定义的实现!</p>
+<h2 id="Netty中的事件模型"><a href="#Netty中的事件模型" class="headerlink" title="Netty中的事件模型"></a>Netty中的事件模型</h2><p>Netty 中事件模型的核心组件是<a href="http://netty.io/4.0/api/io/netty/channel/ChannelPipeline.html" target="_blank" rel="external">ChannelPipeline</a></p>
+<pre>
+                                                 I/O Request
+                                            via <a href="http://netty.io/4.0/api/io/netty/channel/Channel.html" title="interface in io.netty.channel" target="_blank" rel="external"><code>Channel</code></a> or
+                                        <a href="../../../io/netty/channel/ChannelHandlerContext.html" title="interface in io.netty.channel"><code>ChannelHandlerContext</code></a>
+                                                      |
+  +---------------------------------------------------+---------------+
+  |                           ChannelPipeline         |               |
+  |                                                  \|/              |
+  |    +---------------------+            +-----------+----------+    |
+  |    | Inbound Handler  N  |            | Outbound Handler  1  |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  |               |
+  |               |                                  \|/              |
+  |    +----------+----------+            +-----------+----------+    |
+  |    | Inbound Handler N-1 |            | Outbound Handler  2  |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  .               |
+  |               .                                   .               |
+  | ChannelHandlerContext.fireIN_EVT() ChannelHandlerContext.OUT_EVT()|
+  |        [ method call]                       [method call]         |
+  |               .                                   .               |
+  |               .                                  \|/              |
+  |    +----------+----------+            +-----------+----------+    |
+  |    | Inbound Handler  2  |            | Outbound Handler M-1 |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  |               |
+  |               |                                  \|/              |
+  |    +----------+----------+            +-----------+----------+    |
+  |    | Inbound Handler  1  |            | Outbound Handler  M  |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  |               |
+  +---------------+-----------------------------------+---------------+
+                  |                                  \|/
+  +---------------+-----------------------------------+---------------+
+  |               |                                   |               |
+  |       [ Socket.read() ]                    [ Socket.write() ]     |
+  |                                                                   |
+  |  Netty Internal I/O Threads (Transport Implementation)            |
+  +-------------------------------------------------------------------+
+ </pre>
 
- <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(String restString, List&lt;String&gt; result, StringBuilder builder, <span class="keyword">int</span> currentLength)</span> </span>{
-     <span class="keyword">if</span> (restString.length() + currentLength &lt; <span class="number">4</span>) <span class="comment">//剩余字符串的长度不足以形成一个有效的IP 地址</span>
-         <span class="keyword">return</span>;
-     <span class="keyword">if</span> (currentLength == <span class="number">3</span> 
-                 &amp;&amp; (restString.length() &lt; <span class="number">4</span> 
-                         &amp;&amp; Integer.parseInt(restString) &lt;= <span class="number">255</span>)) {
-         <span class="keyword">if</span> (restString.length() &gt;<span class="number">1</span> &amp;&amp; restString.startsWith(<span class="string">"0"</span>))
-             <span class="keyword">return</span>;
-         StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder(builder);
-         String value = stringBuilder.append(restString).toString();
-         result.add(value);
-         <span class="keyword">return</span>;
-     } <span class="keyword">else</span> <span class="keyword">if</span> (currentLength &gt;= <span class="number">3</span>) <span class="comment">//不满的情况，&gt;= 3，大于 255 ||</span>
-         <span class="keyword">return</span>;
-     <span class="keyword">int</span> limit = Math.min(<span class="number">3</span>, restString.length());
-     <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>; index &lt;= limit; index++) {
-         String sub = restString.substring(<span class="number">0</span>, index);
-         <span class="keyword">if</span> (sub.startsWith(<span class="string">"0"</span>) &amp;&amp; sub.length() &gt; <span class="number">1</span>)
-             <span class="keyword">continue</span>;
-         <span class="keyword">if</span> (index == <span class="number">3</span> &amp;&amp; (sub.length() &gt; <span class="number">3</span> || Integer.parseInt(sub) &gt; <span class="number">255</span>))
-             <span class="keyword">continue</span>;
-         builder.append(sub);
-         builder.append(<span class="string">"."</span>);
-         dfs(restString.substring(index, restString.length()), result, builder, currentLength + <span class="number">1</span>);    <span class="comment">//剪切第0个字符</span>
-         builder.delete(builder.length() - index - <span class="number">1</span>, builder.length());
-     }
- }
-</code></pre>
+
+<p>在netty 5.0 中<code>ChannelInboundHandler</code> 和<code>ChannelOutboundHandler</code> 合并为<code>ChannelHandler</code>，统一的Adapter也是一样合并了 </p>
+<h2 id="SSL-TLS-支持"><a href="#SSL-TLS-支持" class="headerlink" title="SSL/TLS 支持"></a>SSL/TLS 支持</h2><ul>
+<li>通过类<a href="http://netty.io/4.0/api/io/netty/handler/ssl/SslHandler.html" target="_blank" rel="external">SslHandler </a> </li>
+<li>check the example <a href="http://netty.io/4.1/xref/io/netty/example/securechat/package-summary.html" target="_blank" rel="external"> Secure Chat </a></li>
+<li><p>netty <a href="http://stackoverflow.com/questions/26803353/ssl-support-in-netty-io-through-custom-certificate" target="_blank" rel="external">使用自签名作为SSL认证</a></p>
+<ul>
+<li>第一步： 配置好OpenSSL环境</li>
+<li>第二步： 利用命令<code>openssl req -x509 -keyout abc.key -out xyz.csr -newkey                  rsa:2048</code>     产生证书文件和私匙文件  </li>
+<li>第三步： 利用命令<code>openssl pkcs8 -topk8 -inform PEM -outform PEM -in abc.key -out abc.pem</code> 将key转换为 pkcs8 格式的格式</li>
+<li><p>第四步： 创建一个SSLContext</p>
+<pre> SslContext sslCtx = SslContext.newServerContext(new File(
+      "./key/xyz.csr"), new File("./key/abc.key"),"password");</pre>
+
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="WebSocket-实现"><a href="#WebSocket-实现" class="headerlink" title="WebSocket 实现"></a>WebSocket 实现</h2><h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这个架构由三部分组成——缓冲（ buffer） ，通道（ channel） ，事件模型（ event<br>model） ——所有的高级特性都构建在这三个核心组件之上。</p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/29/最近的Leercode题解/" class="archive-article-date">
-  	<time datetime="2016-11-29T07:17:03.006Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-29</time>
+      <a href="/2017/01/13/学习Netty/" class="archive-article-date">
+  	<time datetime="2017-01-13T02:17:28.272Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-13</time>
 </a>
       
       
@@ -650,84 +750,110 @@ ClassFile {
 
 
   
-    <article id="post-音视频编解码遇到的坑" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Spring test" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/10/Spring test/">利用Spring Boot 进行单元测试</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-音视频编解码中注意的问题"><a href="#title-音视频编解码中注意的问题" class="headerlink" title="title:音视频编解码中注意的问题"></a>title:音视频编解码中注意的问题</h2><h1 id="SDK使用"><a href="#SDK使用" class="headerlink" title="SDK使用"></a>SDK使用</h1><ul>
-<li>解码失败的可能性<ul>
-<li>确定I帧已经先解码！</li>
-<li>确定AvCodec 和AvcodecConext已经正确打开</li>
-<li>确定packet的size是正确的</li>
-<li>确定packet 的data是标准的H264数据，比如说前四位为0X00 00 00 01；</li>
-<li>检查是否 av_register_all已经调起</li>
+        <h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><h2 id="测试Controller"><a href="#测试Controller" class="headerlink" title="测试Controller"></a>测试Controller</h2><h2 id="mock"><a href="#mock" class="headerlink" title="mock"></a>mock</h2>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/01/10/Spring test/" class="archive-article-date">
+  	<time datetime="2017-01-10T05:50:57.049Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Spring AOP" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/10/Spring AOP/">Spring AOP编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><h3 id="AOP概念"><a href="#AOP概念" class="headerlink" title="AOP概念"></a>AOP概念</h3><ul>
+<li>切面：切入系统的一个切面，比如事务管理是一个切面，权限管理也是一个切面</li>
+<li>连接点：进行横向切入的位置</li>
+<li>通知：切面在某个连接点执行的操作<ul>
+<li>Before advice</li>
+<li>After returning advice</li>
+<li>After throw exception</li>
+<li>After advice</li>
+<li>Around advice</li>
 </ul>
 </li>
-<li>从java层传入绝对路径到jni层的时候，有时候会在默认莫名其妙的脚伤”flock“suffix，这个时候可以利用jbyteArray.size对得到的char *进行剪切，因为这个时候jbyteArray的size标记的path长度是正确的！</li>
-<li>其实更好的做法是利用<em>GetStringUTFChars</em>来进行转换更为常用 </li>
-<li>在GETMethod()中,最后一个参数<ul>
-<li>“([BI)V” :表示返回类型为void，形参为byte[] 和 int</li>
-<li>“(Ljava/lang/String;)void” 表示形参为String 返回值为void的函数</li>
-<li>“(Ljava/lang/String;I)void”表示形参为String　和　int 返回值为void的函数,其和 I 区别在于”;”是否添加，只要到参数为类的时候才添加！！！！</li>
+<li>切点: 通知定义了 “什么”和 “何时”，切点定义了”何处”。切点会匹配通知要织入的一个或多个连接点<br>通常使用明确的的类或者方法来指定这些切点。  作用是通知被应用的位置</li>
+<li>引入：引入允许我们向现有的类中添加方法活属性</li>
+<li>织入：切面在指定的连接点被织入到目标对象中，在目标对象中的生命周期中有多个点可以织入<ul>
+<li>编译器：需要特殊的编译器，例如AspectJ的织入编译器</li>
+<li>类加载期</li>
+<li>运行期：切面在应用运行期间的某个时刻织入。一般情况下，在织入切面的时候，AOP容器会为目标对象</li>
 </ul>
 </li>
 </ul>
-<h1 id="概念性知识"><a href="#概念性知识" class="headerlink" title="概念性知识"></a>概念性知识</h1><ul>
-<li>H264的前四个字节应该是0X00 00 00 01，其一般用来作为H264的帧分隔符。</li>
-<li>从MP4帧解封装出来的H264的I帧要从MP4中提取出SPS 和PPS两个数据拼接到上面！</li>
-<li><a href="http://www.cnblogs.com/skyseraph/archive/2012/04/01/2429384.html" target="_blank" rel="external">mp4 中文件信息分析</a>，在FFMPEG中MP4中的SPS 和PPS 就是存放在AVFormatContext.streams[X].codec.extradata中</li>
-<li>如果你想知道某个Frame 是否是I frame 就用 NALU header 求出低五位的值，依照这个表判断是什么类型的、<ul>
-<li>0 未使用</li>
-<li>1 不分区、非 IDR 图像的片 2，3，4</li>
-<li>2 片分区 A 2</li>
-<li>3 片分区 B 3</li>
-<li>4 片分区 C 4</li>
-<li>5 IDR 图像中的片 2，3</li>
-<li>6 补充增强信息单元(SEI) 5</li>
-<li>7 序列参数集 0</li>
-<li>8 图像参数集 1</li>
-<li>9 分界符 6</li>
-<li>10 序列结束 7</li>
-<li>11 码流结束 8</li>
-<li>12 填充 9</li>
-<li>13~23 保留</li>
-<li>24~31 未使用</li>
-</ul>
-</li>
-<li>AVPACKET 中的PTS 和DTS 分别指的是播放时间戳和压缩的时间戳，<a href="http://lnmcc.net/2013/07/09/ffmpeg%E4%B8%AD%E7%9A%84%E6%97%B6%E9%97%B4/" target="_blank" rel="external"> ffmpeg 中的时间</a> <ul>
-<li>demux文件后，视频文件的时间信息都存储在AVStream 中，利用av_find_best_frame 招到视频stream的位置，读取这个AVStream中的信息，time_base 就是个文件的时间分度 num/den 为其值，duration * time_base 中的时间分度就是视频文件的时常..r_frame_rate 表示视频的fps（每秒的帧数）</li>
-<li>在读取AVPacket后 avpacket中的pts 或者dts的值乘以 时间分度就是指的这个帧在视频文件中的位置</li>
-</ul>
-</li>
-</ul>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
-<li>JNI内存泄露：在JNI层分配的各种指针，各种分配的各种各样的内存，在不适用的时候要及时回收。真的是用的多了JAVA换到C上面就坑啊！</li>
-<li>第二个就是<strong>ReleaseByteArrayElements</strong>这个方法，第二个传入参数（C 层次的参数，其内存也会被释放成为野指针，所以要保证释放后的引用 确保没有其他地方对这个指针进行再次的引用！）</li>
+<h3 id="Spring-AOP-笔记"><a href="#Spring-AOP-笔记" class="headerlink" title="Spring AOP 笔记"></a>Spring AOP 笔记</h3><ul>
+<li>Spring 中的AOP都是动态代理的AOP，即通过反射实现的。</li>
+<li><p style="color : #f00">要导入aspectJrt 和aspectJrtweaver 两个依赖的jar包</p></li>
+<li><img src="e3cae7de-448b-4c69-aee2-94032a9b9d1b_128_files/d6640a43-6df6-47cf-a644-06a82e418ad6.png" alt=""></li>
+<li>运算符 还有 “||” “!” “&amp;&amp;” 三种操作运算符</li>
+<li>声明的切面类，要使其成为一个bean（一般是这样做的）</li>
+<li>利用@Pointcut(“”) …声明一个切点</li>
+<li>@Around 注解adviced 的方法一定要带一个ProceedingJoinPonit参数,这个参数在执行proceed()方法后会移动继续进行下面的advice…（如果这个proceed() 方法没有被执行，那么被Adviced的方法将不会被执行！！）其实ProceeingJIi</li>
 </ul>
 <hr>
-<h1 id="分开MP4demux-和-decoding-真的不是一件简单的事情。。。。。。"><a href="#分开MP4demux-和-decoding-真的不是一件简单的事情。。。。。。" class="headerlink" title="分开MP4demux 和 decoding 真的不是一件简单的事情。。。。。。"></a>分开MP4demux 和 decoding 真的不是一件简单的事情。。。。。。</h1><blockquote>
-<p>问题主要是我怎么样才能把 SPS PPS 作为I帧数据传给decoding ? 摄像头将SPS 传过来自动带着一个I帧的数据？</p>
-</blockquote>
-<p>00 00 00 01 67 42 00 14 8D 95 02 83 F2 (SPS) 00 00 00 01 68 CE 38 80(PPS) 00 00 00 01 6D 64 61 74 00 00 05 3C 65 …. (视频数据)</p>
-<blockquote>
-<p>{0001}SPS{0001}PPS{0001}{裸视频数据}的格式拼接,按照这样的格式去拼接一个I帧！</p>
-</blockquote>
 <ul>
-<li>从AvCodecContext 的extradata 中获取到SPS 和PPS<br>&lt;&gt;</li>
+<li>注解arg(“—-“),注意，在应用时，要保证advice method 的参数个数和名字要个args() 里面的保持一致</li>
+<li>within（””） ，可以接受包或者类的路径，用来限制advice方法在 只有在指定的这个包或者类下面的adviced方法被调用时才会被唤起</li>
+<li>target 后面跟一个完整的类名，用来确定一个目标类</li>
 </ul>
-<p><a href="http://stackoverflow.com/questions/12778978/libav-ffmpeg-avcodec-decode-video2-returns-1-when-separating-demultiplexing" target="_blank" rel="external">lonk up this!</a></p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/23/音视频编解码遇到的坑/" class="archive-article-date">
-  	<time datetime="2016-11-23T06:06:40.152Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-23</time>
+      <a href="/2017/01/10/Spring AOP/" class="archive-article-date">
+  	<time datetime="2017-01-10T02:42:25.031Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-10</time>
 </a>
       
       
@@ -747,85 +873,7 @@ ClassFile {
 
 
   
-    <article id="post-Java并发实战" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-java并发编程实战笔记"><a href="#title-java并发编程实战笔记" class="headerlink" title="title:java并发编程实战笔记"></a>title:java并发编程实战笔记</h2><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><ul>
-<li>线程拥有自己的程序计数器，栈，本地变量</li>
-<li>同一个程序内的多个线程可以在多CPU的情况下同时进行</li>
-<li>线程为CPU时序调控的最基本单元</li>
-</ul>
-<h2 id="第二章-线程安全"><a href="#第二章-线程安全" class="headerlink" title="第二章 线程安全"></a>第二章 线程安全</h2><ul>
-<li>原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）<br>原子操作时不可中断的，不可分割的。<ul>
-<li>竞争条件： 不是所有的竞争条件都是数据竞争，竞争条件并不总是导致失败。</li>
-<li>数据竞争： </li>
-</ul>
-</li>
-<li>不论怎样，线程安全包括原子性和可见性两个方面</li>
-<li>对于每个可被多个线程访问的可变状态变量，如果所有的访问，如果所有访问它的资源在执行时都占有同一个锁，我们称这个变量由这个锁保护。</li>
-<li>每个可变变量都需要由唯一一个确定的锁保护，而维护者应该清楚这个锁。</li>
-<li>为了保证性能，应该致使synchronized 代码块足够短。</li>
-<li>执行耗时计算时，不应该占有所</li>
-</ul>
-<h2 id="第三章-可见性"><a href="#第三章-可见性" class="headerlink" title="第三章 可见性"></a>第三章 可见性</h2><ul>
-<li>Volatile:保证数据不过期</li>
-<li>锁不仅仅是关于同步与互斥，也是关于内存可见的。</li>
-<li>正确应用volatile的方式： 用于确保它们所引用的对象状态的可见性，或者用于标示重要的生命周期事件的发生。</li>
-<li>使用volatile变量的标准<ul>
-<li>写入变量时并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值</li>
-<li>变量不需要与其他的状态变量共同参与不变约束</li>
-<li>访问变量时没有额外的原因加锁</li>
-</ul>
-</li>
-<li>JDBC 并没有要求connection是线程安全的，但是在应用中，connection 会从线程池中获取一个实例，并且在connection完成操作归还给线程池之前，线程池不会将connection分配给其他线呈</li>
-<li>线程限制技术： 力图安卓的UI操作</li>
-<li>ThreadLocal 是本地化的最规范的方式，应用很广、</li>
-<li>为临时缓存这种简单的事务而直接使用ThreadLocal并没有什么性能优势。在java5.0中，它被一种更直接的方式取代，就是为为每一次调用分配一个新的缓冲区</li>
-<li>对象的引用和以及对象的状态必须同事对其他线程可见。一个正确创建的对象可以通过下面的条件安全的发布<ul>
-<li>通过静态初始化器初始化对象的引用</li>
-<li>将它的引用存储到volatile域或者AtomicReference</li>
-<li>将它的引用存储到正确创建的对象的final域中</li>
-<li>将它的引用存储到由锁正确保护的域中</li>
-</ul>
-</li>
-<li>不可变对象可以在没有额外同步的情况下，安全的用于任意线程，甚至发布它们时亦不需要同步</li>
-<li>　一个线程安全的对象在内部进行同步，所以其他线程无需额外同步，就可以通过公共接口随意访问它</li>
-<li>　一个被守护的对象只能通过特定的锁来访问，被守护的对象包括那些被线程安全对象封装的对象，和已知被特定的锁保护起来的已发布的对象</li>
-</ul>
-<p>##　第四章</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/14/Java并发实战/" class="archive-article-date">
-  	<time datetime="2016-11-14T07:59:57.455Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-14</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-WebSocket With Stomp" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Golang学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -835,67 +883,7 @@ ClassFile {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/10/WebSocket With Stomp/">搭建一个配合Stomp消息的WebSocket服务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
-<p><a href="http://blog.109yxlm.cc/2016/11/10/WebSocket%E6%9C%8D%E5%8A%A1/" target="_blank" rel="external">最简单的WebSocket服务</a></p>
-</blockquote>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocketMessageBroker</span><span class="comment">//这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息。</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketMessageConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Spring的Web消息功能基于消息代理（message broker）</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">//配置消息代理,客户端在监听相应信息时加加上这个前缀</span></div><div class="line">        registry.enableSimpleBroker(<span class="string">"/client"</span>);</div><div class="line">        <span class="comment">//所有带有"/app*"前缀的请求都会被映射到带有@MessageMapping注解的方法中去</span></div><div class="line">        registry.setApplicationDestinationPrefixes(<span class="string">"/app"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 这些路径即为Stomp 监听WebSocket的路径。</div><div class="line">         * 客户端在配置websocket url时应为 : "ws://localhost:8081/hello/websocket"</div><div class="line">         */</div><div class="line">        registry.addEndpoint(<span class="string">"/hello"</span>,<span class="string">"/client"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>@EnableWebSocketMessageBroker 这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息</li>
-<li>重写的registerEndPoint里面添加的Endpoint,将“/hello”注册为<strong>STOMP端点</strong>。这个路径与之前发送和接收消息的<strong>目的地路径</strong>有所不同。这是一个端点，客户端在订阅或发布消息到目的地路径前，要通过websocket连接该端点。</li>
-<li>通过重载configureMessageBroker()方法配置了一个简单的消息代理。所以消息代理将会处理前缀为“/client”的消息,除此之外，发往应用程序的消息将会带有“/app”前缀</li>
-<li>所有目的地以“/app”打头的消息都将会路由到带有@MessageMapping注解的方法中，而不会发布到代理队列或主题中。</li>
-</ul>
-<h2 id="处理来自客户端的STOMP消息"><a href="#处理来自客户端的STOMP消息" class="headerlink" title="处理来自客户端的STOMP消息"></a>处理来自客户端的STOMP消息</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageController</span> </span>&#123;</div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/hello"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/welcome"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> WelcomeMessage <span class="title">greeting</span><span class="params">(HelloMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WelcomeMessage(<span class="string">"welcome "</span> + message.getName() + <span class="string">"!"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/schedule"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/schedule"</span>)  </div><div class="line">    <span class="function"><span class="keyword">public</span> ScheduleTaskMessage <span class="title">schedule</span><span class="params">(ScheduleTaskMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        System.out.println(<span class="string">"schedule task message "</span> + message.getContent());</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        message.setContent(<span class="string">"I already received the message："</span>+message.getContent());</div><div class="line">        <span class="keyword">return</span> message;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在本例中，这个目的地也就是“/app/hello”和“/app/schedul“ 的消息，“/app”前缀是隐含的，因为我们将其配置为应用的目的地前缀，并发送消息到指定的路径。注意，发送的路径要以在 SimpleBroker开头。不带Stomp接受不到。在这里是以“client开头的”</p>
-<h1 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h1><blockquote>
-<p>Client端是自实现的Stomp协议，有些负责这里只介绍最基本的使用，具体请查看<a href="https://github.com/WalkerLiuFei/WebSocketAction" target="_blank" rel="external">源码</a></p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">StompClient mStompClient = Stomp.over(WebSocket.class, <span class="string">"ws://localhost:8081/hello/websocket"</span>);</div><div class="line">mStompClient.connect(); <span class="comment">//连接到指定路径的WebSocket链接</span></div><div class="line"></div><div class="line"><span class="comment">//订阅Stomp消息</span></div><div class="line">mStompClient.topic(<span class="string">"/client/welcome"</span>).subscribe(topicMessage -&gt; &#123;</div><div class="line">    System.out.println(<span class="string">"the schedule message :"</span> + topicMessage.getPayload()); </div><div class="line">&#125;);</div><div class="line"><span class="comment">//向客户端发送一个Stomp消息</span></div><div class="line">mStompClient.send(<span class="string">"/app/hello"</span>, objectMapper.writeValueAsString(<span class="keyword">new</span> HelloMessage(<span class="string">"walker"</span>))).subscribe();</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/10/WebSocket With Stomp/" class="archive-article-date">
-  	<time datetime="2016-11-10T08:50:12.932Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-WebSocket服务" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/10/WebSocket服务/">搭建一个最简单的WebSocket服务</a>
+      <a class="article-title" href="/2016/12/22/Golang学习笔记/">Golang学习笔记</a>
     </h1>
   
 
@@ -904,25 +892,32 @@ ClassFile {
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
+<p>记录在学习golang的过程中遇到的各种坑，不涉及各种基本语法。</p>
 </blockquote>
-<h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
-<p>Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#websocket" target="_blank" rel="external">WebSocket Support</a></p>
-</blockquote>
-<p>利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    compile group: &apos;org.springframework.boot&apos;, name: &apos;spring-boot-starter-websocket&apos;, version: &apos;1.4.1.RELEASE&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocket</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">implements</span> <span class="title">WebSocketConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">//当webSocket</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandlers</span><span class="params">(WebSocketHandlerRegistry registry)</span> </span>&#123;</div><div class="line">        registry.addHandler(myHandler(),<span class="string">"/hello"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandler <span class="title">myHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyHandler();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Client端"><a href="#Client端" class="headerlink" title="Client端"></a>Client端</h1><p>client端利用 java-client这个第三方的库来实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile group: &apos;org.java-websocket&apos;, name: &apos;Java-WebSocket&apos;, version: &apos;1.3.0&apos;</div></pre></td></tr></table></figure>
-<p>然后继承实现一个WebSocketCLient类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleWebSocket</span> <span class="keyword">extends</span> <span class="title">WebSocketClient</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExampleWebSocket</span><span class="params">(URI serverURI)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(serverURI,<span class="keyword">new</span> Draft_17());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(ServerHandshake handshakedata)</span> </span>&#123;</div><div class="line">        Iterator&lt;String&gt; stringIterator = handshakedata.iterateHttpFields();</div><div class="line">        <span class="keyword">while</span> (stringIterator.hasNext())&#123;</div><div class="line">            String name = stringIterator.next();</div><div class="line">            System.out.println(name+<span class="string">" "</span>+handshakedata.getFieldValue(name</div><div class="line">            ));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(String message)</span> </span>&#123;</div><div class="line">        System.out.println(message);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClose</span><span class="params">(<span class="keyword">int</span> code, String reason, <span class="keyword">boolean</span> remote)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"closed:"</span>+reason);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Exception ex)</span> </span>&#123;</div><div class="line">        System.out.println(ex.getMessage());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>最后通过 url进行连接。 注意，这url的路径 /hello就是你在Server端配置的监听路径。另外后继的/webSocket指明这是个WebSocket链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">exampleWebSocket = new ExampleWebSocket(new URI(&quot;ws://127.0.0.1:8081/hello/websocket&quot;));</div><div class="line">exampleWebSocket.connect();</div></pre></td></tr></table></figure></p>
-<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="" git@github.com:walkerliufei="" websocketaction.git="">源码</a></p>
+<ul>
+<li><p>在import package 中出现的 “import for side-effect” error：<strong>golang 遵循一个原则，“用多少，拿多少”，如果你拿的东西比你用的多，它就会报出error。。在这里你导入的包，包里面的东西你从来没用过他就报出这个error。同样的变量声明也是一样的！</strong> </p>
+</li>
+<li><p>golang 中 range遍历</p>
+</li>
+</ul>
+<pre>
+strings := []string{"1256","dasdal"};
+for _,str := range strings{} //遍历的是值
+for str := range strings{} //遍历的是index
+//在用range遍历一个字符串的时候，其可以返回两个值
+//第一个值是 index,第二个值是 value，类型为run == int32 
+for i, c := range "go" {
+      fmt.Println(i, c)
+}
+</pre>
+
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/10/WebSocket服务/" class="archive-article-date">
-  	<time datetime="2016-11-10T07:50:00.580Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+      <a href="/2016/12/22/Golang学习笔记/" class="archive-article-date">
+  	<time datetime="2016-12-22T03:23:45.578Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-22</time>
 </a>
       
       
@@ -942,37 +937,146 @@ ClassFile {
 
 
   
-    <article id="post-lambda表达式" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Mysql触发器" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/08/Mysql触发器/">Mysql 触发器</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-lambda-表达式笔记"><a href="#title-lambda-表达式笔记" class="headerlink" title="title:lambda 表达式笔记"></a>title:lambda 表达式笔记</h2><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><ul>
-<li>以前的循环方式</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <p>创建一个触发器：</p>
+<pre>
+create trigger trigger_name trigger_time trigger_event on table_name for each row trigger_stmt
+</pre>
+
+<p>解释：</p>
 <ul>
-<li>使用 lambda 表达式以及函数操作(functional operation)</li>
+<li>trigger_name : 触发器名字</li>
+<li>trigger_time : 触发器的触发时间<ul>
+<li>before: 检查约束前触发</li>
+<li>after：检查约束后触发</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));</div><div class="line">```  </div><div class="line">   </div><div class="line">+ 在 Java 8 中使用双冒号操作符(double colon operator)</div><div class="line"></div><div class="line">```  </div><div class="line">players.forEach(System.out::println);</div><div class="line">```   </div><div class="line"></div><div class="line">## 匿名内部类</div><div class="line"></div><div class="line">+ 原来的表达式</div><div class="line"></div><div class="line">```  </div><div class="line">btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() &#123;  </div><div class="line">          @Override  </div><div class="line">          public void handle(ActionEvent event) &#123;  </div><div class="line">              System.out.println(&quot;Hello World!&quot;);   </div><div class="line">          &#125;  </div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
-<ul>
-<li>lambda表达式</li>
+</li>
+<li>trigger_event：触发事件： will be insert,update,delete….</li>
+<li>trigger_stmt : 即为在前面的触发条件被触发后，mysql需要做的动作</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">btn.setOnAction(event -&gt; System.out.println(&quot;Hello World!&quot;));</div><div class="line">```  </div><div class="line"></div><div class="line">## 集合排序</div><div class="line"></div><div class="line">+ 原表达式</div><div class="line"></div><div class="line">``` </div><div class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </div><div class="line">Arrays.sort(players, sortByName);</div><div class="line">```  </div><div class="line">  </div><div class="line">+ lambda表达式</div><div class="line"></div><div class="line">```  </div><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));</div><div class="line">```  </div><div class="line"></div><div class="line">## Stream</div><div class="line"></div><div class="line">创建一个简单的集合作为例子</div></pre></td></tr></table></figure>
-<p>List<testbean> beans = new ArrayList<testbean>();<br>int count = 0;<br>while (count++ &lt; 50)<br>    beans.add(new TestBean(count,”我的是ID为”+ count +”的成员”));<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### filter</div><div class="line"></div><div class="line">filter比较简单，例如下面的例子。遍历所有id号大于20的元素并输出</div></pre></td></tr></table></figure></testbean></testbean></p>
-<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean);<br>        });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">###  map</div><div class="line"></div><div class="line">将testBean 映射为它的content.</div></pre></td></tr></table></figure></p>
-<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .map(TestBean::getContent)<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean); //输出的的内容为testbean的content内容<br>        });<br>```</p>
+<p><strong>注:对同一个表的相同触发时间的触发事件只能配置一个触发器</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">delimiter $$ </div><div class="line"><span class="keyword">create</span> <span class="keyword">trigger</span> ins_film <span class="keyword">after</span> <span class="keyword">insert</span> <span class="keyword">on</span> film <span class="keyword">for</span> <span class="keyword">each</span> <span class="keyword">row</span> <span class="keyword">begin</span> </div><div class="line"> <span class="keyword">insert</span> <span class="keyword">into</span> film_text (film_name,film_id,title ,description)</div><div class="line"> <span class="keyword">values</span>(new.film_id,new.title,new.description);</div><div class="line"> <span class="keyword">END</span>;</div><div class="line"> $$</div></pre></td></tr></table></figure>
+<p>创建一个触发器 ins_film， 每次在表film插入字段后，都将插入的相应值插入到表film_text中去。</p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/10/lambda表达式/" class="archive-article-date">
-  	<time datetime="2016-11-10T01:23:39.915Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+      <a href="/2016/12/08/Mysql触发器/" class="archive-article-date">
+  	<time datetime="2016-12-08T06:05:22.827Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-MySql存储过程和函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/MySql存储过程和函数/">Mysql存储过程和函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="从一个实例开始"><a href="#从一个实例开始" class="headerlink" title="从一个实例开始"></a>从一个实例开始</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">delimiter $$ </div><div class="line">create procedure film_in_stock (in p_film_id int ,p_film_count int ,p_stor_id int)</div><div class="line">reads sql data</div><div class="line">begin </div><div class="line">	select inventory_id</div><div class="line">    from inventory</div><div class="line">    where film_id = p_film_id</div><div class="line">    and store_id = p_store_id</div><div class="line">    and inventory_in_stock(inventroy_id);</div><div class="line">end $$</div></pre></td></tr></table></figure>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/07/MySql存储过程和函数/" class="archive-article-date">
+  	<time datetime="2016-12-07T07:45:15.859Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql性能优化(二)New Document" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/Mysql性能优化(二)New Document/">Mysql的性能优化（索引篇）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Mysql中每个表的至少支持16个索引，MyISAM和InnoDB的存储引擎表默认创建的数据格式是都BTree，支持前缀索引，不支持函数索引。其中MyIsam支持全文本索引。</p>
+<h1 id="设计索引的原则"><a href="#设计索引的原则" class="headerlink" title="设计索引的原则"></a>设计索引的原则</h1><ul>
+<li>最适合索引的列是出现在 WHERE 语句中列</li>
+<li>使用前缀索引的话，尽量缩短前缀长度。</li>
+<li>使用最左前缀</li>
+<li>不要过度索引，额外的索引会占用额外的磁盘空间，降低写操作的性能，在修改表的内容时，索引必须进行更新，有必要时要进行重构。</li>
+<li>对于InnoDB来讲，记录会按照一定的顺序保存。优先级是 主键 &gt; 唯一索引 &gt; 自动生成的内部列.通常来讲，按照主键和内部列进行访问的速度是最快的。所以尽量选择自己制定主键。当表中同时又多个列都是唯一的时，要选择最常访问键作为主键，提高检查效率。另外，InnoDB表的普通索引都会保存主键的键值，所以主键尽量选择较短的数据类型。可以有效的减少索引的磁盘占用，提高索引的缓存效果。 </li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/07/Mysql性能优化(二)New Document/" class="archive-article-date">
+  	<time datetime="2016-12-07T05:39:40.893Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
 </a>
       
       
@@ -994,7 +1098,7 @@ ClassFile {
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1004,7 +1108,7 @@ ClassFile {
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2016 Walker
+    		&copy; 2017 Walker
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

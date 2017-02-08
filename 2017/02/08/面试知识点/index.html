@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="数据库like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！
+SQLNoSql
+mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？
+
+capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制
+
+
+
+monogo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Walker的博客">
+<meta property="og:url" content="http://yoursite.com/2017/02/08/面试知识点/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta property="og:description" content="数据库like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！
+SQLNoSql
+mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？
+
+capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制
+
+
+
+monogo">
+<meta property="og:updated_time" content="2017-02-08T10:15:31.394Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Walker的博客">
+<meta name="twitter:description" content="数据库like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！
+SQLNoSql
+mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？
+
+capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制
+
+
+
+monogo">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-面试知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p>like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！</p>
+<h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h2 id="NoSql"><a href="#NoSql" class="headerlink" title="NoSql"></a>NoSql</h2><ul>
+<li>mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？<ul>
+<li></li>
+<li>capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制</li>
+<li></li>
+</ul>
+</li>
+<li>monogoDB 的存储大小限制<ul>
+<li>对于MMAPv1 存储引擎中，DataBase 中的文件数量不能超过16000个，也就是说一个以MMAPv1 作为存储引擎的data base的最大容量为32TB，如果设置了storage.mmapv1.smallFiles 为true,最大容量为8TB（设置这个bool 值后，单个data file 的最大容量会是 512MB）</li>
+<li>对于WiredTiger engine ,内部缓存分为两种，一般的RAM 存储，或者256MB（V .34）。</li>
+</ul>
+</li>
+<li>mongoDB 中的存储引擎有哪些种，各自有什么特点<ul>
+<li>MMAPV1  <ul>
+<li></li>
+<li>存储原理:文档在磁盘中连续存放，文档所占用的磁盘空间包括文档数据所占空间和文档填充，datafile 起始大小为64MB（pre allocate）,当大小超过 64MB后，data file 会通过padding 算法来叠加文档大小</li>
+<li>journal 刷新频率为 100ms，jorunal 用来用来恢复数据库的非正常关闭</li>
+<li>很吃内存，因为数据文件会通过mmap 映射到内存中（基本上是有多少吃多少），所以增大机器内存是提高 mongoDB性能的手段之一</li>
+</ul>
+</li>
+<li>WiredTiger engine v3.2 以后的默认存储引擎<ul>
+<li>支持文档级别的 lock （<code>在代码中怎么实现？</code>）</li>
+<li>快照功能（check point）， 一分钟或者超过2GB的变更日志一次，在写最新快照时，上一个快照已然有效。当 当前快照落地后，会自动删除上一个快照。journal 文件的大小为100MB，当日志文件超过这个大小后，会自动新建一个日志文件</li>
+<li>内部缓存 默认值是：1GB 或 60% of RAM - 1GB，取两值中的较大值</li>
+</ul>
+</li>
+<li>InMemory : 基于内存的存储，不是重点</li>
+</ul>
+</li>
+<li><p>BSON Document 大小限制，有没有 level limit,是多少？</p>
+<ul>
+<li>为避免内存溢出，Bson 最大为 16MB ，如果遇到size 瓶颈，你就需要 GridFS API 来解决</li>
+<li>BSON Document 的level 层级最多100.</li>
+</ul>
+</li>
+<li><p>mongoDB 是基于内存的还是基于硬盘的</p>
+<ul>
+<li>根据存储引擎不同，inmemory 是基于内存。otherwise 基于硬盘的持久化</li>
+</ul>
+</li>
+<li>mongoDB 中的GridFS机制，怎么使用<ul>
+<li>mongoDB 将db 分为 多个 chunk 来分块存储大文件。</li>
+<li>在使用时需要 基于database 新建 新建一个   <code>GridFSBucket</code>，上传文件时需要通过文件流，在java 中也可以使用<code>GridFSUploadStream</code> 来批量上传文件。 上传成功后 会返回一个 fileID,利用这个FileID 实现CURD 等等操作</li>
+<li></li>
+</ul>
+</li>
+<li>mongoDB 的数据文件为什么很大<ul>
+<li>mongoDB 为防止数据碎片采用存储空间预分配的策略</li>
+</ul>
+</li>
+<li>mongoDB 中chunk的概念，操作块（迁移，删除等等需要注意的事项）<ul>
+<li>chunk 用来存储协作一起来存储大的文件</li>
+<li>chunk size 默认为64M,chunk 过小会导致频繁的迁移从而导致性能问题，chunk 过大会导致数据存储的不均衡</li>
+</ul>
+</li>
+<li>mongoDB 中分片的概念<ul>
+<li>分片方式： 内存区域分片，hash分片(类似于 数组和hash表)</li>
+</ul>
+</li>
+<li>mongoDB 中的日志文件应该怎样存储</li>
+<li>mongoDB 中的fsync 操作<ul>
+<li>fsync 命令允许我们刷新所有等待写入的操作刷新数据文件中，它提供了锁的机制，这样会使得备份更加简单。</li>
+<li>fsync 机制并不适合建立一个 read-only 的模式，因为它的读操作也有可能会被block（因为新建立的 connection 需要被授予权限）</li>
+</ul>
+</li>
+<li>mongoDB 中<strong>事务</strong>？！ 如何对 collection ，database 进行加锁？</li>
+<li>mongoDB 中的集群分为那些。各包括那些部分，有什么特点</li>
+<li>什么事oplog？ 有什么用<ul>
+<li>操作日志</li>
+</ul>
+</li>
+<li>getlasterror是什么东西？ 有什么用<br>+ </li>
+<li>sharding 和replication 是怎样工作的。</li>
+<li>数据在什么时候才会扩展到多个分片里？</li>
+<li>当我在视图更新一个正在被迁移的块上的文档时会发生什么？</li>
+<li><a href="https://docs.mongodb.com/manual/reference/limits/" target="_blank" rel="external">mongoDB 的一些局限性</a></li>
+<li><a href="https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod" target="_blank" rel="external">说出几个常用的mongod 命令</a></li>
+<li>mongoDB 中的RDBMS</li>
+<li>dataBase 是怎样保存 collection的？ collection又是怎样保存document的？ </li>
+<li>chunk 默认的大小为 255KB</li>
+<li>bulkwrite ()</li>
+<li><p>目前很多write operation是用返回值的。包括错误信息</p>
+</li>
+<li><p>Document Model 类型</p>
+<ul>
+<li>one to one</li>
+<li>one to many emb</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>read concern ,write concern</li>
+</ul>
+<ul>
+<li>shard 集群，<ul>
+<li><ul>
+
+
+</ul></li>
+</ul>
+</li>
+</ul>
+ <pre>
+    mongod --port 2001 --shardsvr --dbpath shard1/
+    mongod --port 2002 --shardsvr --dbpath shard2/
+ </pre>
+
+
+<ul>
+<li><p>配置服务器：保存集群的元数据，包含各个shard的路由规则\</p>
+<pre>
+mongod --port 3001 --dbpath cfg1/
+mongod --port 3002 --dbpath cfg2/
+mongod --port 3003 --dbpath cfg3/
+</pre>
+
+<ul>
+<li>路由服务器：启动查询路由mongos 服务器 –&gt;</li>
+<li><p><code>mongos --port 5000 --configdb 127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003</code></p>
+</li>
+<li><p>连接mongos，为集群添加数据分片节点。</p>
+</li>
+</ul>
+<pre>
+mongo --port 5000 amdmin
+
+sh.addShard("127.0.0.1:2001")
+sh.addShard("127.0.0.1:2002")
+</pre>
+
+</li>
+</ul>
+<ul>
+<li>如果Shard是Replica Set，添加Shard的命令：  <pre>
+  sh.addShard("rsname/host1:port,host2:port,...")    
+  rsname - 副本集的名字
+  </pre>
+
+
+</li>
+</ul>
+<p> </p>
+<p>—————————-以上 需要在 2017/02/07 完成！—————————</p>
+<h2 id="mongoDB-常用命令"><a href="#mongoDB-常用命令" class="headerlink" title="mongoDB 常用命令"></a>mongoDB 常用命令</h2><ul>
+<li>use XXX (用户名，database)</li>
+<li>db.addUser(“name”,”password”)  //添加用户</li>
+<li>db.getUsers  //查询用户</li>
+<li>db.<code>collectionName</code>.Command : 其中的command 包括 各种对collection 数据的操作。这些也是driver 里面最常用的一些<ul>
+<li>aggreagate  </li>
+<li>distinct</li>
+<li>group</li>
+<li>mapReduce</li>
+<li>find </li>
+<li>insert</li>
+<li>update</li>
+<li>delete</li>
+<li>findAndModify </li>
+<li>getMore  // </li>
+<li>getLastError —-&gt; db.getLastError</li>
+<li>getPrevError —-&gt; db.</li>
+<li>resetError</li>
+<li>eval // 从 mongo 3.0 开始已经deprecate</li>
+<li>parallelCollection</li>
+</ul>
+</li>
+</ul>
+<h2 id="stackoverflow-上的问题"><a href="#stackoverflow-上的问题" class="headerlink" title="stackoverflow 上的问题"></a>stackoverflow 上的问题</h2><ul>
+<li>怎样查询 like。 利用regex..find(“key”,”regex 表达式”)。。。。其实mongoDB的regex 要比mysql的like 强大的多</li>
+<li>利用 <code>collection.find(Filters.where(&quot;this.stars - 20  &gt; 20&quot; )).forEach((Block&lt;? super Document&gt;) System.out::println );</code> 可以查询一些复杂的逻辑表达式 的数据</li>
+<li>mapreduce<br>  + </li>
+<li>group<br>  + </li>
+<li><p>aggreate</p>
+</li>
+<li><p>replica set 的rollback ，其实是主节点进行写操作，从节点没有同步成功。然后主节点出现宕机，或者其他情况退出了当前的cluster。当这个宕机的主节点从新加入到从节点的后，这个former primary 就成了从节点，从节点需要从当前 的主节点进行一次同步，这就是所谓的rollback。</p>
+<h2 id="mongoDB-官网FAQ"><a href="#mongoDB-官网FAQ" class="headerlink" title="mongoDB 官网FAQ"></a>mongoDB 官网FAQ</h2></li>
+<li><p>mongoDB 保存有cache功能</p>
+</li>
+<li>mongoDB 是否支持事务? <ul>
+<li>mongoDB 不支持在 多个文档上的事务，但是支持在单一文档的上的原子操作,利用$isolated 操作符</li>
+<li>原子操作保证在一次读写中，除非出现错误或者异常，其他的client是看不到 的。另外，原子操作</li>
+</ul>
+</li>
+<li>当在建立一个collection上面的Index的时候，collection是不允许读写的。所以建立index的时候尽量将background的属性设置为 true</li>
+<li>mongoDB的索引和mysql的索引有什么不同？ mysql只能建立一个索引的key，而mongodb 可以建立多个规则更flexable</li>
+<li>对于MMAPv1 存储引擎，如果对一个document进行修改导致它存储的空间超过了现有的分配空间。monogodb 会为他新分配一个空间并更新所有indexs.</li>
+<li>mongodb 的锁机制的类型： Mongodb 使用一个readers-writer 锁，允许多个读操作访问数据库，但是只提供唯一写操作。写操作比读操作的优先级更高</li>
+<li>对于MMAPv1 存储引擎，在进行一个读操作的时候，如果当前的document没有在memory中存在，它会将锁ylied，在所要读要读的data被读入内存后，这个操作会再获取这个锁进行操作。</li>
+<li>CURD ，Indexs,Map-Reduce，aggreate 都会获取锁</li>
+<li>那些操作会锁定数据库<ul>
+<li>db.collection.ensureIndex 。在不设置background 为true的时候</li>
+<li>reindex</li>
+<li>compact : 把所有的数据和索引重写并分块，在WiredTiger 存储引擎中，这个命令会将硬盘容量重新分配给操作系统</li>
+<li>再创建一个很大的collection的时候</li>
+<li>db.collection.validate() </li>
+<li>db.copyDatabase()</li>
+</ul>
+</li>
+<li>那些操作会锁定多个数据库<ul>
+<li>journing</li>
+<li>uset.auth</li>
+</ul>
+</li>
+<li>sharding 中的每个分片都有自己独立的读写锁</li>
+<li>在复制集节点中，由于从节点是不允许用户进行写操作的，所以没有必要关心其写的锁。另外就算是对一个cluster 进行写操作，从节点也不是在每时每刻监听主节点的写操作并执行同步，从节点会每分钟(defalut)参考主节点的oplog进行同步</li>
+<li>对一个document的一个读操作在进行时，稍后一个对这个读数据的update操作几乎同时发起。虽然读操作能及时看到写造成的document的更新操作的update version，但是无法实时的数据snap shot.也就是说，读操作会错过读操作期间的数据的更新</li>
+<li>replica Set 和shared 机制应该一起使用，但是replica set架构应该优先于shared机制</li>
+<li>一个复制集如果节点的数量是级数，他就不需要投票节点。</li>
+<li>在复制集架构中，你可以使用不同的存储引擎</li>
+<li>对于wiredTiger存储引擎，当一个机器上运行多个mongod实例 或者mongodb 运行在一个容器中（docker）时你需要降低其cacheSize</li>
+<li>工作复制集代表应用在正常操作进程中使用的所有数据，大部分情况下是所有数据大小的集合，但特殊情况下工作复制集的大小取决于当前正在使用的数据库</li>
+<li>对于unaccessed 的document，mongod 是不会将其映射到内存中，只要能映射到内存中的数据都是可以accesss的</li>
+<li>monogdb 每一分钟从memory 写入到disk一次，对于wireTiger，当journal 容量大于2G时其也进行一次write disk 操作，wireTiger 每100ms 写入journal文件一次</li>
+<li><p>默认存储目录 /data/db 中的数据文件可能要比要插入的data set所占空间要打，原因是</p>
+<ul>
+<li>第一：preallocated data file</li>
+<li>oplog 文件，oplog 文件大小大概是 disk存储的 5%</li>
+<li>journal文件</li>
+</ul>
+</li>
+<li><p>repairdatabase 和 compact命令都可以为monogoDB重新分配内存，但是需要注意这两个命令执行的时候都需要2GB 的临时硬盘容量（2GB —&gt;单个datafile的最大容量）</p>
+</li>
+<li>对于 mmapv1 存储引擎collection 没有所谓的容量大小限制，database是有的，database 最多只能包含16000个datafile，每个datafile 最大2GB</li>
+<li>内存不足会导致pagefault。原因是内存不足导致的从硬盘读取数据不到内存中，遇到这种情况最好就开始考虑sharding 分片了</li>
+<li>一般情况下mongodb是没有连接限制的，除非你对连接进行设置</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/08/面试知识点/" class="archive-article-date">
+  	<time datetime="2017-02-08T10:54:40.116Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/01/24/MongoDB学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MongoDB学习</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="面试知识点" data-title="" data-url="http://yoursite.com/2017/02/08/面试知识点/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

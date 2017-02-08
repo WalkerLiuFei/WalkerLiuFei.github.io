@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Walker的博客">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Walker的博客">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        
+  
+    <article id="post-Java并发实战" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-java并发编程实战笔记"><a href="#title-java并发编程实战笔记" class="headerlink" title="title:java并发编程实战笔记"></a>title:java并发编程实战笔记</h2><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><ul>
+<li>线程拥有自己的程序计数器，栈，本地变量</li>
+<li>同一个程序内的多个线程可以在多CPU的情况下同时进行</li>
+<li>线程为CPU时序调控的最基本单元</li>
+</ul>
+<h2 id="第二章-线程安全"><a href="#第二章-线程安全" class="headerlink" title="第二章 线程安全"></a>第二章 线程安全</h2><ul>
+<li>原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）<br>原子操作时不可中断的，不可分割的。<ul>
+<li>竞争条件： 不是所有的竞争条件都是数据竞争，竞争条件并不总是导致失败。</li>
+<li>数据竞争： </li>
+</ul>
+</li>
+<li>不论怎样，线程安全包括原子性和可见性两个方面</li>
+<li>对于每个可被多个线程访问的可变状态变量，如果所有的访问，如果所有访问它的资源在执行时都占有同一个锁，我们称这个变量由这个锁保护。</li>
+<li>每个可变变量都需要由唯一一个确定的锁保护，而维护者应该清楚这个锁。</li>
+<li>为了保证性能，应该致使synchronized 代码块足够短。</li>
+<li>执行耗时计算时，不应该占有所</li>
+</ul>
+<h2 id="第三章-可见性"><a href="#第三章-可见性" class="headerlink" title="第三章 可见性"></a>第三章 可见性</h2><ul>
+<li>Volatile:保证数据不过期</li>
+<li>锁不仅仅是关于同步与互斥，也是关于内存可见的。</li>
+<li>正确应用volatile的方式： 用于确保它们所引用的对象状态的可见性，或者用于标示重要的生命周期事件的发生。</li>
+<li>使用volatile变量的标准<ul>
+<li>写入变量时并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值</li>
+<li>变量不需要与其他的状态变量共同参与不变约束</li>
+<li>访问变量时没有额外的原因加锁</li>
+</ul>
+</li>
+<li>JDBC 并没有要求connection是线程安全的，但是在应用中，connection 会从线程池中获取一个实例，并且在connection完成操作归还给线程池之前，线程池不会将connection分配给其他线呈</li>
+<li>线程限制技术： 力图安卓的UI操作</li>
+<li>ThreadLocal 是本地化的最规范的方式，应用很广、</li>
+<li>为临时缓存这种简单的事务而直接使用ThreadLocal并没有什么性能优势。在java5.0中，它被一种更直接的方式取代，就是为为每一次调用分配一个新的缓冲区</li>
+<li>对象的引用和以及对象的状态必须同事对其他线程可见。一个正确创建的对象可以通过下面的条件安全的发布<ul>
+<li>通过静态初始化器初始化对象的引用</li>
+<li>将它的引用存储到volatile域或者AtomicReference</li>
+<li>将它的引用存储到正确创建的对象的final域中</li>
+<li>将它的引用存储到由锁正确保护的域中</li>
+</ul>
+</li>
+<li>不可变对象可以在没有额外同步的情况下，安全的用于任意线程，甚至发布它们时亦不需要同步</li>
+<li>　一个线程安全的对象在内部进行同步，所以其他线程无需额外同步，就可以通过公共接口随意访问它</li>
+<li>　一个被守护的对象只能通过特定的锁来访问，被守护的对象包括那些被线程安全对象封装的对象，和已知被特定的锁保护起来的已发布的对象</li>
+</ul>
+<p>##　第四章</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/14/Java并发实战/" class="archive-article-date">
+  	<time datetime="2016-11-14T07:59:57.455Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-14</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-WebSocket With Stomp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/10/WebSocket With Stomp/">搭建一个配合Stomp消息的WebSocket服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
+<p><a href="http://blog.109yxlm.cc/2016/11/10/WebSocket%E6%9C%8D%E5%8A%A1/" target="_blank" rel="external">最简单的WebSocket服务</a></p>
+</blockquote>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocketMessageBroker</span><span class="comment">//这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息。</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketMessageConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Spring的Web消息功能基于消息代理（message broker）</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">//配置消息代理,客户端在监听相应信息时加加上这个前缀</span></div><div class="line">        registry.enableSimpleBroker(<span class="string">"/client"</span>);</div><div class="line">        <span class="comment">//所有带有"/app*"前缀的请求都会被映射到带有@MessageMapping注解的方法中去</span></div><div class="line">        registry.setApplicationDestinationPrefixes(<span class="string">"/app"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 这些路径即为Stomp 监听WebSocket的路径。</div><div class="line">         * 客户端在配置websocket url时应为 : "ws://localhost:8081/hello/websocket"</div><div class="line">         */</div><div class="line">        registry.addEndpoint(<span class="string">"/hello"</span>,<span class="string">"/client"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>@EnableWebSocketMessageBroker 这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息</li>
+<li>重写的registerEndPoint里面添加的Endpoint,将“/hello”注册为<strong>STOMP端点</strong>。这个路径与之前发送和接收消息的<strong>目的地路径</strong>有所不同。这是一个端点，客户端在订阅或发布消息到目的地路径前，要通过websocket连接该端点。</li>
+<li>通过重载configureMessageBroker()方法配置了一个简单的消息代理。所以消息代理将会处理前缀为“/client”的消息,除此之外，发往应用程序的消息将会带有“/app”前缀</li>
+<li>所有目的地以“/app”打头的消息都将会路由到带有@MessageMapping注解的方法中，而不会发布到代理队列或主题中。</li>
+</ul>
+<h2 id="处理来自客户端的STOMP消息"><a href="#处理来自客户端的STOMP消息" class="headerlink" title="处理来自客户端的STOMP消息"></a>处理来自客户端的STOMP消息</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageController</span> </span>&#123;</div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/hello"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/welcome"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> WelcomeMessage <span class="title">greeting</span><span class="params">(HelloMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WelcomeMessage(<span class="string">"welcome "</span> + message.getName() + <span class="string">"!"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/schedule"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/schedule"</span>)  </div><div class="line">    <span class="function"><span class="keyword">public</span> ScheduleTaskMessage <span class="title">schedule</span><span class="params">(ScheduleTaskMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        System.out.println(<span class="string">"schedule task message "</span> + message.getContent());</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        message.setContent(<span class="string">"I already received the message："</span>+message.getContent());</div><div class="line">        <span class="keyword">return</span> message;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在本例中，这个目的地也就是“/app/hello”和“/app/schedul“ 的消息，“/app”前缀是隐含的，因为我们将其配置为应用的目的地前缀，并发送消息到指定的路径。注意，发送的路径要以在 SimpleBroker开头。不带Stomp接受不到。在这里是以“client开头的”</p>
+<h1 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h1><blockquote>
+<p>Client端是自实现的Stomp协议，有些负责这里只介绍最基本的使用，具体请查看<a href="https://github.com/WalkerLiuFei/WebSocketAction" target="_blank" rel="external">源码</a></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">StompClient mStompClient = Stomp.over(WebSocket.class, <span class="string">"ws://localhost:8081/hello/websocket"</span>);</div><div class="line">mStompClient.connect(); <span class="comment">//连接到指定路径的WebSocket链接</span></div><div class="line"></div><div class="line"><span class="comment">//订阅Stomp消息</span></div><div class="line">mStompClient.topic(<span class="string">"/client/welcome"</span>).subscribe(topicMessage -&gt; &#123;</div><div class="line">    System.out.println(<span class="string">"the schedule message :"</span> + topicMessage.getPayload()); </div><div class="line">&#125;);</div><div class="line"><span class="comment">//向客户端发送一个Stomp消息</span></div><div class="line">mStompClient.send(<span class="string">"/app/hello"</span>, objectMapper.writeValueAsString(<span class="keyword">new</span> HelloMessage(<span class="string">"walker"</span>))).subscribe();</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/WebSocket With Stomp/" class="archive-article-date">
+  	<time datetime="2016-11-10T08:50:12.932Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-WebSocket服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/10/WebSocket服务/">搭建一个最简单的WebSocket服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+</blockquote>
+<h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
+<p>Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#websocket" target="_blank" rel="external">WebSocket Support</a></p>
+</blockquote>
+<p>利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    compile group: &apos;org.springframework.boot&apos;, name: &apos;spring-boot-starter-websocket&apos;, version: &apos;1.4.1.RELEASE&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocket</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">implements</span> <span class="title">WebSocketConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">//当webSocket</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandlers</span><span class="params">(WebSocketHandlerRegistry registry)</span> </span>&#123;</div><div class="line">        registry.addHandler(myHandler(),<span class="string">"/hello"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandler <span class="title">myHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyHandler();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Client端"><a href="#Client端" class="headerlink" title="Client端"></a>Client端</h1><p>client端利用 java-client这个第三方的库来实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile group: &apos;org.java-websocket&apos;, name: &apos;Java-WebSocket&apos;, version: &apos;1.3.0&apos;</div></pre></td></tr></table></figure>
+<p>然后继承实现一个WebSocketCLient类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleWebSocket</span> <span class="keyword">extends</span> <span class="title">WebSocketClient</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExampleWebSocket</span><span class="params">(URI serverURI)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(serverURI,<span class="keyword">new</span> Draft_17());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(ServerHandshake handshakedata)</span> </span>&#123;</div><div class="line">        Iterator&lt;String&gt; stringIterator = handshakedata.iterateHttpFields();</div><div class="line">        <span class="keyword">while</span> (stringIterator.hasNext())&#123;</div><div class="line">            String name = stringIterator.next();</div><div class="line">            System.out.println(name+<span class="string">" "</span>+handshakedata.getFieldValue(name</div><div class="line">            ));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(String message)</span> </span>&#123;</div><div class="line">        System.out.println(message);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClose</span><span class="params">(<span class="keyword">int</span> code, String reason, <span class="keyword">boolean</span> remote)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"closed:"</span>+reason);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Exception ex)</span> </span>&#123;</div><div class="line">        System.out.println(ex.getMessage());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后通过 url进行连接。 注意，这url的路径 /hello就是你在Server端配置的监听路径。另外后继的/webSocket指明这是个WebSocket链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">exampleWebSocket = new ExampleWebSocket(new URI(&quot;ws://127.0.0.1:8081/hello/websocket&quot;));</div><div class="line">exampleWebSocket.connect();</div></pre></td></tr></table></figure></p>
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="" git@github.com:walkerliufei="" websocketaction.git="">源码</a></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/WebSocket服务/" class="archive-article-date">
+  	<time datetime="2016-11-10T07:50:00.580Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-lambda表达式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-lambda-表达式笔记"><a href="#title-lambda-表达式笔记" class="headerlink" title="title:lambda 表达式笔记"></a>title:lambda 表达式笔记</h2><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><ul>
+<li>以前的循环方式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>使用 lambda 表达式以及函数操作(functional operation)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));</div><div class="line">```  </div><div class="line">   </div><div class="line">+ 在 Java 8 中使用双冒号操作符(double colon operator)</div><div class="line"></div><div class="line">```  </div><div class="line">players.forEach(System.out::println);</div><div class="line">```   </div><div class="line"></div><div class="line">## 匿名内部类</div><div class="line"></div><div class="line">+ 原来的表达式</div><div class="line"></div><div class="line">```  </div><div class="line">btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() &#123;  </div><div class="line">          @Override  </div><div class="line">          public void handle(ActionEvent event) &#123;  </div><div class="line">              System.out.println(&quot;Hello World!&quot;);   </div><div class="line">          &#125;  </div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<ul>
+<li>lambda表达式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">btn.setOnAction(event -&gt; System.out.println(&quot;Hello World!&quot;));</div><div class="line">```  </div><div class="line"></div><div class="line">## 集合排序</div><div class="line"></div><div class="line">+ 原表达式</div><div class="line"></div><div class="line">``` </div><div class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </div><div class="line">Arrays.sort(players, sortByName);</div><div class="line">```  </div><div class="line">  </div><div class="line">+ lambda表达式</div><div class="line"></div><div class="line">```  </div><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));</div><div class="line">```  </div><div class="line"></div><div class="line">## Stream</div><div class="line"></div><div class="line">创建一个简单的集合作为例子</div></pre></td></tr></table></figure>
+<p>List<testbean> beans = new ArrayList<testbean>();<br>int count = 0;<br>while (count++ &lt; 50)<br>    beans.add(new TestBean(count,”我的是ID为”+ count +”的成员”));<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### filter</div><div class="line"></div><div class="line">filter比较简单，例如下面的例子。遍历所有id号大于20的元素并输出</div></pre></td></tr></table></figure></testbean></testbean></p>
+<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean);<br>        });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">###  map</div><div class="line"></div><div class="line">将testBean 映射为它的content.</div></pre></td></tr></table></figure></p>
+<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .map(TestBean::getContent)<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean); //输出的的内容为testbean的content内容<br>        });<br>```</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/lambda表达式/" class="archive-article-date">
+  	<time datetime="2016-11-10T01:23:39.915Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-WebSocket协议笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h1><h2 id="客户端发出的握手信息类似："><a href="#客户端发出的握手信息类似：" class="headerlink" title="客户端发出的握手信息类似："></a>客户端发出的握手信息类似：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">GET /chat HTTP/1.1</div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http://example.com                //源标示</div><div class="line">Sec-WebSocket-Protocol: chat, superchat   //子协议选项</div><div class="line">Sec-WebSocket-Version: 13</div></pre></td></tr></table></figure>
+<ul>
+<li>第5行：sec-WebSocket-Key: </li>
+<li>第6行：Origin头，表明源标示</li>
+<li>第7行：Sec-WebSocket-protocol。子协议选项，用于标示客户端和服务端使用的是哪一种子协议 </li>
+</ul>
+<h2 id="服务端回应的握手信息类式："><a href="#服务端回应的握手信息类式：" class="headerlink" title="服务端回应的握手信息类式："></a>服务端回应的握手信息类式：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
+<ul>
+<li>第4行：Sec-WebSocket-Accept标示server是否接受了client的请求。这个值必须要不为空，并且符合client Request请求的规则才算是满足了请求</li>
+<li>第5行：返回的子协议，必须是client请求时携带的子协议之一</li>
+<li>服务端的返回也可以携带cookie信息</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li><p>WebSocket类似于Http，同样是一个基于TCP的应用层协议，它和HTTP的关系就是请求可以作为一个升级请求（Upgrade request）经由 HTTP 服务器解释（也就是可以使用 Nginx 反向代理一个 WebSocket）。</p>
+</li>
+<li><p>握手信息的头字段是没有顺序要求的</p>
+</li>
+<li>关闭握手的操作可以是任何一端主动发出，因为WebSocket的通信本就是全双工的</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/09/WebSocket协议笔记/" class="archive-article-date">
+  	<time datetime="2016-11-09T01:09:02.667Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-09</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/08/Stomp和WebSocket协议/">WebSocket协议和Stomp协议</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Stomp协议基础"><a href="#Stomp协议基础" class="headerlink" title="Stomp协议基础"></a>Stomp协议基础</h1><ul>
+<li>Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8</li>
+<li>类似Http协议，Stomp是同样是基于帧的协议</li>
+<li>Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束</li>
+<li>COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义<pre>
+COMMAND
+header1:value1
+header2:value2
+Body^@
+</pre></li>
+<li><p>对于body，只有send，message和ERROR帧有body，其他所有帧都没有body。并且这三个帧的也必须携带 content-length的header。</p>
+</li>
+<li><p>Stomp client通过Connect frame与server建立流或者TCP链接</p>
+</li>
+</ul>
+<pre>
+CONNECT
+accept-version:1.2
+host:stomp.github.org
+^@
+</pre>
+
+<ul>
+<li>然后server返回给connected frame给client</li>
+</ul>
+<pre>
+CONNECTED
+version:1.2
+^@
+</pre>
+
+<p>或者相应ERROR Frame给client说明为什么被拒绝</p>
+<ul>
+<li>对于Stomp 1.1以后的版本，Connected frame必须包含accept-version header. 它的值为client所支持的Stomp版本号，如果client和server不支持共同的版本协议。server返回类似下面的ERROR frame并断开连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ERROR</div><div class="line">version:1.2,2.1</div><div class="line">content-type:text/plain</div><div class="line"></div><div class="line">Supported protocol versions are 1.2 2.1^@</div></pre></td></tr></table></figure>
+<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><blockquote>
+<p>心跳被用于测试底层TCP连接的可用性，确保远程服务处于活动状态,一般是作为header出现在connect frame中。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CONNECT</div><div class="line">heart-beat:&lt;cx&gt;,&lt;cy&gt;</div></pre></td></tr></table></figure>
+<p>header-beat 头的两个值都是为数字，</p>
+<ul>
+<li>第一个数字表示发送方能做什么，为0表示不能发送心跳，其他值表保证两次心跳的最小毫秒数</li>
+<li>第二个数字代表发送方能获得什么: 0表示它不想接收心跳 ,否则它表示两次心跳期望的毫秒数 </li>
+</ul>
+<p>如果接受者在规定的时间内没有收到新数据，表明连接已经断开</p>
+<h2 id="Client-Frame"><a href="#Client-Frame" class="headerlink" title="Client Frame"></a>Client Frame</h2><ul>
+<li><strong>SEND</strong>: 必须要包含Body和destination的header</li>
+<li><strong>SUBSCRIBE</strong> ：同样需要destination的header,表示订阅的目的地 </li>
+<li>UNSUBSCRIBE：携带id header</li>
+<li>BEGIN</li>
+<li>COMMIT</li>
+<li>ABORT</li>
+<li>ACK：用于通知server，你发来的消息我已经消费。</li>
+<li>NACK</li>
+<li>DISCONNECT</li>
+</ul>
+<h2 id="Message-Frame"><a href="#Message-Frame" class="headerlink" title="Message Frame"></a>Message Frame</h2><ul>
+<li>Message：下面是一个最基本的messageframe，另外如果frame Body携带信息的话，header应该带有content type和content length</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">MESSAGE</div><div class="line">subscription:0</div><div class="line">message-id:007    </div><div class="line">destination:/queue/a  </div><div class="line">content-type:text/plain </div><div class="line"></div><div class="line">hello queue a^@</div></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/08/Stomp和WebSocket协议/" class="archive-article-date">
+  	<time datetime="2016-11-08T02:42:10.839Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-代码规范" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-代码规范"><a href="#title-代码规范" class="headerlink" title="title:代码规范"></a>title:代码规范</h2><blockquote>
+<p>不懂编程的人能看的懂得代码是最好的代码！</p>
+</blockquote>
+<h1 id="From-lt-lt-effecttive-java-gt-gt"><a href="#From-lt-lt-effecttive-java-gt-gt" class="headerlink" title="From &lt;&lt; effecttive java &gt;&gt;"></a>From &lt;&lt; effecttive java &gt;&gt;</h1><h1 id="个人总结"><a href="#个人总结" class="headerlink" title="个人总结"></a>个人总结</h1><ul>
+<li>工具类要有<strong>final</strong>修饰符！避免被继承</li>
+<li>严格遵守驼峰式的命名规则！</li>
+<li></li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/07/代码规范/" class="archive-article-date">
+  	<time datetime="2016-11-07T01:18:36.305Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-leetcode #451 Frequency String Sort" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/07/leetcode #451 Frequency String Sort/">Solution of Leetcode</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Solution-of-leetcode-451"><a href="#Solution-of-leetcode-451" class="headerlink" title="Solution of leetcode #451"></a>Solution of leetcode #451</h1><blockquote>
+<p>自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！</p>
+</blockquote>
+<p>下面是具体实现！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">frequencySort</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> == s || <span class="number">0</span> == s.length() )</div><div class="line">          <span class="keyword">return</span> s;</div><div class="line">      <span class="keyword">char</span>[] array = s.toCharArray();</div><div class="line"></div><div class="line">      Arrays.sort(array);</div><div class="line"></div><div class="line">      List&lt;StringBuilder&gt; elements = <span class="keyword">new</span> ArrayList&lt;StringBuilder&gt;();</div><div class="line">      elements.add(<span class="keyword">new</span> StringBuilder().append(array[<span class="number">0</span>]));</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>;index &lt; array.length;index++)&#123;</div><div class="line">          <span class="keyword">char</span> c = array[index];</div><div class="line">          StringBuilder strBuilder = elements.get(<span class="number">0</span>);</div><div class="line">          <span class="keyword">if</span> (strBuilder.charAt(<span class="number">0</span>) == c)</div><div class="line">              strBuilder.append(c);</div><div class="line">          <span class="keyword">else</span></div><div class="line">              elements.add(<span class="number">0</span>,<span class="keyword">new</span> StringBuilder().append(c));</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      Collections.sort(elements, <span class="keyword">new</span> Comparator&lt;StringBuilder&gt;() &#123;</div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(StringBuilder o1, StringBuilder o2)</span> </span>&#123;</div><div class="line">              <span class="keyword">return</span> o2.length() - o1.length();</div><div class="line">          &#125;</div><div class="line">      &#125;);</div><div class="line"></div><div class="line">      StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">      <span class="keyword">for</span> (StringBuilder element : elements)</div><div class="line">          stringBuilder.append(element);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> stringBuilder.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>leetcode 上的runtime 最后是23ms！算法思想很简单，就是先排序。然后利用排序好的字符串进行divide形成list，排序号list里面的元素后进行重装即可。很简单…</p>
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>算法实现实现起来其实蛮简单，不过重要的是理解java底层的排序算法实现。这正是下一步要做的工作！ </p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/07/leetcode #451 Frequency String Sort/" class="archive-article-date">
+  	<time datetime="2016-11-07T00:57:29.459Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-快速搭建一个支持HttpsAndroid后台(服务端)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/03/快速搭建一个支持HttpsAndroid后台(服务端)/">快速搭建一个支持Https的服务（附有Android访问Https链接的配置）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本篇文章通过一个小Demo来介绍利用Spring Boot快速搭建一个Https的移动客户端后台服务和Client(安卓)端在配置自定义双向验证的一些配置</p>
+</blockquote>
+<h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
+<p>我准备用Spring Boot来示例这个这个Server端demo，众所周知SpringBoot作为Spring.io推出的杀手级框架不仅使得后端开发效率大幅度提升，也使得学习门槛降低。随着时间推移Spring Boot将会更多的应用到实践当中</p>
+</blockquote>
+<h2 id="框架的简单介绍"><a href="#框架的简单介绍" class="headerlink" title="框架的简单介绍"></a>框架的简单介绍</h2><p><img src="/assets/kuangjia.png" alt="CSDN图标" title="框架图"></p>
+<p>Server端应用主要分为三个部分</p>
+<ul>
+<li>java 文件夹下的源文件</li>
+<li>resource文件夹下面的配置文件和资源文件</li>
+<li>build.gradle配置文件</li>
+</ul>
+<h2 id="利用gradle构造你的工程"><a href="#利用gradle构造你的工程" class="headerlink" title="利用gradle构造你的工程"></a>利用gradle构造你的工程</h2><pre>
+group 'person.walker'
+version '1.0-SNAPSHOT'
+
+
+sourceCompatibility = 1.5
+buildscript{
+    repositories{
+        mavenCentral()
+    }
+    //安装Spring-boot 插件！
+    dependencies{
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+    }
+}
+sourceCompatibility = 1.5
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //我们只需要下面两个dependence！
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+</pre>
+
+
+<p>gradle配置文件需要注意两个地方(添加注解的地方)第一个是添加Spring-boot-gradle-plugin的依赖和jar包的依赖。这两个依赖足够我们来开发最最基本的Restful应用和javaWeb应用（注意这里最最基本，不涉及dao层(⊙﹏⊙)b）。。。</p>
+<h2 id="编写你的应用"><a href="#编写你的应用" class="headerlink" title="编写你的应用"></a>编写你的应用</h2><h3 id="Application-应用入口类"><a href="#Application-应用入口类" class="headerlink" title="Application:应用入口类"></a>Application:应用入口类</h3><p>第一步编写你的应用入口类</p>
+<pre>
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args){
+
+        new SpringApplicationBuilder(Application.class)
+                .run(args);
+    }
+}
+</pre>
+
+<p>这里需要注意的的是<strong>@SpringBootApplicaiton</strong>这个注解，这个注解相当于自动完成了注解@CompontScan ，@Auto-Configuration等等注解的功能，真正的实现了SpringBoot开箱即用的功能，节省大量繁琐的操作</p>
+<h3 id="编写你的Controller控制器"><a href="#编写你的Controller控制器" class="headerlink" title="编写你的Controller控制器"></a>编写你的Controller控制器</h3><pre>
+//Restful 服务的注解,方便快捷！
+@RestController
+public class MyControllers {
+    @RequestMapping("/getInfo")
+    public Person getInfo(){
+        //返回一个Object类,其会被jackson 格式化为Json格式的字符串
+        return new Person("walker","23");
+    }
+}
+</pre>
+
+<p>其中Person类是个bean类。</p>
+<pre>
+public class Person {
+
+    private String age;
+    private String name;
+
+    public Person(String age, String name) {
+        this.age = age;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+}
+</pre>
+
+<p>到这里基本上就可以运行的应用了，我们通过Applicaiton的main函数来跑一下，观察到控制台输出的信息</p>
+<p><img src="&quot;/assets/embeddedtomcat.png&quot;" alt="lala" title="console 输出"></p>
+<p>图例标出的就是启动SpringBoot 内置Tomcat容器的信息，这可能会消除一些你的疑问，为什么没有部署到Tomcat这个应用就可以访问。</p>
+<p>现在我们通过浏览器访问就可以访问了</p>
+<h2 id="配置你的SSL"><a href="#配置你的SSL" class="headerlink" title="配置你的SSL"></a>配置你的SSL</h2><p>利用keytool生成SSL证书可以参考下面的命令:</p>
+<pre>
+keytool -genkey -alias walker_server -keyalg RSA -keystore walker_server.jks
+</pre>
+
+<p>上面的命令的含义是生成一个 文件名叫做”walker_server.jks”的公匙文件，证书的别名为walker_server。加密算法指定为RSA。<br>另外在生成证书时一定要记牢设置的密码！<br><br>拷贝你生成的XXX.jks文件到你工程的resource文件夹下面<br><br>然后配置的application.properties添加以下代码</p>
+<pre>
+# 将Https端口映射到8444 ，端口号可以根据你自己的喜好和系统环境配置
+server.port = 8444
+server.ssl.key-store = classpath:walker_server.jks  // 注意将jks文件改成你的jks文件名字
+server.ssl.key-store-password = 3252860 //这里的password是你生成ssl证书时第一次输入的密码
+server.ssl.key-password = 3252860   //这里的password是你生成ssl证书时第二次次输入的密码
+</pre>
+现在运行你的应用，打开浏览器访问"https://localhost:8444/getInfo"
+
+![](/assets/httpsrequest.png)
+
+如果你用过12306的话，你一定对这个界面不会感到陌生。为什么会出现这样的界面呐？原因是12306和我们现在配置的server都是自生成的SSL证书进行的双向验证，而一般的网站都是通过CA机构颁发的证书来进行的验证。两种验证方式具体的区别已经优缺点请自行Google.....
+<br><br>
+点击信任后看到的界面
+
+![](/assets/brosucces.png)
+
+<br><br><br><br>
+
+# 附：Android端访问Https服务的配置
+
+>Android这边对于Https链接的访问一般都是正常的，不需要什么特殊配置。但是前提是这个Https的SSL证书第三方CA机构颁发，我们的SSL证书是自己生成的，自然不满足这个前提条件。所以还是需要一些配置。这里用Andriod中应用 最广的OkHttp3来做示范。
+
+下面是生成一个包含公匙的证书的命令，XXX.jks就是上面生成的公匙文件，storepass是你的密码
+
+<pre>keytool -export -alias zhy_server -file xxxx.cer 
+ -keystore XXXX.jks  
+ -storepass XXXXX    //你的store密码 
+</pre>
+
+<p>下面是完整的代码</p>
+<pre>
+    private static final String TAG = "HttpsTest";
+
+    public static void test() {
+        String rfc = "-----BEGIN CERTIFICATE-----\n" +
+                "MIIDTTCCAjWgAwIBAgIEesCiAzANBgkqhkiG9w0BAQsFADBXMQswCQYDVQQGEwJjbjELMAkGA1UE\n" +
+                "CBMCYmoxCzAJBgNVBAcTAmJqMQ8wDQYDVQQKEwZ3YWxrZXIxDzANBgNVBAsTBndhbGtlcjEMMAoG\n" +
+                "A1UEAxMDbGl1MB4XDTE2MTEwMzAzNTAyMFoXDTE3MDIwMTAzNTAyMFowVzELMAkGA1UEBhMCY24x\n" +
+                "CzAJBgNVBAgTAmJqMQswCQYDVQQHEwJiajEPMA0GA1UEChMGd2Fsa2VyMQ8wDQYDVQQLEwZ3YWxr\n" +
+                "ZXIxDDAKBgNVBAMTA2xpdTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJWHIMofHvUM\n" +
+                "YqXYffKQB+H6nNPmnvsR/WPsJ3AO12WdJSpqkhnG17Plc/3M3LVopm+2LgnkHnOuz7ZWpBoAVVtn\n" +
+                "NpxbniO7ra/eVJLwtLIVzQN2O1yXB2ydSL1ie8XgUK/UUtyTOP3ZMrqrQBnbzA8Q7Nr2FxZaOt0Z\n" +
+                "rgLh+P5nCz3SRoNp76ges9EeYew+lE+O1ETtsLXwEAcJfQFMNRzzJsE3ZEHxZEp/33wRDQFIeZ8H\n" +
+                "37lsC8I84bCKYfkIAD/U/L0ZKeCTb8ivTwE/sxJvctK0z2xwWx1k4iz1wNtRWRPzIkNJm+P0rdnb\n" +
+                "mg8sL739zt3dKNeNQ/09BiXX3QsCAwEAAaMhMB8wHQYDVR0OBBYEFEMDzffLfXXwsq9Z85qHQc/t\n" +
+                "j6tWMA0GCSqGSIb3DQEBCwUAA4IBAQBwYEWeLgvKMRcINKTetypXJ2YmvD5QBCJafDLCdM+IkvKs\n" +
+                "K21C3oIodjDTreXEEH8UxY8ku1qYodTT8egjenpdD9maTZp1G3SKrkJ3ARQwNuFfAP1HxeQ8y7LF\n" +
+                "VX3ZDLfgIib+Xm1ygyAmn3Pd9X/J+4KYmqTJyy4RdSg0flY5c44PuvjT317MouuHbyb53mGrjp4b\n" +
+                "+bOGyAJ8N2wFCso1y3367qpAJF3zYVIVWakTufA5nGjhuvN0GZZ109HuB+ry3aPi2mUQheBnQYu3\n" +
+                "ggvxxytA58QkUxiqxnZZtAkEEa6tyPIJO5idAs1Lmza8+Wr+jBdm7JrVRb3wQJjOYlDz\n" +
+                "-----END CERTIFICATE-----";
+        //参考张鸿翔的开源框架<a href="https://github.com/hongyangAndroid/okhttputils" target="_blank" rel="external">OkHttpUtils</a>
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(new InputStream[]{new Buffer().writeUtf8(rfc).inputStream()}, null, "3252860");
+
+
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                //<a href="http://stackoverflow.com/questions/14619781/java-io-ioexception-hostname-was-not-verified" target="_blank" rel="external">host 验证错误</a>
+                .hostnameVerifier(new NullHostNameVerifier()) 
+                .build();
+        OkHttpUtils.initClient(okHttpClient);
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(TAG,e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.d(TAG,response);
+                    }
+                });
+
+</pre>
+上面是一个完整的请求示例的方法，ssl文件的配置可以利用张鸿翔已经封装好的库来做，我就不造重复造轮子了。
+
+最后要注意NullHostNameVerifier类，这里是要验证HostName，由于OkhttpClient默认是返回false的，所以我们要进行重写！
+<pre>
+public class NullHostNameVerifier implements HostnameVerifier {
+    @Override
+    public boolean verify(String s, SSLSession sslSession) {
+        Log.d(s,sslSession.getPeerHost());
+        return true;
+    }
+}
+
+</pre>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>源码在我的Github上面：<a href="https://github.com/WalkerLiuFei/SpringBootWithHttps" target="_blank" rel="external">戳我！</a></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/03/快速搭建一个支持HttpsAndroid后台(服务端)/" class="archive-article-date">
+  	<time datetime="2016-11-03T07:54:27.909Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-03</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-EventBus源码阅读笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/02/EventBus源码阅读笔记/">EventBus 源码阅读笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>1：getDefault方法，明显看的出来这是单例模式的得到单例对象的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//Convenience singleton for apps using a process-wide EventBus instance. </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBus <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">synchronized</span> (EventBus.class) &#123;</div><div class="line">            <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">                defaultInstance = <span class="keyword">new</span> EventBus();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> defaultInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2:先来看看register具体实现方法。是的，反射！ 对于findSubscriberMethods方法,它里面有一个MethodCache 的HashMap（最新的版本作者改成了ConcurrentHashMap来保证线程安全，）这个HashMap的key是注册类，Value是通过反射得到的Subscribe方法。</p>
+<pre><code>private synchronized void register(Object subscriber, boolean sticky, int priority) {
+    List&lt;SubscriberMethod&gt; subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriber.getClass());
+    for (SubscriberMethod subscriberMethod : subscriberMethods) {
+        subscribe(subscriber, subscriberMethod, sticky, priority);
+    }
+}
+</code></pre><p>3：Subsrcibe 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">  <span class="comment">// 必须在保证线程安全的情况下调用</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(Object subscriber, SubscriberMethod subscriberMethod)</span> </span>&#123;</div><div class="line"><span class="comment">//得到事件类型，（这个东西就是POST 和 subcribe 想对应的那个类）</span></div><div class="line">      Class&lt;?&gt; eventType = subscriberMethod.eventType;</div><div class="line">      Subscription newSubscription = <span class="keyword">new</span> Subscription(subscriber, subscriberMethod);</div><div class="line"><span class="comment">//通过Map拿到线程安全的随机访问List</span></div><div class="line">      CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);</div><div class="line">      <span class="keyword">if</span> (subscriptions == <span class="keyword">null</span>) &#123;</div><div class="line">          subscriptions = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</div><div class="line">          subscriptionsByEventType.put(eventType, subscriptions);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">if</span> (subscriptions.contains(newSubscription)) &#123;</div><div class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Subscriber "</span> + subscriber.getClass() + <span class="string">" already registered to event "</span></div><div class="line">                      + eventType);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line"><span class="comment">//根据优先级进行插入</span></div><div class="line">      <span class="keyword">int</span> size = subscriptions.size();</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= size; i++) &#123;</div><div class="line">          <span class="keyword">if</span> (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) &#123;</div><div class="line">              subscriptions.add(i, newSubscription);</div><div class="line">              <span class="keyword">break</span>;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line"><span class="comment">//插入订阅者订阅的消息</span></div><div class="line">      List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);</div><div class="line">      <span class="keyword">if</span> (subscribedEvents == <span class="keyword">null</span>) &#123;</div><div class="line">          subscribedEvents = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">          typesBySubscriber.put(subscriber, subscribedEvents);</div><div class="line">      &#125;</div><div class="line">      subscribedEvents.add(eventType);</div><div class="line"><span class="comment">//拿到SubsriberMethod</span></div><div class="line">      <span class="keyword">if</span> (subscriberMethod.sticky) &#123;</div><div class="line"><span class="comment">/*</span></div><div class="line">	在默认情况下，Subsricb的超类也会被通知，将这个纳入到订阅接受的考虑情况会提高事件的发布效率</div><div class="line">	在这个开关off掉，会提高 20%的事件发布接受效率</div><div class="line">*/</div><div class="line">            <span class="keyword">if</span> (eventInheritance) &#123;</div><div class="line"><span class="comment">/*</span></div><div class="line">   这个参数是新版EventBus添加的，这个参数的意义</div><div class="line">&lt;span style="white-space:pre"&gt;	&lt;/span&gt;			</div><div class="line">                  注：因为有很多粘性时间，遍历所有的事件会降低效率</div><div class="line">   新版的EventBus改变了存储结构 使用了 Class -&gt; List&lt;Class&gt; 的Map结构，</div><div class="line">*/</div><div class="line">              Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();</div><div class="line">              <span class="keyword">for</span> (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) &#123;</div><div class="line">                  Class&lt;?&gt; candidateEventType = entry.getKey();</div><div class="line">                  <span class="keyword">if</span> (eventType.isAssignableFrom(candidateEventType)) &#123;</div><div class="line">                      Object stickyEvent = entry.getValue();</div><div class="line">                      checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">                  &#125;</div><div class="line">              &#125;</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">              Object stickyEvent = stickyEvents.get(eventType);</div><div class="line">              checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>4：最后看下Post方法：<br>看一下形式就发现和Handler的实现原理非常类似。Looper,消息队列等等。。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// Posts the given event to the event bus. </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">post</span><span class="params">(Object event)</span> </span>&#123;</div><div class="line">    PostingThreadState postingState = currentPostingThreadState.get();</div><div class="line">    List&lt;Object&gt; eventQueue = postingState.eventQueue;</div><div class="line">    eventQueue.add(event);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!postingState.isPosting) &#123;</div><div class="line">        postingState.isMainThread = Looper.getMainLooper() == Looper.myLooper();</div><div class="line">        postingState.isPosting = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span> (postingState.canceled) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Internal error. Abort state was not reset"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">while</span> (!eventQueue.isEmpty()) &#123;</div><div class="line">                postSingleEvent(eventQueue.remove(<span class="number">0</span>), postingState);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            postingState.isPosting = <span class="keyword">false</span>;</div><div class="line">            postingState.isMainThread = <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后找到具体实现方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">postToSubscription</span><span class="params">(Subscription subscription, Object event, <span class="keyword">boolean</span> isMainThread)</span> </span>&#123;</div><div class="line">     <span class="keyword">switch</span> (subscription.subscriberMethod.threadMode) &#123;</div><div class="line">         <span class="keyword">case</span> PostThread:</div><div class="line">             invokeSubscriber(subscription, event);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> MainThread:</div><div class="line">             <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                 invokeSubscriber(subscription, event);</div><div class="line">             &#125; <span class="keyword">else</span> &#123;</div><div class="line">                 mainThreadPoster.enqueue(subscription, event);</div><div class="line">             &#125;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> BackgroundThread:</div><div class="line">             <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                 backgroundPoster.enqueue(subscription, event);</div><div class="line">             &#125; <span class="keyword">else</span> &#123;</div><div class="line">                 invokeSubscriber(subscription, event);</div><div class="line">             &#125;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> Async:</div><div class="line">             asyncPoster.enqueue(subscription, event);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">default</span>:</div><div class="line">             <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown thread mode: "</span> + subscription.subscriberMethod.threadMode);</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>前面已经说过subscription包含了所有执行需要的东西，大致有:subscriber, subscriberMethod（method, threadMode, eventType）, priority；<br>那么这个方法：第一步根据threadMode去判断应该在哪个线程去执行该方法；<br>case PostThread。<br>直接反射调用；也就是说在当前的线程直接调用该方法；<br>case MainThread:<br>首先去判断当前如果是UI线程，则直接调用；否则： mainThreadPoster.enqueue(subscription, event);把当前的方法加入到队列，然后直接通过handler去发送一个消息，在handler的handleMessage中，去执行我们的方法。说白了就是通过Handler去发送消息，然后执行的。<br>     case BackgroundThread:<br>如果当前非UI线程，则直接调用；如果是UI线程，则将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用<br>executorService = Executors.newCachedThreadPool();。<br>     case Async:将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用；线程池与BackgroundThread用的是同一个。<br>这么说BackgroundThread和Async有什么区别呢？<br>    BackgroundThread中的任务，一个接着一个去调用，中间使用了一个布尔型变量handlerActive进行的控制。<br>Async则会动态控制并发。</p>
+<p>register会把当前类中匹配的方法，通过反射得到存入一个map。Map的键值分别是订阅者和其所有的订阅方法类（这个方法类包含了优先级，执行线程，和EventType等），而post会根据实参去map查找进行反射调用。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/02/EventBus源码阅读笔记/" class="archive-article-date">
+  	<time datetime="2016-11-02T07:27:38.296Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+    </nav>
+  
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: true,
+		isPost: false,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
