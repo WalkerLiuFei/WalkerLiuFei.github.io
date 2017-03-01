@@ -126,7 +126,7 @@
       <div class="body-wrap">
         
   
-    <article id="post-Mysql的存储引擎" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Mysql优化篇md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -136,7 +136,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/06/Mysql的存储引擎/">Mysql的性能优化（存储篇）</a>
+      <a class="article-title" href="/2017/02/20/Mysql优化篇md/">Mysql 优化</a>
     </h1>
   
 
@@ -144,86 +144,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Mysql-存储引擎概述"><a href="#Mysql-存储引擎概述" class="headerlink" title="Mysql 存储引擎概述"></a>Mysql 存储引擎概述</h1><p>Mysql 5.0支持的引擎包括MyISAM,InnoDB,BDB等，其中InnoDB和BDB提供事务安全表。其他引擎都是提供的非事务安全表。MySql 5.5以后的默认引擎是InnoDB.</p>
-<p>在创建新表时可以通过ENGINE关键字来指定存储引擎。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE COUNTRY(name=varchar(50) primary key) ENGINE = INNODB</div></pre></td></tr></table></figure>
-<p>可以通过查看表的创建信息来查看表的引擎（其中一种方式）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">show create table 表名</div></pre></td></tr></table></figure>
-<h2 id="选择合适的存储引擎"><a href="#选择合适的存储引擎" class="headerlink" title="选择合适的存储引擎"></a>选择合适的存储引擎</h2><h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p> 不支持事务，不支持外键，优势是访问速度快，对事务完整性没有要求或者以SELECT,INSERT为主的应用选择MyISAM引擎较为合适</p>
-<p>存储的组成部分，在创建表时，可以通过DATA DIRECTORY 和 INDEX DIRECTORY指定存储路径的绝对路径</p>
-<ul>
-<li>.frm(存储表定义)</li>
-<li>.MYD(存储数据</li>
-<li>.MYI(存储索引)</li>
-</ul>
-<p>MyISAM的表的3中存储格式</p>
-<ul>
-<li>静态（固定长度）表</li>
-<li>动态表</li>
-<li>压缩表</li>
-</ul>
-<p>静态表时默认的存储格式。优点是存储迅速，容易缓存，出现故障容易恢复。缺点是字段的字长都是固定的，占用空间比较大，另外，在存储的时候会自动去掉尾部的空格。</p>
-<p>动态表包含变长的字段，记录的数据固定，这样存储的优点是占用的空间相对较小。但是频繁的更新和删除数据会产生碎片，需要定期执行OPTIMIZE TABLE 语句。或者myismchk -r命令来改善性能，并且在出现故障时难以恢复。</p>
-<h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>InnoDB具有提交，回滚和崩溃恢复能力的事务安全。InnoDB处理效率差，并且占用更多的磁盘空间以保存数据和索引。</p>
-<p>特点</p>
-<ul>
-<li>InnoDB的自动增长列（auto_increment）插入0或者null的结果其实是插入的将是自动增长后的值。</li>
-<li>外检约束： 在创建索引时，可以指定在删除，更新父表时，对字表进行的相应操作。<ul>
-<li>RESTRICT，NO Action : 限制在字表有关联的情况下父表不能更新</li>
-<li>CASCADE：表示父表在更新数据或删除数据时，更新字表或删除字表的对应记录。</li>
-<li>SET NULL：表示父表在更新数据或删除数据时，字表致null</li>
-</ul>
-</li>
-</ul>
-<p>存储：</p>
-<ul>
-<li>使用共享空间： 表结构保存在.frm文件中，数据和索引保存在innodb_data_home_dir和innodb_data_file_path定义的表空间中</li>
-<li>使用多表空间： 表结构保存在.frm文件中，每个表的数据和索引单独保存在.idb中。如果是个分区表，则每个分区对应单独的.idb文件，文件名是“表名+分区名”，可以在创建分区的时候指定每个分区的数据文件的位置，以此来将表的IO均匀分布在多个磁盘中。</li>
-</ul>
-<pre><code class="Sql">
-<span class="keyword">CREATE</span> <span class="keyword">TABLE</span> COUNTRY(
-    country_id <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment,
-    country <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NUll</span>,
-    last_update <span class="keyword">timestamp</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">default</span> <span class="keyword">current_timestamp</span> <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">current_timestamp</span>,
-    primary <span class="keyword">key</span>(country_id)
-)<span class="keyword">engine</span>=<span class="keyword">InnoDB</span> <span class="keyword">default</span> <span class="keyword">charset</span>=utf8;
-
-<span class="keyword">create</span> <span class="keyword">table</span> city (
-    city_id <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment,
-    city <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span>,
-    country_id <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">not</span> <span class="literal">null</span>,
-    last_update <span class="keyword">timestamp</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">default</span> <span class="keyword">current_timestamp</span> <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">current_timestamp</span>,
-    primary <span class="keyword">key</span>(city_id),
-    foreign <span class="keyword">key</span> (country_id) <span class="keyword">references</span> country (country_id)     
-    <span class="keyword">on</span> <span class="keyword">delete</span> restrict  <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">cascade</span>  //主表在删除记录时限制，在<span class="keyword">update</span>时不限制....
-)<span class="keyword">engine</span> = <span class="keyword">InnoDB</span> <span class="keyword">default</span> <span class="keyword">charset</span>=utf8;
-</code></pre>
-<h3 id="如何选择合适的存储引擎"><a href="#如何选择合适的存储引擎" class="headerlink" title="如何选择合适的存储引擎"></a>如何选择合适的存储引擎</h3><p>综上所述，</p>
-<ul>
-<li>MyISAM: 应用以读和插入操作为主，只有很少的更新和删除操作，并且对事务的完整性，并发性要求不高。</li>
-<li>InnoDB: 用于事务处理的应用程序，支持外键。如果应用对事务的完整性要求比较高。并且有大量的插入和更新操作，并且对于事务的的完整提交和回滚有要求。</li>
-</ul>
-<h1 id="选择合适的数据类型"><a href="#选择合适的数据类型" class="headerlink" title="选择合适的数据类型"></a>选择合适的数据类型</h1><h2 id="varchar-和char"><a href="#varchar-和char" class="headerlink" title="varchar 和char"></a>varchar 和char</h2><p>varchar 和char 名字看起来varchar多了个前缀var，也就是说varchar的长度是可变的，其占用的存储空间可以是动态的，相较于char固定长度的数据类型，占用的空间更小。</p>
-<ul>
-<li>MyIASM引擎的表，建议使用char类型数据，对于InnoDB,建议使用varchar类型的数据。</li>
-</ul>
-<h2 id="BLOB和TEXT"><a href="#BLOB和TEXT" class="headerlink" title="BLOB和TEXT"></a>BLOB和TEXT</h2><p>主要区别在于BLOB可以存储二进制数据，例如图片。而TEXT只能存储字符数据。对于存有BLOB或者TEXT的表，在大量的删除和更新操作后，会造成存储空间上的空洞，<strong>要经常使用OPTIMIZE TABLE来对表进行碎片整理</strong>。</p>
-<p>   -<strong>以上只针对MyISAM 引擎的数据表，对于InnoDB的数据表支持optimize 命令,但是有问题，参考——&gt;。<a href="http://stackoverflow.com/questions/30635603/what-does-table-does-not-support-optimize-doing-recreate-analyze-instead-me" target="_blank" rel="external">stackoverflow</a></strong>-</p>
-<p>使用合成的Synthetic 索引来提高大文本字段的的查询性能。<strong>利用大文本数据形成一个Hash值保存在一个单独的字段中，通过检索字段来检索文本。</strong>  </p>
-<p>避免检索大量的文本内容，将Blob和TEXT文本保存在单独的表中或者NOSQL数据库中。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>对于字符类型，要根据存储引擎来进行相应的选择。</li>
-<li>对精度要求较高的应用中，建议使用定点数来存储数值，以保证结果的准确性</li>
-<li>对含有TEXT和BLOB字段的表，如果经常做删除和修改记录的操作要定时执行<strong>OPTIMIZE TABLE</strong>功能对表进行碎片整理</li>
-<li>日期类型要根据实际需要选择满足应用最小的存储类型</li>
+        <ul>
+<li>利用命令 <code>show status like &#39;com_%&#39;</code> 查看数据库运行命令的数量，和相应命令对应操作的行数。利用这个命令查询出数据库操作是以写入/插入为主，还是以查询为主</li>
 </ul>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/12/06/Mysql的存储引擎/" class="archive-article-date">
-  	<time datetime="2016-12-06T08:06:15.934Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-06</time>
+      <a href="/2017/02/20/Mysql优化篇md/" class="archive-article-date">
+  	<time datetime="2017-02-20T03:34:29.119Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-20</time>
 </a>
       
       
@@ -243,273 +173,7 @@
 
 
   
-    <article id="post-SqlSessionTempalte(线程安全)" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/06/SqlSessionTempalte(线程安全)/">SqlSessionTempalt是怎样保证线安全的</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/06/SqlSessionTempalte(线程安全)/" class="archive-article-date">
-  	<time datetime="2016-12-06T06:07:54.061Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-06</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Sql语句记录" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/06/Sql语句记录/">常用Sql语句笔记</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><h2 id="查询的高级用法"><a href="#查询的高级用法" class="headerlink" title="查询的高级用法"></a>查询的高级用法</h2><ul>
-<li>查询结果通过columName 进行降序排序：<strong>SELECT columnName(s) FROM tableName ORDER BY column_name DESC</strong></li>
-</ul>
-<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><ul>
-<li>批量插入： <strong>INSERT INTO table (field1,field2,field3) VALUES (‘a’,”b”,”c”), (‘a’,”b”,”c”),(‘a’,”b”,”c”)</strong></li>
-<li>批量插入时，利用事务可以提高插入效率</li>
-</ul>
-<h2 id="改变表的信息"><a href="#改变表的信息" class="headerlink" title="改变表的信息"></a>改变表的信息</h2><ul>
-<li>改变列名 ；    <strong>alter table table_name change srcColumnName newColumnName  </strong></li>
-<li>改变列的类型： <strong>alter table table_name motify srcColumnName newColumnType</strong>  </li>
-<li>改变表的名字:  <strong>alter table table_name rename newTableName</strong></li>
-<li>index(…列名）创建索引，组合索引，在建表的时候用</li>
-<li>改变某个字段的信息：<strong>alter table t modify id int auto_increment;</strong></li>
-</ul>
-<h2 id="修饰符"><a href="#修饰符" class="headerlink" title="修饰符"></a>修饰符</h2><ul>
-<li>zerofill :对于指定的int长度，插入的数据没有充满前面自动fill zero</li>
-</ul>
-<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p><a href="http://dev.mysql.com/doc/refman/5.7/en/func-op-summary-ref.html" target="_blank" rel="external"> MySql处理函数，来自官方文档</a></p>
-<ul>
-<li>字符串处理函数<ul>
-<li>Concat</li>
-</ul>
-</li>
-</ul>
-<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><ul>
-<li>“=”运算符不能比较null,要比较null用 “&lt;=&gt;”,而”&lt;&gt;”表示两侧不相等 ： <strong>0 &lt;&gt; 1</strong></li>
-</ul>
-<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
-<li>float(5,3),double(5,3),以及decima。 decimal默认是decimal(10,0).在Mysql中默认以字符串的形式存储</li>
-<li>DESC 降序</li>
-<li>时间类型<ul>
-<li>DATE:4字节 1000-01-01 9999-12-31</li>
-<li>DARATIME:8 ,1000-01-01:0000 9999-12-31:23:59:59</li>
-<li>TIMESTAMP</li>
-</ul>
-</li>
-<li>char会删掉尾部的空格，varchar则不会</li>
-<li>ENUM 枚举类型</li>
-</ul>
-<h2 id="拷贝"><a href="#拷贝" class="headerlink" title="拷贝"></a>拷贝</h2><ul>
-<li>将一个表的数据拷贝到另一张表：<strong>INSERT INTO 目标表 SELECT * FROM 来源表;</strong></li>
-<li>copy之前，或许需要另一个表：<strong>create table newTable like oldTable</strong></li>
-</ul>
-<h2 id="主键-外键约束"><a href="#主键-外键约束" class="headerlink" title="主键 外键约束"></a>主键 外键约束</h2><p>外键取值规则：空值或者参照的主键值</p>
-<ul>
-<li>插入非空值时，如果主键表中没有这个值，则不能插入。</li>
-<li>更新时，不能改为主键表中没有的值</li>
-<li>删除主键表记录时，你可以在建外表时选定外键记录一起级联删除还是拒绝删除</li>
-<li>更新主键记录时，同样有级联更新和拒绝执行的选择</li>
-</ul>
-<p>主键，外键，索引</p>
-<ul>
-<li>主键<ul>
-<li>标示一条记录，不允许为空，不允许重复</li>
-<li>用来保证数据的完整性</li>
-</ul>
-</li>
-<li>外键<ul>
-<li>一个表的外键是另一个表的主键，外键 可以有重复的，也可以是空值</li>
-<li>用来和其他表建立联系使用</li>
-<li>一个表可以有多个外键</li>
-</ul>
-</li>
-<li>索引<ul>
-<li>该字段没有重复值，但可以有一个空值</li>
-<li>用来提高索引的速度</li>
-<li>一个表可以有多个唯一的索引</li>
-</ul>
-</li>
-</ul>
-<p>为一个表添加外键</p>
-<pre>
-alter table 表名
-add constraint FK_字段名--"FK"为外键的缩写
-foreign key (字段名) references 关联的表名(关联的字段名) --注意'关联的表名'和'关联的字段名'
-</pre>
-
-<p>在建表的时候添加指定外键<strong>注意语法合适（逗号）</strong></p>
-<p><pre><br>create table customer(customer_id varchar(50) NOT NULL primary key,<br>ticket_id varchar(50) not null ,foreign key (ticket_id) references ticket(ticket_id))<br> default character set utf8 ;<br></pre><br><strong>创建外键关联时注意，reference 的外键必须要类型&amp;&amp;长度一致，两个表的存储引擎必须一致，编码方式一致</strong></p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/06/Sql语句记录/" class="archive-article-date">
-  	<time datetime="2016-12-06T06:07:19.595Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-06</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Spring-boot-mybatis-starter-使用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/05/Spring-boot-mybatis-starter-使用/">Spring-boot-mybatis-starter 基本使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/05/Spring-boot-mybatis-starter-使用/" class="archive-article-date">
-  	<time datetime="2016-12-05T08:12:56.644Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-05</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Spring-boot-mybatis" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/05/Spring-boot-mybatis/">Spring boot-Mybatis(源码分析)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://github.com/mybatis/spring-boot-starter" target="_blank" rel="external">仓库地址</a></p>
-<p><a href="http://www.mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/index.html" target="_blank" rel="external">官方文档</a></p>
-<p>Spring-boot-mybatis 带来的革新</p>
-<ul>
-<li>实现快速搭建一个独立的应用</li>
-<li>大量减少样板文件</li>
-<li>几乎不需要XML配置文件 </li>
-</ul>
-<h1 id="库分析"><a href="#库分析" class="headerlink" title="库分析"></a>库分析</h1><p>类似大多数Spring boot的项目，mybatis的Spring-boot 也不过是做一些配置任务而已。在添加库的依赖以后可以看到其pom.xml文件中的依赖信息</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-autoconfigure<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>可以看到其配置都在<strong>mybatis-spring-boot-autoconfigure</strong> 这个依赖库中，就看这个库做的什么工作就OK了。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/05/Spring-boot-mybatis/" class="archive-article-date">
-  	<time datetime="2016-12-05T07:58:30.696Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-05</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-字节码文件分析" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Mysql 分区" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -518,232 +182,13 @@ foreign key (字段名) references 关联的表名(关联的字段名) --注意'
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<h2 id="title-Spring源码分析之ASM（零）"><a href="#title-Spring源码分析之ASM（零）" class="headerlink" title="title:Spring源码分析之ASM（零）"></a>title:Spring源码分析之ASM（零）</h2><h1 id="字节码文件"><a href="#字节码文件" class="headerlink" title="字节码文件"></a>字节码文件</h1><blockquote>
-<p>想要了解ASM必须要对Class（字节码）文件有个清楚的认识</p>
-</blockquote>
-<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>java虚拟机并不和包括java在内的任何语言绑定，它只和Class 文件这种特定的二进制文件格式所关联。Clas文件并不关心你的Class文件从哪里来。你可以用任何编译器（包括你自己编写的编译器来生成Class文件，只要符合JVM的规范即可） <br></p>
-<p>字节码文件是一组以8位字节为基础单位的二进制流。其包含了java虚拟机指令集和符号表以及其他若干辅助信息，其文件格式采用类似C结构体的伪结构来存储数据，伪结构推分为两类<strong>无符号数</strong>和<strong>表</strong></p>
-<p>字节码文件的结构：</p>
-<p>任何一个Class文件都对应着唯一一个类或者接口信息。但是返过来讲类或者接口并不一定都得定义在文件里（类和接口也可以通过类加载器直接生成）。</p>
-<p>Class文件中存储的信息几乎都是Runtime的必要数据，没有空隙存在</p>
-<p>共有设计和私有设计是ASM可以实现的理论基础。</p>
-<ul>
-<li>Class文件中的一些概念<ul>
-<li>无符号数：用来描述数字，索引    引用，数量值，或按照UTF-8编码的字符串值。所有</li>
-<li>表： </li>
-<li>魔数：Class文件的头四个字节：<strong>OXCAFEBABE</strong>，用来标示一个Class文件</li>
-<li>版本号：第五和第六个字节标示次版本号，第七个字节标示主版本号</li>
-<li>常量池：第八个字节，Class的文件的资源仓库。Class文件空间中占用文件空间最大的数据项目之一，也是第一个表类型数据项目，并且其内部每一项常量都是一个表<ul>
-<li>字面量：接近于Java语言层面的常量概念，如文本字符串，声明为final的常量值等</li>
-<li>符号引用：编译原理方面的概念，包括下面三类常量<ul>
-<li>类和接口的全限定名</li>
-<li>字段的名称和描述符</li>
-<li>方法的名称和描述符</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>Java在进行javac编译的时候，并不像C和C++那样有”连接”,这一步奏，而是在虚拟机加载Class文件的时候进行动态链接。也就是说<strong>Class文件不会保存各个方法，字段的最终内存布局信息</strong>。因此这些字段，方法的符号引用不经过运行期转换的话就无法得到真正的内存地址。</p>
-<ul>
-<li>常量池中个各种符号引用,后面的数值标示其值 <ul>
-<li>UTF8 = 1      </li>
-<li>Integer = 3 </li>
-<li>Float = 4 </li>
-<li>Long = 5</li>
-<li>Double = 6</li>
-<li>Class = 7</li>
-<li>String = 8</li>
-<li>Fieldref = 9</li>
-<li>Methodref = 10   </li>
-<li>InterfaceMethod = 11 ….接口中方法符号的引用</li>
-<li>NameAndType = 12 … 字段或方法的部分符号引用</li>
-<li>MethodHandle = 15 ….方法句柄</li>
-<li>MethodType = 16 …. 标示方法类型</li>
-<li>InvokeDynamic = 18….标示一个动态方法调用点  </li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>访问标志：在常量池结束后，紧接着就是两个字节的访问标志位<ul>
-<li>public： 0X0001</li>
-<li>FINAL:0X0010</li>
-<li>super:0x0020    不必纠结这个标示位，以后Java 1.02 之后基本上都是为 1 的</li>
-<li>interface:0X0200</li>
-<li>abstract:0X0400</li>
-<li>synthetic:0X1000  ：标示这个类并非由用户代码产生</li>
-<li>annotation：0X2000 ： 标示这是一个注解</li>
-</ul>
-</li>
-</ul>
-<h2 id="类索引，父类索引与接口索引"><a href="#类索引，父类索引与接口索引" class="headerlink" title="类索引，父类索引与接口索引"></a>类索引，父类索引与接口索引</h2><ul>
-<li>类索引和父类索引都是一个U2类型的数据，接口是一组U2类型数据的集合，Class文件中由这三项数据来确定这个类的继承关系。因为Java中的继承是单继承的，但是接口实现的”多实现“的，所以父类只有一个索引值，而接口有多个索引值</li>
-</ul>
-<h2 id="字段表集合（field）"><a href="#字段表集合（field）" class="headerlink" title="字段表集合（field）"></a>字段表集合（field）</h2><p> 字段表用于描述接口或者类中声明的变量，字段包括类级变量以及实例级变量</p>
-<pre>
-
-field_info {
-    u2             access_flags;
-    u2             name_index;
-    u2             descriptor_index;
-    u2             attributes_count;
-    attribute_info attributes[attributes_count];
-}
-
-</pre>
-
-
-<ul>
-<li>字段表修饰符在Class文件中的值,从下面各个修饰符的值来说，public，private，protect只能选其中一个，final，volatile態同事选择<ul>
-<li>public 0x0001</li>
-<li>private 0x0002</li>
-<li>protected 0x0003</li>
-<li>static 0x0004</li>
-<li>final 0x0010</li>
-<li>volatile 0x0040</li>
-<li>transient 0x0080</li>
-<li>synthetic 0x1000  是否为编译器自动生成</li>
-<li>enum 0x4000</li>
-</ul>
-</li>
-</ul>
-<p>全限定名 ： Lperson/walker/TestClass;就是一个全限定名，一般需要以字符“；”来标示结束。<br>简单名称：没有类型和参数修饰的方法或者字段名。</p>
-<ul>
-<li>基本数据类型和Class文件的秒数规则，一定不陌生，这前世JNI C文件中和JAVA的对应信息<ul>
-<li>B: Byte</li>
-<li>C: char</li>
-<li>D: double </li>
-<li>F: float</li>
-<li>I: int</li>
-<li>J: long</li>
-<li>S: short</li>
-<li>Z: boolean</li>
-<li>V: void</li>
-<li>L: 对象属性，例如：Ljava/lang/String;</li>
-</ul>
-</li>
-<li>对于数组而言一般是前面加一个”[“作为标示</li>
-<li>对于Java语言来讲，字段是不可重载的，两个不同的字段必须要有不同的命称，但是对于字节码文件来说，字段是可以重载的，就算你名称相同，只要描述符不同就是合法的，</li>
-</ul>
-<h2 id="方法表集合"><a href="#方法表集合" class="headerlink" title="方法表集合"></a>方法表集合</h2><p>因为volatile和transient修饰符是不能修饰方法的，所以方法表的访问标志中没有了volatile和transient标识符，其余和字段的描述基本一致</p>
-<p>方法表的数据结构：</p>
-<pre>
-method_info {
-    u2             access_flags;
-    u2             name_index;
-    u2             descriptor_index;
-    u2             attributes_count;
-    attribute_info attributes[attributes_count];
-}
-</pre>
-
-<h2 id="属性表集合"><a href="#属性表集合" class="headerlink" title="属性表集合"></a>属性表集合</h2><p>在Class文件中，字段表，方法表都有自己的属性表集合，以用于描述某些场景转有的信息，各个属性表之间没有严格的顺序</p>
-<p>属性表结构</p>
-<pre>
-attribute_info {
-    u2 attribute_name_index;
-    u4 attribute_length;
-    u1 info[attribute_length];
-}
-
-</pre>
-+ Jvm解析Class文件必须的五个属性，及其使用的位置和含义
- + ConstantValue：字段表，final定义的常量值
- + Code：方法表，java代码编译生成的字节码指令
- + StackMapTable ： Code属性，Jdk1.6 新增的属性
- + Exceptions ：
-
-<br>
-
-+ 12种被Java se平台Class库识别的属性
- + InnerClasses
- + EnclosingMethod
- + Synthetic
- + Signature
- + RuntimeVisibleAnnotations
- + RuntimeInvisibleAnnotations
- + RuntimeVisibleParameterAnnotations
- + RuntimeInvisibleParameterAnnotations
- + RuntimeVisibleTypeAnnotations
- + RuntimeInvisibleTypeAnnotations
- + AnnotationDefault
- + MethodParameters
- + BootstrapMethods
-
-<br>
-
-
-
-### code属性
-
-Code属性表保存的信息就是经过javac编译后的java代码方法体中的代码
-
-Code属性表的结构
-
-<pre>
-
-Code_attribute {
-    u2 attribute_name_index;  //指向Constants 的索引
-    u4 attribute_length;
-    u2 max_stack;
-    u2 max_locals;     
-    u4 code_length;
-    u1 code[code_length];
-    u2 exception_table_length;
-    {   u2 start_pc;
-        u2 end_pc;
-        u2 handler_pc;
-        u2 catch_type;
-    } exception_table[exception_table_length];
-    u2 attributes_count;
-    attribute_info attributes[attributes_count];
-}
-
-</pre>
-
-
-<p>对于上面的Code_length,随意其实U4 字节，但是一般只会用到前32位，也就是说虚拟机规范明确规定了一个方法不得超过65535条字节码文指令，所以不要编写太长的方法来为难编译器。另外JSP编译器在编译复杂JSP文件时，某些JSP编译器会将JSP内容和页面输出信息方法放到一个方法中，这也会因为字节码超长造成编译失败。</p>
-<p>JVM 对于局部变量分配的最小单位为Slot，一般为32位的。</p>
-<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><h2 id="Class-File"><a href="#Class-File" class="headerlink" title="Class File"></a>Class File</h2><pre>
-ClassFile {
-    u4             magic;
-    u2             minor_version;
-    u2             major_version;
-    u2             constant_pool_count;
-    cp_info        constant_pool[constant_pool_count-1];
-    u2             access_flags;
-    u2             this_class;
-    u2             super_class; //单继承
-    u2             interfaces_count;
-    u2             interfaces[interfaces_count]; //多实现
-    u2             fields_count;
-    field_info     fields[fields_count];
-    u2             methods_count;
-    method_info    methods[methods_count];
-    u2             attributes_count;
-    attribute_info attributes[attributes_count];
-}
-</pre>
-
-
-
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4" target="_blank" rel="external">constants_info </a></p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5" target="_blank" rel="external">field_info</a></p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6" target="_blank" rel="external">method_info</a> </p>
-<h1 id="分析案例"><a href="#分析案例" class="headerlink" title="分析案例"></a>分析案例</h1><p>在这里我们通过分析一小段代码的Class文件来验证我们的知识</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> person.walker;</div><div class="line"></div><div class="line"><span class="keyword">public</span>  <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String constantFiled = <span class="string">"constants"</span>;</div><div class="line">    <span class="keyword">public</span> String filed1;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"I'm Code in Method test "</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testStatic</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"I'm Code in Method testStatic "</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="constants-pool分析"><a href="#constants-pool分析" class="headerlink" title="constants_pool分析"></a>constants_pool分析</h2><p><img src="/assets/class_constants_pool.png" alt="constants_pool"></p>
-<h2 id="class-info-分析"><a href="#class-info-分析" class="headerlink" title="class_info 分析"></a>class_info 分析</h2><p><img src="/assets/class_constants_pool.png" alt="class_info"></p>
-<h2 id="filed-info-分析"><a href="#filed-info-分析" class="headerlink" title="filed_info 分析"></a>filed_info 分析</h2><p><img src="/assets/class_filed_info.png" alt="filed_info"></p>
-
+<h2 id="title：-Mysql-分区"><a href="#title：-Mysql-分区" class="headerlink" title="title： Mysql 分区"></a>title： Mysql 分区</h2>
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/12/01/字节码文件分析/" class="archive-article-date">
-  	<time datetime="2016-12-01T05:17:04.665Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-01</time>
+      <a href="/2017/02/19/Mysql 分区/" class="archive-article-date">
+  	<time datetime="2017-02-19T09:10:02.222Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
 </a>
       
       
@@ -763,61 +208,305 @@ ClassFile {
 
 
   
-    <article id="post-贪心算法" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Mysql安全" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/19/Mysql安全/">Mysql安全</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-贪心算法"><a href="#title-贪心算法" class="headerlink" title="title:贪心算法"></a>title:贪心算法</h2><h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p> <em>贪心法</em>，又称贪心算法、贪婪算法、或称贪婪法，是一种在每一步选择中都采取在当前状态下最好或最优（即最有利）的选择，从而希望导致结果是最好或最优的算法。[1]比如在旅行推销员问题中，如果旅行员每次都选择最近的城市，那这就是一种贪心算法。</p>
-<ul>
-<li><strong>与动态规划的区别</strong>：贪心算法与动态规划的不同在于它每对每个子问题的解决方案都做出选择，不能回退。动态规划会保存以前的运算结果。并根据保存的结果对当前进行选择，有回退功能</li>
-<li><strong>贪心算法的应用</strong>：解决一些最优化问题，如求图的最小生成树，求哈夫曼编码等。</li>
-<li><p><strong>贪心算法的五个组成部分</strong></p>
-<ul>
-<li>候选集合C: 从要解决问题中抽象出一个候选集合，问题的最终解都来自与这个解集合中， </li>
-<li>解集合S:随着贪心选择的进行，解集合S不断扩展，直到构成一个满足问题的完整解。</li>
-<li>解决函数solution:检查解集合S是否构成问题的完整解</li>
-<li>选择函数select:即贪心策略，这是贪心法的关键，它指出那个候选对象最有希望构成问题的解，选择函数通常和目标函数有关。</li>
-<li>可行函数feasible：检查解集合中加入一个候选对象是否可行，即解集合扩展后是否满足约束条件。</li>
+        <h1 id="Sql-注入"><a href="#Sql-注入" class="headerlink" title="Sql 注入"></a>Sql 注入</h1><ul>
+<li>利用绑定变量，</li>
+<li>利用正则表达式对用户输入的信息进行过滤筛选</li>
+</ul>
+<h1 id="Sql-Mode"><a href="#Sql-Mode" class="headerlink" title="Sql Mode"></a><a href="https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html" target="_blank" rel="external">Sql Mode</a></h1><ul>
+<li>根据不同的业务需求来选择 设置不同 sql_mode</li>
+<li>Sql mode 可以解决的问题<ul>
+<li>通过设置SQL Mode,可以完成不同严格程度的数据校验，有效的保证数据准确性</li>
+<li>通过设置SQL Mode为ANSI模式，来保证大多数的SQL符合标准的SQL语法，这样来保证在不同的Database之间切换时不需要对SQL进行大量的修改</li>
+<li>通过设置sql mode，使得Mysql上的数据更方便迁移到目标数据库中</li>
 </ul>
 </li>
-<li><p><strong>解决贪心问题的一般套路</strong></p>
-<ul>
-<li>建立数学模型描述问题</li>
-<li>把求解的问题组成若干个子问题</li>
-<li>对每一个子问题求解，得到子问题的局部最优解</li>
-<li>合并子问题子问题的最优解，求出全局的最优解</li>
+<li>利用<code>SET GLOABLE/SESSION SQL_MODE = ‘modes’</code> 来对SQL的的模式进行设定</li>
+<li>最常见的几种MODE <ul>
+<li>ANSI: 这种模式使得SQL语句必须符合标准sql语法 —&gt;ANSI REAL_AS_FLOAT, PIPES_AS_CONCAT, ANSI_QUOTES, IGNORE_SPACE, and (as of MySQL 5.7.5) ONLY_FULL_GROUP_BY.</li>
+<li>STRICT_TRANS_TABLES :</li>
+<li>TRADITIONAL: 这个模式可以用一句话概述： give an error instead of a warning.<strong>插入和更新操作会在错误出现时立刻中止，如果你不是在用一个事务性的存储引擎的话。这可能不是你想要的结果，因为被中止的操作并不会被回滚</strong></li>
 </ul>
 </li>
-<li><p><strong>伪代码</strong>：</p>
- <pre> Greedy(C)  //C是问题的输入集合即候选集合
+<li>Mode 分类<font size="3"><br>+ ALLOW_INVALID_DATES<br>+ ANSI_QUOTES<br>+ ERROR_FOR_DIVISION_BY_ZERO<br>+ HIGH_NOT_PRECEDENCE<br>+ IGNORE_SPACE<br>+ NO_AUTO_CREATE_USER<br>+ NO_AUTO_VALUE_ON_ZERO<br>+ NO_BACKSLASH_ESCAPES<br>+ NO_DIR_IN_CREATE<br>+ NO_ENGINE_SUBSTITUTION<br>+ NO_FIELD_OPTIONS<br>+ NO_KEY_OPTIONS<br>+ NO_TABLE_OPTIONS<br>+ NO_UNSIGNED_SUBTRACTION<br>+ NO_ZERO_DATE<br>+ NO_ZERO_IN_DATE<br>+ ONLY_FULL_GROUP_BY : 指的意思就是 所要query的列 必须有唯一性，被aggrate 函数修饰。或者是所选列的是primary key<br>+ PAD_CHAR_TO_FULL_LENGTH<br>+ PIPES_AS_CONCAT : 将 ‘||’视为 字符串连接符，<br>+ REAL_AS_FLOAT<br>+ STRICT_ALL_TABLES<br>+ STRICT_TRANS_TABLES<br></font></li>
+<li>Sql Mode 常见功能<ul>
+<li>校验日期数据的合法性</li>
+<li>严格模式：</li>
+</ul>
+</li>
+</ul>
+<p>0    25    16:05:05    create table t (d datetime)    Error Code: 1399. XAER_RMFAIL: The command cannot be executed when global transaction is in the  ACTIVE state    0.000 sec</p>
 
-{
-  S={ };  //初始解集合为空集
-  while (not solution(S))  //集合S没有构成问题的一个解
-  {
-     x=select(C);    //在候选集合C中做贪心选择
-     if feasible(S, x)  //判断集合S中加入x后的解是否可行
-        S=S+{x};
-        C=C-{x};
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/19/Mysql安全/" class="archive-article-date">
+  	<time datetime="2017-02-19T07:51:30.182Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql事务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/19/Mysql事务/">事务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Transactional注解"><a href="#Transactional注解" class="headerlink" title="Transactional注解"></a>Transactional注解</h1><ul>
+<li>利用<code>@Transaction</code>注解来进行事务管理  <pre>
+     @Transactional
+  public void insertBouncePeron(){
+      SqlSession sqlSession = MybatisUtils.openSqlSession();
+      PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
+          for (int count = 0 ;count < 20;count ++) {
+              PersonBean bean = new PersonBean(count + "","Fake Email" + count);
+              if (count > 10){
+                  sqlSession.rollback();
+              }
+              personMapper.insertTable(bean); 
+          }
+          sqlSession.commit();  //只需要利用Mybatis的SqlSession进行commit 管理即可
   }
+  </pre></li>
+<li>value： 指定使用的事务管理器</li>
+<li>propagation: 可选的事务传播行为设置</li>
+<li>isolation:可选的事务隔离级别</li>
+<li>readonly ： 读写或只读事务？默认读写 也就是说默认为true</li>
+<li>rollbackfor:导致事务回滚的异常类数组</li>
+<li>rollbackforClassName:导致事务回滚 的异常类名字数组</li>
+<li>noRollbackFor:不会导致事务回滚的异常类数组</li>
+<li><p>noRollbackForClassName:不会导致事务回滚的异常类名字数组    </p>
+</li>
+<li><p>事务传播的 行为<strong>propagation    enum: Propagation    可选的事务传播行为设置</strong></p>
+<ul>
+<li>TransactionDefinition.PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。这是默认值。</li>
+<li>TransactionDefinition.PROPAGATION_REQUIRES_NEW：创建一个新的事务，如果当前存在事务，则把当前事务挂起。</li>
+<li>TransactionDefinition.PROPAGATION_SUPPORTS：如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。</li>
+<li>TransactionDefinition.PROPAGATION_NOT_SUPPORTED：以非事务方式运行，如果当前存在事务，则把当前事务挂起。</li>
+<li>TransactionDefinition.PROPAGATION_NEVER：以非事务方式运行，如果当前存在事务，则抛出异常。</li>
+<li>TransactionDefinition.PROPAGATION_MANDATORY：如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。</li>
+<li>TransactionDefinition.PROPAGATION_NESTED：如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于TransactionDefinition.PROPAGATION_REQUIRED。<h1 id="Mysql的事务控制和锁定语句"><a href="#Mysql的事务控制和锁定语句" class="headerlink" title="Mysql的事务控制和锁定语句"></a>Mysql的事务控制和锁定语句</h1></li>
+</ul>
+</li>
+<li><p>Innodb 支持对数据级别 （row）的锁定，Myisam支持对表级别的锁定，锁定表</p>
+<pre>
+lock tables table_name [as alias] {read [local]|[low_priority]write} ，table_name [as alias] {read [local]|[low_priority]write}...
+</pre>
+</li>
+<li><p>事务管理：注意，默认情况下，Mysql是自动提交的，如果需要通过明确的commit和rollback来提交和回滚事务，那么就需要通过明确的事务控制命令来开始事务。</p>
+<pre>
+  start tracsaction | begin[work] commit [work][and[no] chain][[no]release] 
+
+  rollback [work][and[no] chain][[no]release]
+  set autocommit={0|1}
+</pre>
+</li>
+<li><p>chain 和release 子句分别用来定义在事务结束以后，chain会立即开始一个新事务，并且和上一个事务有相同的隔离级别。release 会和客户端断开连接</p>
+</li>
+<li>如果实在锁表期间开始开启一个事务，<code>start transaction</code>命令会隐含一个unlock tables的命令被执行</li>
+<li><strong>在同一个事务中最好不要查询不同存储引擎的表，否则Rollback时需要对非事务类型的表进行特别的处理</strong></li>
+</ul>
+<h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><ul>
+<li>Mysql  用于分布式的应用程序涉及一个或多个<strong>资源管理器（RM）</strong>，和一个<strong>事务管理器(TM)</strong>。<ul>
+<li>资源管理器（RM）：用于提供通向事务资源的途径，数据库服务器是一种资源管理器，该管理器必须可以提交或回滚由RM管理的事务。</li>
+<li>事务管理器（TM）：用于协调作为一个分布式事务一部分的事务。TM与管理每个事务的RMS进行通信。在一个分布式事务中，各个单个的事务均是分布式事务的“分支事务”。分布式事务和各分支通过一种命名方法进行标识。与Mysql连接的客户端相当于事务管理器</li>
+</ul>
+</li>
+<li>每个分布式事务（XA 事务）都有一个特有的XID</li>
+<li><code>XA {START|BEGIN} XID [JOIN | RESUME]</code> 启动一个给定XID值的XA事务。</li>
+<li>存在的问题</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/19/Mysql事务/" class="archive-article-date">
+  	<time datetime="2017-02-19T04:30:44.280Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql 视图" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/19/Mysql 视图/" class="archive-article-date">
+  	<time datetime="2017-02-19T04:17:57.945Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-mybatis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/18/mybatis/">Mybatis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>Mybatis 查询的的结果类必须要有相应结果属性的构造函数，并且还不能有原生的属性，比如int 需要是 Integer的！</li>
+</ul>
+<h2 id="Mybatis-中-“-”-和“-”的区别"><a href="#Mybatis-中-“-”-和“-”的区别" class="headerlink" title="Mybatis 中 “#” 和“$”的区别"></a>Mybatis 中 “#” 和“$”的区别</h2><ul>
+<li><code>#{ }</code> 解析为一个 JDBC 预编译语句（prepared statement）的参数标记符。<br><pre><br>  select <em> from user where name = #{name};<br>  解析为：<br>  select </em> from user where name = ?;<br></pre><br>一个 <code>#{}</code> 被解析为一个参数占位符 ？ ，而<code>${}</code> 仅仅作为一个<strong>String</strong>的替换出现。在动态sql中会进行变量替换。<br>也就是说 <code>${}</code> 的变量替换阶段是在动态    SQL解析阶段，而 <code>#{}</code> 的变量替换是在DBMS中</li>
+</ul>
+<h4 id="和-用法-Tips"><a href="#和-用法-Tips" class="headerlink" title="#{} 和 ${}用法 Tips"></a><code>#{}</code> 和 <code>${}</code>用法 Tips</h4><ul>
+<li><p>能使用 <code>#{}</code>的地方尽量使用 <code>#{}</code>,为了性能考虑，相同的预编译Sql可以重复使用。</p>
+</li>
+<li><p>避免使用 <code>${}</code> ,<code>${}</code>在预编译之前已经被变量替换了，这会导致Sql注入的问题。</p>
+<pre>
+ select * from ${tableName} where name = #{name}
+ 假如，我们的参数 tableName 为 user; delete user; #，
+
+ 那么 SQL 动态解析阶段之后，预编译之前的 sql 将变为
+ select * from user; delete user; -- where name = ?;
 </pre>
 
+<p>上面 #之后的就不会再被执行，这说明，本来好好的一个查询语句，变成了一个删除语句，这只是一个例子，还有更严重的！。。。。。</p>
+</li>
+<li><p>表名作为变量时，必须使用 <code>${}</code>,这是因为，表名是字符串，使用sql占位符替换字符串会加上单引号’ ‘，这会导致语法错误</p>
+</li>
+<li></li>
+</ul>
+<h2 id="Mybatis-中的SQL-预编译"><a href="#Mybatis-中的SQL-预编译" class="headerlink" title="Mybatis 中的SQL 预编译"></a>Mybatis 中的SQL 预编译</h2><ul>
+<li>Mybatis 的预编译其实就是JDBC的预编译。<ul>
+<li>JDBC的预编译利用的是Preparestament 对象。</li>
+<li>PreparedStatement 能够提升代码的可读性和可维护性</li>
+<li>PreparedStatement 尽最大可能提高性能</li>
+<li><strong>提高安全性     ??</strong></li>
+</ul>
+</li>
+<li><p>JDBC中使用对象 PrepareedStatement来抽象编译语句，使用预编译</p>
+<ul>
+<li>预编译可以优化Sql的执行，DBMS不需要再次编译，越复杂的sql，编译的复杂度越大，预编译阶段可以合并多次操作为一个操作</li>
+<li><p>预编译语句对象可以重复使用；<strong>把一个预编译后的preparedStatement对象缓存下来，下次对于同一个sql，可以直接使用这个缓存的PreparedStatement对象。在默认情况下，对所有的Sql进行预编译</strong></p>
+<p><img src="https://segmentfault.com/img/bVtwuY" alt=""></p>
 </li>
 </ul>
-<h1 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h1><h2 id="找零钱"><a href="#找零钱" class="headerlink" title="找零钱"></a>找零钱</h2><p><strong>讲解</strong><br><br>一个小孩买了价值少于1美元的糖，并将1美元的钱交给售货员。售货员希望用数目最少的硬币找给小孩。假设提供了数目不限的面值为2 5美分、1 0美分、5美分、及1美分的硬币。售货员分步骤组成要找的零钱数，每次加入一个硬币。选择硬币时所采用的贪婪准则如下：每一次选择应使零钱数尽量增大。为保证解法的可行性（即：所给的零钱等于要找的零钱数），所选择的硬币不应使零钱总数超过最终所需的数目</p>
-<p><strong>引例分析</strong> <br><br>为使找回的零钱的硬币数最小，不考虑找零钱的所有各种方案，<strong>而是从最大面值的币种开始，按递减的顺序考虑各币种，先尽量用大面值的币种，只当不足大面值币种的金额才会去考虑下一种较小面值的币种。这就是在采用贪婪法。</strong>这种方法在这里之所以总是最优，是因为银行对其发行的硬币种类和硬币面值的巧妙安排。如果只有面值分别为1，5和11单位的硬币，而希望找回总额为15单位的硬币，按贪婪算法，应找1个11单位面值的硬币和4个1单位面值的硬币，共找回5个硬币。但最优的解答应是3个5单位面值的硬币。</p>
-
+</li>
+</ul>
+<h3 id="JDBC的预编译是怎样-防止-SQL-注入的？"><a href="#JDBC的预编译是怎样-防止-SQL-注入的？" class="headerlink" title="JDBC的预编译是怎样 防止 SQL 注入的？"></a>JDBC的预编译是怎样 防止 SQL 注入的？</h3><p>JDBC的预编译，其实就是在SQL执行之前，在Mysql进行了一次预编译。将查询的参数等，利用占位符填充的形式进行注入。计算出现上面的额那种类型的sql注入攻击。JDBC也能进行过滤。</p>
+<p><strong>简单的讲，就是将参数 和 语句进行了分离，这样就可以避免吗SQL 注入！</strong></p>
+<pre><code>String sql=&quot;update cz_zj_directpayment dp&quot;+&quot;set dp.projectid = ? where dp.payid= ?&quot;;
+try {
+    PreparedStatement pset_f = conn.prepareStatement(sql);
+    pset_f.setString(1,inds[j]);
+    pset_f.setString(2,id);
+    pset_f.executeUpdate(sql_update);
+}catch(Exception e){
+    //e.printStackTrace();
+    logger.error(e.message());
+}
+</code></pre><p><strong>对于怎样提升的性能？ 个人理解就是将语语句进行了缓存。例如查询 <code>select * from table_name where id &gt; 100</code>在第一次查询时将语句进行缓存，第二次查询时，使用同样的 查询语句 select * from table_name where id &gt; ? 第二次主需要填充占位符即可！</strong></p>
+<h2 id="MYSQL中的分页"><a href="#MYSQL中的分页" class="headerlink" title="MYSQL中的分页"></a>MYSQL中的分页</h2><ul>
+<li><h1 id="事务管理"><a href="#事务管理" class="headerlink" title="事务管理"></a>事务管理</h1></li>
+</ul>
+<h2 id="Mybatis事务管理与AOP的结合使用"><a href="#Mybatis事务管理与AOP的结合使用" class="headerlink" title="Mybatis事务管理与AOP的结合使用"></a>Mybatis事务管理与AOP的结合使用</h2><h2 id="Mybatis的一对多映射"><a href="#Mybatis的一对多映射" class="headerlink" title="Mybatis的一对多映射"></a>Mybatis的一对多映射</h2><h2 id="Mybatis的多对一映射"><a href="#Mybatis的多对一映射" class="headerlink" title="Mybatis的多对一映射"></a>Mybatis的多对一映射</h2><h2 id="Statement-PreparedStatement-CallableStatement的区别"><a href="#Statement-PreparedStatement-CallableStatement的区别" class="headerlink" title="Statement ,PreparedStatement,CallableStatement的区别"></a>Statement ,PreparedStatement,CallableStatement的区别</h2><h2 id="Mybatis-的缓存机制"><a href="#Mybatis-的缓存机制" class="headerlink" title="Mybatis 的缓存机制"></a>Mybatis 的缓存机制</h2><h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><p>一级缓存是SqlSession级别的缓存。在操作数据库时需要构造sqlSession对象，在对象中有一个（内存区域）HashMap用于缓存数据。不同的sqlSession之间的缓存数据区域互相没有影响。Mybatis 默认开启一级缓存。当然，让SqlSession close之后一级缓存就没了。</p>
+<p>这一级缓存很容易理解，没什么好说的</p>
+<h3 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h3><p>二级缓存是Mapper级别的缓存，多个SqlSession去操作同一个Mapper的Sql语句，多个SqlSession去操作数据库会存在二级缓存区域，多个SqlSession可以共享二级缓存。二级缓存是跨SqlSession的。二级缓存需要在Mybatis中的Setting 选项中设置.其映射区域为整个Mapper。</p>
+<p>数据结构仍然为HashMap</p>
+<h3 id="三级缓存"><a href="#三级缓存" class="headerlink" title="三级缓存"></a>三级缓存</h3>
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/12/01/贪心算法/" class="archive-article-date">
-  	<time datetime="2016-12-01T05:12:42.058Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-01</time>
+      <a href="/2017/02/18/mybatis/" class="archive-article-date">
+  	<time datetime="2017-02-18T03:31:22.091Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-18</time>
 </a>
       
       
@@ -837,7 +526,7 @@ ClassFile {
 
 
   
-    <article id="post-Trie树" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-GoServerLearn" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -847,7 +536,7 @@ ClassFile {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/29/Trie树/">字典树</a>
+      <a class="article-title" href="/2017/02/17/GoServerLearn/">Go Server(一)</a>
     </h1>
   
 
@@ -855,216 +544,225 @@ ClassFile {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="字典树-trie"><a href="#字典树-trie" class="headerlink" title="字典树(trie)"></a>字典树(trie)</h1><hr>
-<blockquote>
-<p>在leetcode 上刷题遇到的一种数据结构，以前没听说过，怪我孤陋寡闻，经过了解发现应用还是很广的。觉得有必要记录下<br><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank" rel="external"> leetcode 208</a>—<br><a href="https://zh.wikipedia.org/wiki/Trie" target="_blank" rel="external">trie的维基百科</a></p>
+        <h1 id="Go-Web的工作方式"><a href="#Go-Web的工作方式" class="headerlink" title="Go Web的工作方式"></a>Go Web的工作方式</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>Rquest : 包含有用户的请求信息，用来解析用户的请求信息，包括Method ，header，body等</li>
+<li>Response: 服务器需要反馈给客户端的信息</li>
+<li>Conn：用户的每次请求链接</li>
+<li><p>Handler: 处理请求和生成返回信息的处理逻辑</p>
+</li>
+<li><p>用户的每个连接都会交给一个新的goroutine 去处理。相互没有影响</p>
+</li>
+</ul>
+<p><img src="https://astaxie.gitbooks.io/build-web-application-with-golang/content/zh/images/3.3.illustrator.png?raw=true" alt=""></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/17/GoServerLearn/" class="archive-article-date">
+  	<time datetime="2017-02-17T01:37:12.203Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-17</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Mysql-相关"><a href="#Mysql-相关" class="headerlink" title="Mysql 相关"></a>Mysql 相关</h1><h2 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h2><ul>
+<li>原子性：用于标示事务事务是否完全完成。对于事务而言，其所有的操作都在内存中执行，只有当所有的操作都完成 成功后，才会永久化写入到硬盘。</li>
+<li>一致性：事务在系统完整性中实施一致性，通过保证系统的任何事务最后都处于有效状态来实现。事务出错，系统将返回原始状态</li>
+<li>隔离性： 为防止混乱，再两个事务同时执行时，使用乐观锁的机制，保证对同一数据，同一时间只有一个请求在对其访问。隔离性保证了，在本次事务完成之前，其他操作对于数据的访问都不会受到未完成事务的影响</li>
+<li><p>事务的回滚并不能释放锁</p>
+<h2 id="Mysql-锁"><a href="#Mysql-锁" class="headerlink" title="Mysql 锁"></a>Mysql 锁</h2></li>
+<li><p>排它锁（写锁）：若事务T对对象A加上X锁，则只允许T读取和修改A，其他任何事务不得对A加任何锁，直至T释放A的锁。这就意味着T在释放A之前无法读取和修改A</p>
+</li>
+<li>共享锁（读锁）：若事务T对对象A加上S锁，其他事务可以访问对象A，但是不能为其添加X锁，知道事务T对对象释放了锁S    </li>
+<li>更新锁： 未解决死锁而引入的概念</li>
+<li>在InnoDB存储引擎中，UPdate 操作会将所有你要更新的数据列加锁，这样会相对的影响更新效率</li>
+</ul>
+<h2 id="处理并发问题的步奏："><a href="#处理并发问题的步奏：" class="headerlink" title="处理并发问题的步奏："></a>处理并发问题的步奏：</h2><ul>
+<li>开启事务</li>
+<li>申请写权限，给对象加锁<ul>
+<li>失败。稍后重试</li>
+</ul>
+</li>
+<li>成功，进行编辑操作</li>
+<li>写入编辑的结果</li>
+<li>写入成功，则提交事务完成操作</li>
+<li>写入失败，回滚事务</li>
+</ul>
+<h1 id="JDBC-连接池"><a href="#JDBC-连接池" class="headerlink" title="JDBC 连接池"></a>JDBC 连接池</h1><ul>
+<li>连接池的作用，用来避免客户端在连接数据库时频繁的建立连接导致的性能问题</li>
+<li>静态连接池：连接在系统初始化时就已经分配好，不能随意关闭。。</li>
+<li>连接池的复用策略同Java的 GC 一样使用 reference count（引用计数）算法。空闲的连接优先分配给客户端来使用。如果</li>
+<li>连接池最大连接和最小连接数需要在实践中确定</li>
+<li>连接池管理的事务处理：每一个事务独占一个连接，JDBC 通过建立一个事务注册表，以Thread作为ID 来标识使用者。</li>
+<li>虽然事务连接和普通连接的分配策略不一致，但JavaAPI通过多态均将这些操作封装到了DBCollections 接口中</li>
+</ul>
+<h1 id="Btree"><a href="#Btree" class="headerlink" title="Btree"></a>Btree</h1><blockquote>
+<p>B树是一种自平衡树 （Balance tree）</p>
 </blockquote>
 <ul>
-<li>概念<ul>
-<li>根节点不包含字符串 </li>
-<li>从根节点到某一叶子节点，路径上组成的所有字符就是该节点对应的字符串</li>
-<li>每个节点的公共前缀作为一个字符节点保存 </li>
+<li>B树的一个 比较好理解的数据结构是 2 - 3树,父节点的关键码的数量必须是其子节点的 -1 ；即 k的关键码，其子节点为 k-1 个可类比于2~3树,</li>
+<li>2 - 3 树的数据结构其实就是一个 3 阶的B树</li>
+<li>B树存储的都是主关键码？对主关键码（Index）进行索引来进行查找？</li>
+<li>Mysql表中每个索引都会以B树的数据结构建立一个文件，查找数据时可以对其进行缩短查找的时间复杂度 从 O（N） 缩短到 O（LogN）</li>
+<li>时间复杂度<ul>
+<li>搜索O(log n) </li>
+<li>插入O log n </li>
+<li>插入 O log n </li>
+<li>删除 O logn</li>
 </ul>
 </li>
-<li>应用<ul>
-<li>词频统计：比hash或者堆要节省空间，</li>
-<li>前缀匹配：前缀匹配的算法复杂度是O(1)， 要查找匹配前缀字符串的长度</li>
-</ul>
+<li><p>B树的性质</p>
+<ul>
+<li>根结点只有1个，关键字字数的范围[1,m-1]，分支数量范围[2,m]；</li>
+<li>除根以外的非叶结点，每个结点包含分支数范围[[m/2],m]，即关键字字数的范围是[[m/2]-1,m-1]，其中[m/2]表示取大于m/2的最小整数；</li>
+<li>非叶结点是由叶结点分裂而来的，所以叶结点关键字个数也满足[[m/2]-1,m-1]；</li>
+<li><p>所有的非终端结点包含信息：(n，P0，K1，P1，K2，P2，……，Kn，Pn)，</p>
+<p> 其中Ki为关键字，Pi为指向子树根结点的指针，并且Pi-1所指子树中的关键字均小于Ki，而Pi所指的关键字均大于Ki（i=1，2，……，n），n+1表示B-树的阶，n表示关键字个数，即[ceil(m / 2)-1]&lt;= n &lt;= m-1；</p>
+</li>
+<li><p>所有叶子结点都在同一层，并且指针域为空，具有如下性质：</p>
 </li>
 </ul>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrieNode</span></span>&#123;</div><div class="line">    TrieNode[] childs = <span class="keyword">new</span> TrieNode[<span class="number">26</span>]; <span class="comment">// a-z</span></div><div class="line">    <span class="keyword">int</span> count; <span class="comment">//frequence;</span></div><div class="line">    <span class="keyword">char</span> prefix; <span class="comment">//当前节点的字符前缀</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix; </div><div class="line">        count = <span class="number">1</span>; <span class="comment">//root 的count 初始化为0，所以要</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TrieNode</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addCount</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.count++;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrefix</span><span class="params">(<span class="keyword">char</span> prefix)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prefix = prefix;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> TrieNode root;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</div><div class="line">         root = <span class="keyword">new</span> TrieNode();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (searchNode.childs[currentChar-<span class="string">'a'</span>] == <span class="keyword">null</span>)      <span class="comment">//如果这个前缀的还是null，那么新建插入一个</span></div><div class="line">                searchNode.childs[currentChar-<span class="string">'a'</span>] = <span class="keyword">new</span> TrieNode(currentChar);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                node.count++;</div><div class="line">            searchNode = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; word.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = word.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> childCount = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (TrieNode trieNode : searchNode.childs)&#123;</div><div class="line">            <span class="keyword">if</span> (trieNode == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">continue</span>;</div><div class="line">            childCount += trieNode.count;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> searchNode.count &gt; childCount;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</div><div class="line">        TrieNode searchNode = root;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>;level &lt; prefix.length();level++)&#123;</div><div class="line">            <span class="keyword">char</span> currentChar = prefix.charAt(level);</div><div class="line">            TrieNode node = searchNode.childs[currentChar-<span class="string">'a'</span>];</div><div class="line">            <span class="keyword">if</span> (node == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            searchNode = node;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/29/Trie树/" class="archive-article-date">
-  	<time datetime="2016-11-29T07:51:31.906Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-29</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-最近的Leercode题解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/29/最近的Leercode题解/">最近leetcode刷题总结（16/11/29）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="backtracking-回溯算法"><a href="#backtracking-回溯算法" class="headerlink" title="backtracking (回溯算法)"></a>backtracking (回溯算法)</h1><hr>
-<p>回溯算法属于暴力解法。一般配合 DFS或者BFS使用，通过适当的剪枝来实现降低时间复杂度</p>
-<h2 id="Generate-Parentheses"><a href="#Generate-Parentheses" class="headerlink" title=" Generate Parentheses"></a><a href="https://leetcode.com/problems/generate-parentheses/" target="_blank" rel="external"> Generate Parentheses</a></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"> List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">generateParenthesis</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    backTracking(<span class="number">2</span>*n,n,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="string">"("</span>); <span class="comment">//长度为2*nde 字符串满足条件！</span></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">    <span class="comment">/*</span></div><div class="line">      思路：</div><div class="line">      1:利用indicateFlag 标示是否添加 右括号。左括号添加一次加一，右括号添加一次减一。不能为 负数！</div><div class="line">      2:构建一个char[2n-1] 的状态空间。每次都去尝试左括号和右括号。不满足的话就回到上一次的状态。</div><div class="line">        其实想层次遍历二叉树一样。利用BFS！队列</div><div class="line">     3 : 假设左子 为右半括号，右子为左半括号</div><div class="line">     */</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">backTracking</span><span class="params">(<span class="keyword">int</span> resLength,<span class="keyword">int</span> paraNum, <span class="keyword">int</span> leftAdded,<span class="keyword">int</span> rightAdded,<span class="keyword">int</span> flag, String cont)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (flag &lt; <span class="number">0</span> || rightAdded &gt; paraNum || leftAdded &gt; paraNum) <span class="comment">//这里就是实现的剪枝，不满足条件的，就不继续执行下去</span></div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">if</span> (cont.length() == resLength)&#123;</div><div class="line">        result.add(cont);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (flag &gt; <span class="number">0</span>)  </div><div class="line">        backTracking(resLength,paraNum,leftAdded,rightAdded+<span class="number">1</span>,flag-<span class="number">1</span>,cont+<span class="string">")"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (flag &gt;=<span class="number">0</span>)</div><div class="line">        backTracking(resLength,paraNum,leftAdded+<span class="number">1</span>,rightAdded,flag+<span class="number">1</span>,cont+<span class="string">"("</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Combination-Sum"><a href="#Combination-Sum" class="headerlink" title="Combination Sum"></a><a href="https://leetcode.com/problems/combination-sum/" target="_blank" rel="external">Combination Sum</a></h2><ul>
-<li>这个题解和其他Combination Sum的题目都很相似，利用DFS，经过适当剪枝，将满足条件的结果加入集合。。。。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; combinationSum(<span class="keyword">int</span>[] candidates, <span class="keyword">int</span> target) &#123;</div><div class="line">    <span class="keyword">if</span> (candidates.length &lt; <span class="number">1</span>)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; candidates.length; index++)&#123;  <span class="comment">//利用一个外部循环可以减少递归的次数</span></div><div class="line">        List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        list.add(candidates[index]);</div><div class="line">        recursive(result, list, candidates, target,index,candidates[index]);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">recursive</span><span class="params">(List&lt;List&lt;Integer&gt;&gt; result, List&lt;Integer&gt; list, <span class="keyword">int</span>[] candidates, <span class="keyword">int</span> target, <span class="keyword">int</span> restrict,<span class="keyword">int</span> currentValue)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (currentValue == target)&#123;</div><div class="line">        result.add(list);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(<span class="keyword">int</span> index2 = restrict;index2 &lt; candidates.length;index2++)&#123;</div><div class="line">        <span class="keyword">int</span> value = currentValue + candidates[index2];</div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (value &lt;= target)&#123;</div><div class="line">            list.add(candidates[index2]); <span class="comment">// add the element</span></div><div class="line">            ArrayList newList = <span class="keyword">new</span> ArrayList();</div><div class="line">            newList.addAll(list);</div><div class="line">            recursive(result, newList, candidates, target,index2,value);</div><div class="line">            list.remove(list.size() - <span class="number">1</span>); <span class="comment">// remove the top element</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Restore-IP-Addresses"><a href="#Restore-IP-Addresses" class="headerlink" title="Restore IP Addresses"></a><a href="https://leetcode.com/problems/restore-ip-addresses/" target="_blank" rel="external">Restore IP Addresses</a></h2><ul>
-<li>这个题解最需要注意的是IP地址后面的3个节点不能以0开头，一开始做题就卡到这里了</li>
-</ul>
-<pre><code class="Java"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">restoreIpAddresses</span><span class="params">(String s)</span> </span>{
-     List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();
-     StringBuilder builder = <span class="keyword">new</span> StringBuilder();
-     dfs(s, result, builder, <span class="number">0</span>);
-     <span class="keyword">return</span> result;
- }
-
- <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(String restString, List&lt;String&gt; result, StringBuilder builder, <span class="keyword">int</span> currentLength)</span> </span>{
-     <span class="keyword">if</span> (restString.length() + currentLength &lt; <span class="number">4</span>) <span class="comment">//剩余字符串的长度不足以形成一个有效的IP 地址</span>
-         <span class="keyword">return</span>;
-     <span class="keyword">if</span> (currentLength == <span class="number">3</span> 
-                 &amp;&amp; (restString.length() &lt; <span class="number">4</span> 
-                         &amp;&amp; Integer.parseInt(restString) &lt;= <span class="number">255</span>)) {
-         <span class="keyword">if</span> (restString.length() &gt;<span class="number">1</span> &amp;&amp; restString.startsWith(<span class="string">"0"</span>))
-             <span class="keyword">return</span>;
-         StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder(builder);
-         String value = stringBuilder.append(restString).toString();
-         result.add(value);
-         <span class="keyword">return</span>;
-     } <span class="keyword">else</span> <span class="keyword">if</span> (currentLength &gt;= <span class="number">3</span>) <span class="comment">//不满的情况，&gt;= 3，大于 255 ||</span>
-         <span class="keyword">return</span>;
-     <span class="keyword">int</span> limit = Math.min(<span class="number">3</span>, restString.length());
-     <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>; index &lt;= limit; index++) {
-         String sub = restString.substring(<span class="number">0</span>, index);
-         <span class="keyword">if</span> (sub.startsWith(<span class="string">"0"</span>) &amp;&amp; sub.length() &gt; <span class="number">1</span>)
-             <span class="keyword">continue</span>;
-         <span class="keyword">if</span> (index == <span class="number">3</span> &amp;&amp; (sub.length() &gt; <span class="number">3</span> || Integer.parseInt(sub) &gt; <span class="number">255</span>))
-             <span class="keyword">continue</span>;
-         builder.append(sub);
-         builder.append(<span class="string">"."</span>);
-         dfs(restString.substring(index, restString.length()), result, builder, currentLength + <span class="number">1</span>);    <span class="comment">//剪切第0个字符</span>
-         builder.delete(builder.length() - index - <span class="number">1</span>, builder.length());
-     }
- }
-</code></pre>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/29/最近的Leercode题解/" class="archive-article-date">
-  	<time datetime="2016-11-29T07:17:03.006Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-29</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-音视频编解码遇到的坑" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-音视频编解码中注意的问题"><a href="#title-音视频编解码中注意的问题" class="headerlink" title="title:音视频编解码中注意的问题"></a>title:音视频编解码中注意的问题</h2><h1 id="SDK使用"><a href="#SDK使用" class="headerlink" title="SDK使用"></a>SDK使用</h1><ul>
-<li>解码失败的可能性<ul>
-<li>确定I帧已经先解码！</li>
-<li>确定AvCodec 和AvcodecConext已经正确打开</li>
-<li>确定packet的size是正确的</li>
-<li>确定packet 的data是标准的H264数据，比如说前四位为0X00 00 00 01；</li>
-<li>检查是否 av_register_all已经调起</li>
-</ul>
 </li>
-<li>从java层传入绝对路径到jni层的时候，有时候会在默认莫名其妙的脚伤”flock“suffix，这个时候可以利用jbyteArray.size对得到的char *进行剪切，因为这个时候jbyteArray的size标记的path长度是正确的！</li>
-<li>其实更好的做法是利用<em>GetStringUTFChars</em>来进行转换更为常用 </li>
-<li>在GETMethod()中,最后一个参数<ul>
-<li>“([BI)V” :表示返回类型为void，形参为byte[] 和 int</li>
-<li>“(Ljava/lang/String;)void” 表示形参为String 返回值为void的函数</li>
-<li>“(Ljava/lang/String;I)void”表示形参为String　和　int 返回值为void的函数,其和 I 区别在于”;”是否添加，只要到参数为类的时候才添加！！！！</li>
-</ul>
-</li>
-</ul>
-<h1 id="概念性知识"><a href="#概念性知识" class="headerlink" title="概念性知识"></a>概念性知识</h1><ul>
-<li>H264的前四个字节应该是0X00 00 00 01，其一般用来作为H264的帧分隔符。</li>
-<li>从MP4帧解封装出来的H264的I帧要从MP4中提取出SPS 和PPS两个数据拼接到上面！</li>
-<li><a href="http://www.cnblogs.com/skyseraph/archive/2012/04/01/2429384.html" target="_blank" rel="external">mp4 中文件信息分析</a>，在FFMPEG中MP4中的SPS 和PPS 就是存放在AVFormatContext.streams[X].codec.extradata中</li>
-<li>如果你想知道某个Frame 是否是I frame 就用 NALU header 求出低五位的值，依照这个表判断是什么类型的、<ul>
-<li>0 未使用</li>
-<li>1 不分区、非 IDR 图像的片 2，3，4</li>
-<li>2 片分区 A 2</li>
-<li>3 片分区 B 3</li>
-<li>4 片分区 C 4</li>
-<li>5 IDR 图像中的片 2，3</li>
-<li>6 补充增强信息单元(SEI) 5</li>
-<li>7 序列参数集 0</li>
-<li>8 图像参数集 1</li>
-<li>9 分界符 6</li>
-<li>10 序列结束 7</li>
-<li>11 码流结束 8</li>
-<li>12 填充 9</li>
-<li>13~23 保留</li>
-<li>24~31 未使用</li>
-</ul>
-</li>
-<li>AVPACKET 中的PTS 和DTS 分别指的是播放时间戳和压缩的时间戳，<a href="http://lnmcc.net/2013/07/09/ffmpeg%E4%B8%AD%E7%9A%84%E6%97%B6%E9%97%B4/" target="_blank" rel="external"> ffmpeg 中的时间</a> <ul>
-<li>demux文件后，视频文件的时间信息都存储在AVStream 中，利用av_find_best_frame 招到视频stream的位置，读取这个AVStream中的信息，time_base 就是个文件的时间分度 num/den 为其值，duration * time_base 中的时间分度就是视频文件的时常..r_frame_rate 表示视频的fps（每秒的帧数）</li>
-<li>在读取AVPacket后 avpacket中的pts 或者dts的值乘以 时间分度就是指的这个帧在视频文件中的位置</li>
-</ul>
-</li>
+<li><strong>删除和更新，插入时要保持树的平衡，这个比较复杂</strong></li>
 </ul>
 <h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
-<li>JNI内存泄露：在JNI层分配的各种指针，各种分配的各种各样的内存，在不适用的时候要及时回收。真的是用的多了JAVA换到C上面就坑啊！</li>
-<li>第二个就是<strong>ReleaseByteArrayElements</strong>这个方法，第二个传入参数（C 层次的参数，其内存也会被释放成为野指针，所以要保证释放后的引用 确保没有其他地方对这个指针进行再次的引用！）</li>
+<li>Innodb 中的日志： <ul>
+<li>binlog：二进制日志</li>
+<li>查询日志：</li>
+<li>慢日志</li>
+<li>错误日志</li>
+<li>中继日志：</li>
 </ul>
-<hr>
-<h1 id="分开MP4demux-和-decoding-真的不是一件简单的事情。。。。。。"><a href="#分开MP4demux-和-decoding-真的不是一件简单的事情。。。。。。" class="headerlink" title="分开MP4demux 和 decoding 真的不是一件简单的事情。。。。。。"></a>分开MP4demux 和 decoding 真的不是一件简单的事情。。。。。。</h1><blockquote>
-<p>问题主要是我怎么样才能把 SPS PPS 作为I帧数据传给decoding ? 摄像头将SPS 传过来自动带着一个I帧的数据？</p>
-</blockquote>
-<p>00 00 00 01 67 42 00 14 8D 95 02 83 F2 (SPS) 00 00 00 01 68 CE 38 80(PPS) 00 00 00 01 6D 64 61 74 00 00 05 3C 65 …. (视频数据)</p>
-<blockquote>
-<p>{0001}SPS{0001}PPS{0001}{裸视频数据}的格式拼接,按照这样的格式去拼接一个I帧！</p>
-</blockquote>
-<ul>
-<li>从AvCodecContext 的extradata 中获取到SPS 和PPS<br>&lt;&gt;</li>
+</li>
 </ul>
-<p><a href="http://stackoverflow.com/questions/12778978/libav-ffmpeg-avcodec-decode-video2-returns-1-when-separating-demultiplexing" target="_blank" rel="external">lonk up this!</a></p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/23/音视频编解码遇到的坑/" class="archive-article-date">
-  	<time datetime="2016-11-23T06:06:40.152Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-23</time>
+      <a href="/2017/02/16/Mysql/" class="archive-article-date">
+  	<time datetime="2017-02-16T03:25:55.323Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-16</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-设计模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h1><ul>
+<li>单一职责 ： 一个类只负责一项职责</li>
+<li>里氏替换 ： 子类可以扩展父类的方法，但不可以修改父类的抽象方法<ul>
+<li>子类可以实现父类的抽象方法，但不能覆盖父类的非抽象方法</li>
+<li>子类可以增加自己特有的方法</li>
+<li>当子类的方法重载父类的方法时，方法的前置条件（方法的形参）要比父类方法的形参宽松，返回的值要比父类的返回值严格。也就是说，子类的形参需要是父类形参的父类，返回值要是父类返回值的子类</li>
+</ul>
+</li>
+<li>依赖倒置原则：高层模块不依赖于底层模块，二者都应该依赖于各自的抽象，抽象不依赖于细节，细节应该依赖于抽象<ul>
+<li>底层模块尽量都要有抽象类或者接口，或者两者都有</li>
+<li>变量的声明类型尽量是抽象类或者接口</li>
+<li>使用继承类时遵循里氏替换原则</li>
+</ul>
+</li>
+<li><p>接口隔离原则 ： 客户端不应该依赖它不需要的接口，一个类对另一个类的依赖应该建立在最小的接口上。</p>
+<ul>
+<li>建立单一的细化的接口，接口中方法要尽量少的方法</li>
+<li>提高内聚，减少对外的交互，使接口用最少的方法去完成最多的事情</li>
+</ul>
+</li>
+<li><p>迪米特原则：一个对象应该对其他对象保持最少的了解。尽量减少类与类之间的耦合。</p>
+</li>
+<li>开闭原则：对扩展开放，对修改关闭。尽量使用private 方法和属性。</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/16/设计模式/" class="archive-article-date">
+  	<time datetime="2017-02-16T01:52:59.646Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-16</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Spring" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><ul>
+<li>CGLIB 个JDK代理的区别：JDK 的动态代理是通过反射，代理的建立发生在编译器（其实是运行期），对动态代理类的字节码进行更改。JDK利用的是反射<ul>
+<li>cglib 实现的关键类<code>Enhancer</code> 织入器</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/16/Spring/" class="archive-article-date">
+  	<time datetime="2017-02-16T01:43:37.312Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-16</time>
 </a>
       
       
@@ -1086,7 +784,7 @@ ClassFile {
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 

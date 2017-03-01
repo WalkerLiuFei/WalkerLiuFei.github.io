@@ -10,29 +10,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="基础查询的高级用法
 查询结果通过columName 进行降序排序：SELECT columnName(s) FROM tableName ORDER BY column_name DESC
-
-插入
-批量插入： INSERT INTO table (field1,field2,field3) VALUES (‘a’,”b”,”c”), (‘a’,”b”,”c”),(‘a’,”b”,”c”)
-批量插入">
+as new语法可以将查询结果 作为一个临时的新表select min(salary) from (select salary from employee order by salary DESC limit">
 <meta property="og:type" content="article">
 <meta property="og:title" content="常用Sql语句笔记">
 <meta property="og:url" content="http://yoursite.com/2016/12/06/Sql语句记录/index.html">
 <meta property="og:site_name" content="Walker的博客">
 <meta property="og:description" content="基础查询的高级用法
 查询结果通过columName 进行降序排序：SELECT columnName(s) FROM tableName ORDER BY column_name DESC
-
-插入
-批量插入： INSERT INTO table (field1,field2,field3) VALUES (‘a’,”b”,”c”), (‘a’,”b”,”c”),(‘a’,”b”,”c”)
-批量插入">
-<meta property="og:updated_time" content="2017-01-09T10:13:39.693Z">
+as new语法可以将查询结果 作为一个临时的新表select min(salary) from (select salary from employee order by salary DESC limit">
+<meta property="og:updated_time" content="2017-02-09T07:12:24.336Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用Sql语句笔记">
 <meta name="twitter:description" content="基础查询的高级用法
 查询结果通过columName 进行降序排序：SELECT columnName(s) FROM tableName ORDER BY column_name DESC
-
-插入
-批量插入： INSERT INTO table (field1,field2,field3) VALUES (‘a’,”b”,”c”), (‘a’,”b”,”c”),(‘a’,”b”,”c”)
-批量插入">
+as new语法可以将查询结果 作为一个临时的新表select min(salary) from (select salary from employee order by salary DESC limit">
   
   
     <link rel="icon" href="/assets/header.jpg">
@@ -163,13 +154,14 @@
       
         <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><h2 id="查询的高级用法"><a href="#查询的高级用法" class="headerlink" title="查询的高级用法"></a>查询的高级用法</h2><ul>
 <li>查询结果通过columName 进行降序排序：<strong>SELECT columnName(s) FROM tableName ORDER BY column_name DESC</strong></li>
+<li><code>as new</code>语法可以将查询结果 作为一个临时的新表<br><code>select min(salary) from (select salary from employee order by salary DESC limit 2)  as new limit 2;</code> </li>
 </ul>
 <h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><ul>
 <li>批量插入： <strong>INSERT INTO table (field1,field2,field3) VALUES (‘a’,”b”,”c”), (‘a’,”b”,”c”),(‘a’,”b”,”c”)</strong></li>
 <li>批量插入时，利用事务可以提高插入效率</li>
 </ul>
 <h2 id="改变表的信息"><a href="#改变表的信息" class="headerlink" title="改变表的信息"></a>改变表的信息</h2><ul>
-<li>改变列名 ；    <strong>alter table table_name change srcColumnName newColumnName  </strong></li>
+<li>改变列名 ；    <strong>alter table table_name change srcColumnName newColumnName</strong></li>
 <li>改变列的类型： <strong>alter table table_name motify srcColumnName newColumnType</strong>  </li>
 <li>改变表的名字:  <strong>alter table table_name rename newTableName</strong></li>
 <li>index(…列名）创建索引，组合索引，在建表的时候用</li>

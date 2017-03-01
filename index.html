@@ -126,7 +126,7 @@
       <div class="body-wrap">
         
   
-    <article id="post-面试知识点" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-简历描述" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -134,239 +134,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p>like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！</p>
-<h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h2 id="NoSql"><a href="#NoSql" class="headerlink" title="NoSql"></a>NoSql</h2><ul>
-<li>mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？<ul>
-<li></li>
-<li>capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制</li>
-<li></li>
-</ul>
-</li>
-<li>monogoDB 的存储大小限制<ul>
-<li>对于MMAPv1 存储引擎中，DataBase 中的文件数量不能超过16000个，也就是说一个以MMAPv1 作为存储引擎的data base的最大容量为32TB，如果设置了storage.mmapv1.smallFiles 为true,最大容量为8TB（设置这个bool 值后，单个data file 的最大容量会是 512MB）</li>
-<li>对于WiredTiger engine ,内部缓存分为两种，一般的RAM 存储，或者256MB（V .34）。</li>
-</ul>
-</li>
-<li>mongoDB 中的存储引擎有哪些种，各自有什么特点<ul>
-<li>MMAPV1  <ul>
-<li></li>
-<li>存储原理:文档在磁盘中连续存放，文档所占用的磁盘空间包括文档数据所占空间和文档填充，datafile 起始大小为64MB（pre allocate）,当大小超过 64MB后，data file 会通过padding 算法来叠加文档大小</li>
-<li>journal 刷新频率为 100ms，jorunal 用来用来恢复数据库的非正常关闭</li>
-<li>很吃内存，因为数据文件会通过mmap 映射到内存中（基本上是有多少吃多少），所以增大机器内存是提高 mongoDB性能的手段之一</li>
-</ul>
-</li>
-<li>WiredTiger engine v3.2 以后的默认存储引擎<ul>
-<li>支持文档级别的 lock （<code>在代码中怎么实现？</code>）</li>
-<li>快照功能（check point）， 一分钟或者超过2GB的变更日志一次，在写最新快照时，上一个快照已然有效。当 当前快照落地后，会自动删除上一个快照。journal 文件的大小为100MB，当日志文件超过这个大小后，会自动新建一个日志文件</li>
-<li>内部缓存 默认值是：1GB 或 60% of RAM - 1GB，取两值中的较大值</li>
-</ul>
-</li>
-<li>InMemory : 基于内存的存储，不是重点</li>
-</ul>
-</li>
-<li><p>BSON Document 大小限制，有没有 level limit,是多少？</p>
-<ul>
-<li>为避免内存溢出，Bson 最大为 16MB ，如果遇到size 瓶颈，你就需要 GridFS API 来解决</li>
-<li>BSON Document 的level 层级最多100.</li>
-</ul>
-</li>
-<li><p>mongoDB 是基于内存的还是基于硬盘的</p>
-<ul>
-<li>根据存储引擎不同，inmemory 是基于内存。otherwise 基于硬盘的持久化</li>
-</ul>
-</li>
-<li>mongoDB 中的GridFS机制，怎么使用<ul>
-<li>mongoDB 将db 分为 多个 chunk 来分块存储大文件。</li>
-<li>在使用时需要 基于database 新建 新建一个   <code>GridFSBucket</code>，上传文件时需要通过文件流，在java 中也可以使用<code>GridFSUploadStream</code> 来批量上传文件。 上传成功后 会返回一个 fileID,利用这个FileID 实现CURD 等等操作</li>
-<li></li>
-</ul>
-</li>
-<li>mongoDB 的数据文件为什么很大<ul>
-<li>mongoDB 为防止数据碎片采用存储空间预分配的策略</li>
-</ul>
-</li>
-<li>mongoDB 中chunk的概念，操作块（迁移，删除等等需要注意的事项）<ul>
-<li>chunk 用来存储协作一起来存储大的文件</li>
-<li>chunk size 默认为64M,chunk 过小会导致频繁的迁移从而导致性能问题，chunk 过大会导致数据存储的不均衡</li>
-</ul>
-</li>
-<li>mongoDB 中分片的概念<ul>
-<li>分片方式： 内存区域分片，hash分片(类似于 数组和hash表)</li>
-</ul>
-</li>
-<li>mongoDB 中的日志文件应该怎样存储</li>
-<li>mongoDB 中的fsync 操作<ul>
-<li>fsync 命令允许我们刷新所有等待写入的操作刷新数据文件中，它提供了锁的机制，这样会使得备份更加简单。</li>
-<li>fsync 机制并不适合建立一个 read-only 的模式，因为它的读操作也有可能会被block（因为新建立的 connection 需要被授予权限）</li>
-</ul>
-</li>
-<li>mongoDB 中<strong>事务</strong>？！ 如何对 collection ，database 进行加锁？</li>
-<li>mongoDB 中的集群分为那些。各包括那些部分，有什么特点</li>
-<li>什么事oplog？ 有什么用<ul>
-<li>操作日志</li>
-</ul>
-</li>
-<li>getlasterror是什么东西？ 有什么用<br>+ </li>
-<li>sharding 和replication 是怎样工作的。</li>
-<li>数据在什么时候才会扩展到多个分片里？</li>
-<li>当我在视图更新一个正在被迁移的块上的文档时会发生什么？</li>
-<li><a href="https://docs.mongodb.com/manual/reference/limits/" target="_blank" rel="external">mongoDB 的一些局限性</a></li>
-<li><a href="https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod" target="_blank" rel="external">说出几个常用的mongod 命令</a></li>
-<li>mongoDB 中的RDBMS</li>
-<li>dataBase 是怎样保存 collection的？ collection又是怎样保存document的？ </li>
-<li>chunk 默认的大小为 255KB</li>
-<li>bulkwrite ()</li>
-<li><p>目前很多write operation是用返回值的。包括错误信息</p>
-</li>
-<li><p>Document Model 类型</p>
-<ul>
-<li>one to one</li>
-<li>one to many emb</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>read concern ,write concern</li>
-</ul>
-<ul>
-<li>shard 集群，<ul>
-<li><ul>
-
-
-</ul></li>
-</ul>
-</li>
-</ul>
- <pre>
-    mongod --port 2001 --shardsvr --dbpath shard1/
-    mongod --port 2002 --shardsvr --dbpath shard2/
- </pre>
-
-
-<ul>
-<li><p>配置服务器：保存集群的元数据，包含各个shard的路由规则\</p>
-<pre>
-mongod --port 3001 --dbpath cfg1/
-mongod --port 3002 --dbpath cfg2/
-mongod --port 3003 --dbpath cfg3/
-</pre>
-
-<ul>
-<li>路由服务器：启动查询路由mongos 服务器 –&gt;</li>
-<li><p><code>mongos --port 5000 --configdb 127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003</code></p>
-</li>
-<li><p>连接mongos，为集群添加数据分片节点。</p>
-</li>
-</ul>
-<pre>
-mongo --port 5000 amdmin
-
-sh.addShard("127.0.0.1:2001")
-sh.addShard("127.0.0.1:2002")
-</pre>
-
-</li>
-</ul>
-<ul>
-<li>如果Shard是Replica Set，添加Shard的命令：  <pre>
-  sh.addShard("rsname/host1:port,host2:port,...")    
-  rsname - 副本集的名字
-  </pre>
-
-
-</li>
-</ul>
-<p> </p>
-<p>—————————-以上 需要在 2017/02/07 完成！—————————</p>
-<h2 id="mongoDB-常用命令"><a href="#mongoDB-常用命令" class="headerlink" title="mongoDB 常用命令"></a>mongoDB 常用命令</h2><ul>
-<li>use XXX (用户名，database)</li>
-<li>db.addUser(“name”,”password”)  //添加用户</li>
-<li>db.getUsers  //查询用户</li>
-<li>db.<code>collectionName</code>.Command : 其中的command 包括 各种对collection 数据的操作。这些也是driver 里面最常用的一些<ul>
-<li>aggreagate  </li>
-<li>distinct</li>
-<li>group</li>
-<li>mapReduce</li>
-<li>find </li>
-<li>insert</li>
-<li>update</li>
-<li>delete</li>
-<li>findAndModify </li>
-<li>getMore  // </li>
-<li>getLastError —-&gt; db.getLastError</li>
-<li>getPrevError —-&gt; db.</li>
-<li>resetError</li>
-<li>eval // 从 mongo 3.0 开始已经deprecate</li>
-<li>parallelCollection</li>
-</ul>
-</li>
-</ul>
-<h2 id="stackoverflow-上的问题"><a href="#stackoverflow-上的问题" class="headerlink" title="stackoverflow 上的问题"></a>stackoverflow 上的问题</h2><ul>
-<li>怎样查询 like。 利用regex..find(“key”,”regex 表达式”)。。。。其实mongoDB的regex 要比mysql的like 强大的多</li>
-<li>利用 <code>collection.find(Filters.where(&quot;this.stars - 20  &gt; 20&quot; )).forEach((Block&lt;? super Document&gt;) System.out::println );</code> 可以查询一些复杂的逻辑表达式 的数据</li>
-<li>mapreduce<br>  + </li>
-<li>group<br>  + </li>
-<li><p>aggreate</p>
-</li>
-<li><p>replica set 的rollback ，其实是主节点进行写操作，从节点没有同步成功。然后主节点出现宕机，或者其他情况退出了当前的cluster。当这个宕机的主节点从新加入到从节点的后，这个former primary 就成了从节点，从节点需要从当前 的主节点进行一次同步，这就是所谓的rollback。</p>
-<h2 id="mongoDB-官网FAQ"><a href="#mongoDB-官网FAQ" class="headerlink" title="mongoDB 官网FAQ"></a>mongoDB 官网FAQ</h2></li>
-<li><p>mongoDB 保存有cache功能</p>
-</li>
-<li>mongoDB 是否支持事务? <ul>
-<li>mongoDB 不支持在 多个文档上的事务，但是支持在单一文档的上的原子操作,利用$isolated 操作符</li>
-<li>原子操作保证在一次读写中，除非出现错误或者异常，其他的client是看不到 的。另外，原子操作</li>
-</ul>
-</li>
-<li>当在建立一个collection上面的Index的时候，collection是不允许读写的。所以建立index的时候尽量将background的属性设置为 true</li>
-<li>mongoDB的索引和mysql的索引有什么不同？ mysql只能建立一个索引的key，而mongodb 可以建立多个规则更flexable</li>
-<li>对于MMAPv1 存储引擎，如果对一个document进行修改导致它存储的空间超过了现有的分配空间。monogodb 会为他新分配一个空间并更新所有indexs.</li>
-<li>mongodb 的锁机制的类型： Mongodb 使用一个readers-writer 锁，允许多个读操作访问数据库，但是只提供唯一写操作。写操作比读操作的优先级更高</li>
-<li>对于MMAPv1 存储引擎，在进行一个读操作的时候，如果当前的document没有在memory中存在，它会将锁ylied，在所要读要读的data被读入内存后，这个操作会再获取这个锁进行操作。</li>
-<li>CURD ，Indexs,Map-Reduce，aggreate 都会获取锁</li>
-<li>那些操作会锁定数据库<ul>
-<li>db.collection.ensureIndex 。在不设置background 为true的时候</li>
-<li>reindex</li>
-<li>compact : 把所有的数据和索引重写并分块，在WiredTiger 存储引擎中，这个命令会将硬盘容量重新分配给操作系统</li>
-<li>再创建一个很大的collection的时候</li>
-<li>db.collection.validate() </li>
-<li>db.copyDatabase()</li>
-</ul>
-</li>
-<li>那些操作会锁定多个数据库<ul>
-<li>journing</li>
-<li>uset.auth</li>
-</ul>
-</li>
-<li>sharding 中的每个分片都有自己独立的读写锁</li>
-<li>在复制集节点中，由于从节点是不允许用户进行写操作的，所以没有必要关心其写的锁。另外就算是对一个cluster 进行写操作，从节点也不是在每时每刻监听主节点的写操作并执行同步，从节点会每分钟(defalut)参考主节点的oplog进行同步</li>
-<li>对一个document的一个读操作在进行时，稍后一个对这个读数据的update操作几乎同时发起。虽然读操作能及时看到写造成的document的更新操作的update version，但是无法实时的数据snap shot.也就是说，读操作会错过读操作期间的数据的更新</li>
-<li>replica Set 和shared 机制应该一起使用，但是replica set架构应该优先于shared机制</li>
-<li>一个复制集如果节点的数量是级数，他就不需要投票节点。</li>
-<li>在复制集架构中，你可以使用不同的存储引擎</li>
-<li>对于wiredTiger存储引擎，当一个机器上运行多个mongod实例 或者mongodb 运行在一个容器中（docker）时你需要降低其cacheSize</li>
-<li>工作复制集代表应用在正常操作进程中使用的所有数据，大部分情况下是所有数据大小的集合，但特殊情况下工作复制集的大小取决于当前正在使用的数据库</li>
-<li>对于unaccessed 的document，mongod 是不会将其映射到内存中，只要能映射到内存中的数据都是可以accesss的</li>
-<li>monogdb 每一分钟从memory 写入到disk一次，对于wireTiger，当journal 容量大于2G时其也进行一次write disk 操作，wireTiger 每100ms 写入journal文件一次</li>
-<li><p>默认存储目录 /data/db 中的数据文件可能要比要插入的data set所占空间要打，原因是</p>
-<ul>
-<li>第一：preallocated data file</li>
-<li>oplog 文件，oplog 文件大小大概是 disk存储的 5%</li>
-<li>journal文件</li>
-</ul>
-</li>
-<li><p>repairdatabase 和 compact命令都可以为monogoDB重新分配内存，但是需要注意这两个命令执行的时候都需要2GB 的临时硬盘容量（2GB —&gt;单个datafile的最大容量）</p>
-</li>
-<li>对于 mmapv1 存储引擎collection 没有所谓的容量大小限制，database是有的，database 最多只能包含16000个datafile，每个datafile 最大2GB</li>
-<li>内存不足会导致pagefault。原因是内存不足导致的从硬盘读取数据不到内存中，遇到这种情况最好就开始考虑sharding 分片了</li>
-<li>一般情况下mongodb是没有连接限制的，除非你对连接进行设置</li>
-</ul>
-
+        
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2017/02/08/面试知识点/" class="archive-article-date">
-  	<time datetime="2017-02-08T10:54:40.116Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-08</time>
+      <a href="/2017/03/01/简历描述/" class="archive-article-date">
+  	<time datetime="2017-03-01T08:39:44.899Z" itemprop="datePublished"><i class="icon-clock"></i>2017-03-01</time>
 </a>
       
       
@@ -386,7 +160,7 @@ sh.addShard("127.0.0.1:2002")
 
 
   
-    <article id="post-MongoDB学习" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Leetcode题解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -396,7 +170,7 @@ sh.addShard("127.0.0.1:2002")
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/24/MongoDB学习/">MongoDB学习</a>
+      <a class="article-title" href="/2017/02/28/Leetcode题解/">Leetcode 解题笔记</a>
     </h1>
   
 
@@ -404,96 +178,34 @@ sh.addShard("127.0.0.1:2002")
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="基本的CURD"><a href="#基本的CURD" class="headerlink" title="基本的CURD"></a>基本的CURD</h1><ul>
-<li>mongodb 的MongoDBClient对象表示一个MongoDB的连接池，就算你有多个线程的操作，你也只需要一个对象</li>
-<li>MongoClientOptions可以配置数据库连接的选项。其有类似一个静态的工厂类，可以指定，<strong>应用名，最大连接数，最小连接数，服务选择的超时时间，解码器，编码器等等。</strong></li>
-<li>MongoDB默认连接是通过SSL加密的（Java 7 以上！），如果你必须使用java 6，或者更低的java版本，你必须通过MongoDBClientOptions的<code>sslInvalidHostNameAllowed(true)</code>来disable ssl加密！</li>
-<li><p>MongoDB的标准URI格式 : <code>mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]</code>,</p>
-<ul>
-<li>首先前缀 <code>mongodb://</code>  这是用来标示mongoDB URI的标示符。</li>
-<li><code>[username:password@]</code> 是可选项</li>
-<li>host1 是唯一必须的部分。</li>
-<li>：port 是可选项，默认为：27017</li>
-<li><code>/database</code> 是登录的数据库名字。这个选项只有在 前面 <code>[username:password@]</code>使用时才会使用得到。如果没有的话，默认为admin database 会被使用。</li>
-</ul>
-</li>
-<li><p>对于Capped Collections ，指的是指定容量的collections,类似于 java中 lrucache,根据插入的数据顺序来进行覆盖存储。Capped Collections 的插入速度更高，并且你无法从一个 capped collections 中移除一个document。collections 的最小cap 是4096 byte。mongodb 会确保 query 的 index 等同于 insert 的 index.</p>
-</li>
-<li><p>mongoDB的三种codec 类。</p>
-<ul>
-<li>Document since 3.0</li>
-<li>BasicDBObject</li>
-<li>BsonDocument</li>
-</ul>
-</li>
-<li><p>MongoDB 的Index是在collection 级别上创建的。其类似于Mysql 其默认的index 是”_id”。也就是说排序的标准是按照插入的顺序来的。</p>
-</li>
+        <h1 id="Single-Number-II"><a href="#Single-Number-II" class="headerlink" title="Single Number II"></a><a href="https://leetcode.com/problems/single-number-ii/" target="_blank" rel="external">Single Number II</a></h1><ul>
+<li>一个数列，除了一个数，其他数都出现3次。这里用了一个 长度为32的数组，维护32个位，各位出现的次数，然后对3取 %</li>
 </ul>
 <pre>
-    //创建一个 递增的key
-  collection.createIndex(Indexes.ascending("stars"));
-    //默认的query 的顺序依旧是按照 "_id"的值，也就是说插入顺序来的
-   collection.find().forEach((Block<? super Document>) System.out::println);
-    // 但是如果你加上 查找的限制字段。他就会按照字段"stars" 来进行排序显示！ 
-   collection.find(Filters.gt("stars",0)).forEach((Block<? super Document>) System.out::println);
-    // 或者
-    collection.find().sort(Indexes.descending("stars")).forEach((Block<? super  Document>) System.out::println);
+public int singleNumber(int[] nums) {
+        int ans = 0;
+        for(int i = 0; i < 32; i++) {
+            int sum = 0;
+            for(int j = 0; j < nums.length; j++) {
+                if(((nums[j] >> i) & 1) == 1) {
+                    sum++;
+                    sum %= 3;
+                }
+            }
+            if(sum != 0) {
+                ans |= sum << i;
+            }
+        }
+        return ans;
+    }
 </pre>
-
-<ul>
-<li><p>Text Index ..一个collection 至多含有一个Text Index。</p>
-</li>
-<li><p>projections(Projections.XXX)。。。。<br><code>collection.find().projection(Projections.fields(Projections.include(&quot;stars&quot;),Projections.exclude(&quot;_id&quot;))).forEach((Block&lt;? super Document&gt;) System.out::println);</code><br>projections 内部的fileds 都是Projections 里面一些静态方法。</p>
-</li>
-<li>同上，MongoDB里面的包<code>package com.mongodb.client.model;</code>里面都是一些类似工具类的类。可以用来进行相应的操作</li>
-<li>类似projections的还有sort。。</li>
-</ul>
-<h1 id="MongoDB-Cluster"><a href="#MongoDB-Cluster" class="headerlink" title="MongoDB Cluster"></a>MongoDB Cluster</h1><ul>
-<li><strong>主从架构：</strong>搭建一个主从数据库， slave 会同步master 所有 write的操作。下面是 shell 命令。。<code>注意在本机测试时 需要在不同的命令行窗口打开master 和 slave</code><br><pre><br>#创建一个主从MongDB服务器<br>cd /</pre></li>
-</ul>
-<p>e:</p>
-<p>mkdir monogoDBCluster<br>cd ./monogoDBCluster<br>mkdir Master<br>mkdir Slave</p>
-<p>mongod –port 12002 –master –dbpath ./Master </p>
-<h1 id="源master-来自于-127-0-0-1-2000-。"><a href="#源master-来自于-127-0-0-1-2000-。" class="headerlink" title="源master 来自于 127.0.0.1:2000 。"></a>源master 来自于 127.0.0.1:2000 。</h1><p>mongod –port 12003 –slave –source 127.0.0.1:12002 –dbpath  ./Slave</p>
-<p></p>
-<ul>
-<li><p><strong>副本集架构</strong>：显示启动三个 mongoDB 的实例，并同时制定为 replSet 的名称为 rs0; </p>
-<p><pre><br>#<br>mkdir replicaSet_1<br>mkdir replicaSet_2<br>mkdir replicaSet_3</pre></p>
-</li>
-</ul>
-<p>cmd /k start mongod –port 12004 –dbpath replicaSet_1 –replSet rs0<br>cmd /k start mongod –port 12005 –dbpath replicaSet_2 –replSet rs0<br>cmd /k start mongod –port 12006 –dbpath replicaSet_3 –replSet rs0<br></p>
-<p>然后选择其中一个实例进入 其shell命令界面。初始化replSet集群，并添加secondary。 即，当前这些命令的这个实例会被作为primary。</p>
-<pre>
-mongo --port 12004
-
-rs.initiate()
-rs.add("<hostname>:2002")
-rs.add("<hostname>:2003")
-rs.conf()
-</hostname></hostname></pre>
-
-<p>所有的连接什么的都会在这个上面。在默认情况下，secondary是不允许读和写的。如果你想在secondary 节点上进行读。需要进行相应的设置<br>在java下面三个等级的设置</p>
-<pre>
-        //在client 级别。read 首先是从 secondary 上面进行读
-  MongoClientOptions options = MongoClientOptions.builder().readPreference(
-                                  ReadPreference.secondary()).build();
-    //类似的！
-  MongoClient mongoClient = new MongoClient(
-    new MongoClientURI("mongodb://host1:27017,host2:27017/?readPreference=secondary"));
-// database 级别的设置
-MongoDatabase database = mongoClient.getDatabase("test")
-                         .withReadPreference(ReadPreference.secondary());
-//最后 是collection级别的设置
-MongoCollection<document> collection = database.getCollection("restaurants")
-            .withReadPreference(ReadPreference.secondary());
-</document></pre>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2017/01/24/MongoDB学习/" class="archive-article-date">
-  	<time datetime="2017-01-24T07:24:20.147Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-24</time>
+      <a href="/2017/02/28/Leetcode题解/" class="archive-article-date">
+  	<time datetime="2017-02-28T11:32:56.978Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-28</time>
 </a>
       
       
@@ -513,7 +225,111 @@ MongoCollection<document> collection = database.getCollection("restaurants")
 
 
   
-    <article id="post-Netty(二)" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Mybatis使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title：-Mybatis-基本使用"><a href="#title：-Mybatis-基本使用" class="headerlink" title="title： Mybatis 基本使用"></a>title： Mybatis 基本使用</h2><ul>
+<li>SQL 映射文件有很少的几个顶级元素（按照它们应该被定义的顺序）：<ul>
+<li>cache – 给定命名空间的缓存配置。</li>
+<li>cache-ref – 其他命名空间缓存配置的引用。</li>
+<li>resultMap – 是最复杂也是最强大的元素，用来描述如何从数据库结果集中来加载对象。</li>
+<li>parameterMap – 已废弃！老式风格的参数映射。内联参数是首选,这个元素可能在将来被移除，这里不会记录。</li>
+<li>sql – 可被其他语句引用的可重用语句块。</li>
+<li>insert – 映射插入语句</li>
+<li>update – 映射更新语句</li>
+<li>delete – 映射删除语句</li>
+<li>select – 映射查询语句</li>
+</ul>
+</li>
+</ul>
+<h1 id="使用最多的Spring-Mybatis"><a href="#使用最多的Spring-Mybatis" class="headerlink" title="使用最多的Spring-Mybatis"></a>使用最多的Spring-Mybatis</h1><h1 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h1><ul>
+<li>Mapper中子语句中的id 标示是不需要 加 “.” 作为前缀的，其在SqlSession 中通过Mapper的NameSpace的前缀和id结合获取时候是默认加上“.”的</li>
+<li>作为Domain的bean， 一定要有geter/setter</li>
+<li><strong>selectMap 和 selectList 的区别其实就是多一个mapKey，这个mapKey其实是查询结果集的一个 cloumn name！！！！利用这个作为 结果集中每一个结果额映射</strong></li>
+</ul>
+<pre>   
+        //这个 id,其实就是查询时一个列 
+        Map<string,object> map =  sqlSession.selectMap(getClass().getName()+".selectUserContent",userID,"id");
+</string,object></pre>
+
+
+<h2 id="Mybatis-的分页"><a href="#Mybatis-的分页" class="headerlink" title="Mybatis 的分页"></a>Mybatis 的分页</h2><h2 id="一个Mapper的配置，"><a href="#一个Mapper的配置，" class="headerlink" title="一个Mapper的配置，"></a>一个Mapper的配置，</h2><ul>
+<li><p><strong>Mapper的 NameSpace 是不能少的，这个表示对于这个Mapper的映射，通过这个映射可以顺利找到Mapper</strong></p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;person.walker.dao.UserDAO&quot;&gt;
+    &lt;insert id=&quot;insertUser&quot; parameterType=&quot;user&quot;&gt;
+      INSERT INTO USERS VALUES (#{id},#{account})
+    &lt;/insert&gt;
+&lt;/mapper&gt;
+</code></pre></li>
+</ul>
+<h3 id="ReslutMap"><a href="#ReslutMap" class="headerlink" title="ReslutMap"></a>ReslutMap</h3><p>ReslutMap中的选项,Type指定一个 <strong>类</strong>，</p>
+<ul>
+<li>constructor - 类在实例化时,用到的构造函数<ul>
+<li>idArg - ID 参数;标记结果作为 ID 可以帮助提高整体效能</li>
+<li>arg - 注入到构造方法的一个普通结果</li>
+<li>这其实就是 指定这个通过sql结果查询构造函数时的参考，包括类型和column </li>
+</ul>
+</li>
+<li>id – 一个 ID 结果;标记结果作为 ID 可以帮助提高整体效能</li>
+<li>result – 注入到字段或 JavaBean 属性的普通结果</li>
+<li>association – 一个复杂的类型关联<ul>
+<li>嵌入结果映射，其实就是ResultMap 属性 Type类中的一个 属性，只不过这个属性是一个java对象</li>
+</ul>
+</li>
+<li>collection – 复杂类型的集嵌入结果映射 <ul>
+<li>嵌入结果映射到一个集合中，其实这个集合包含有Java对象<br>+　discriminator – 使用结果值来决定使用哪个结果映射</li>
+<li>case – 基于某些值的结果映射 嵌入结果映射</li>
+</ul>
+</li>
+</ul>
+<h1 id="Mybatis-的一个典型配置配置"><a href="#Mybatis-的一个典型配置配置" class="headerlink" title="Mybatis 的一个典型配置配置"></a>Mybatis 的一个典型配置配置</h1><ul>
+<li><p><strong>下面的这些配置都是不可以变的！！</strong></p>
+<p>  &lt;?xml version=”1.0” encoding=”UTF-8” ?&gt;<br>  &lt;!DOCTYPE configuration</p>
+<pre><code>PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+</code></pre>  <configuration><br>      <settings><br>          <setting name="cacheEnabled" value="true"><br>          <!--延迟加载--><br>          <setting name="lazyLoadingEnabled" value="true"><br>          <setting name="multipleResultSetsEnabled" value="true"><br>          <setting name="useColumnLabel" value="true"><br>          <setting name="useGeneratedKeys" value="false"><br>          <setting name="autoMappingBehavior" value="PARTIAL"><br>          <setting name="autoMappingUnknownColumnBehavior" value="WARNING"><br>          <setting name="defaultExecutorType" value="SIMPLE"><br>          <setting name="defaultStatementTimeout" value="25"><br>          <setting name="defaultFetchSize" value="100"><br>          <setting name="safeRowBoundsEnabled" value="false"><br>          <setting name="mapUnderscoreToCamelCase" value="false"><br>          <setting name="localCacheScope" value="SESSION"><br>          <setting name="jdbcTypeForNull" value="OTHER"><br>          <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"><br>      </setting></setting></setting></setting></setting></setting></setting></setting></setting></setting></setting></setting></setting></setting></setting></settings><br>      <typealiases><br>          <!--用来减少Mapper 中 parameter 和 result 的限定名称，指定这个包以后，会使用 Bean 的首字母小写的非限定类名来作为它的别名 --><br>          <package name="person.walker.Domain"><br>      </package></typealiases><br>      <!--environments 内部可以 配置多个环境， 我们在这里默认使用 development 的 environment。
+             默认的环境ID development--><br>      <environments default="development"><br>          <environment id="development"><br>              <!--利用JDBC的事务管理--><br>              <transactionmanager type="JDBC"><br>              <!--配置 数据源,使用连接池的属性--><br>              <datasource type="POOLED"><br>                      <!--数据库JDBC的URL地址--><br>                      <property name="url" value="jdbc:mysql://localhost:3306/redisAction?useUnicode=true&amp;characterEncoding=utf8"><br>                      <!--指定驱动为JDBC--><br>                      <property name="driver" value="com.mysql.jdbc.Driver"><br>                      <property name="username" value="root"><br>                      <property name="password" value="3252860"><br>              </property></property></property></property></datasource><br>          </transactionmanager></environment><br>      </environments><br>      <mappers><br>          <!--这个 ./ 就表示resource 目录的根目录--><br>          <mapper resource="./mapper/user.xml"><br>      </mapper></mappers><br>  </configuration>
+
+
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/28/Mybatis使用/" class="archive-article-date">
+  	<time datetime="2017-02-28T03:37:08.265Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-28</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Log4J" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -523,7 +339,7 @@ MongoCollection<document> collection = database.getCollection("restaurants")
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/18/Netty(二)/">Netty 基础学习（二）</a>
+      <a class="article-title" href="/2017/02/28/Log4J/">Log4J</a>
     </h1>
   
 
@@ -532,68 +348,15 @@ MongoCollection<document> collection = database.getCollection("restaurants")
     <div class="article-entry" itemprop="articleBody">
       
         <ul>
-<li>EventLoop 是来处理channel 中的IO操作，Netty中所有的IO操作默认是异步的，你需要利用ChannleFuture 注册相应ChannleFutureListeners来对异步IO的状态进行监听。</li>
-<li>Netty其实是利用多线程来处理IO事件的，通过源码你会发现，EventLoop其实继承的是ExcutorService。对于NioEventLoopGroup来说，其默认的线程数是2 * CPU核心数。</li>
-<li><strong>Netty 中为什么不需要关心同步问题？</strong></li>
-<li>ServerBootGroup 需要两个EventLoopGroup,用来绑定本地端口。BootStrap需要一个EventLoopGroup …..对于ServerBootGroup来讲，他需要一个EventGroup来处理连接，然后传递给后面子EventGroup。</li>
-<li><p>Channel 是线程安全的，怎么保证线程安全的？</p>
-<h1 id="ChannleHandler"><a href="#ChannleHandler" class="headerlink" title="ChannleHandler"></a>ChannleHandler</h1></li>
-<li><p>每一个ChannelHandler 在从一个ChannlePipeline中移除之前不能添加到另一个ChannlePipline中去,并且一般来讲，每一个ChannelHandler是不允许阻塞IO 的，如果有这方面的需求，你可能需要在添加ChannlePipline的同时添加一个EventLoopGroup</p>
-</li>
-<li>ChannleHandler 中以<code>fireXXX</code>开头的方法都是唤醒Handler所在Pipleling下面的的对应方法，对于Outbound 和inbound的顺序注意区分</li>
-<li>每次添加channelHanndler 到pipline中的时候会有一个ChannleHandlerContext被创建并被分配</li>
-<li>如果你想将一个ChannelHandler的实例添加到不同pipline中，可以通过添加注解<code>@Shareable</code>的方法实现， 不过要注意线程安全的问题</li>
-<li>在channelRead 中你应该及时释放资源<strong>ReferenceCountUtil.release(msg)</strong>不然会造成内存泄露，另外你也可以利用继承SimpleInboundHanlder来替你完成这些工作 </li>
+<li></li>
 </ul>
-<h1 id="Netty中的ByteBuf"><a href="#Netty中的ByteBuf" class="headerlink" title="Netty中的ByteBuf"></a>Netty中的ByteBuf</h1><ul>
-<li>ByteBuf实现了ReferenceCount接口。顾名思义其是个计数类，参考JVM垃圾回收机制</li>
-<li>netty ByteBuf 相对于Java Nio ByteBuffer的优势：<ul>
-<li>自定义缓冲类型</li>
-<li>通过一个内置的复合类型实现零拷贝</li>
-<li>扩展性好，比如StringBuffer</li>
-<li>不需要调用flip()来切换读写状态</li>
-<li>读取和写入索引分开</li>
-<li>方法链</li>
-<li>引用计数功能</li>
-<li>Pool（池）的引入</li>
-</ul>
-</li>
-<li>ByteBuf的类型<ul>
-<li>HeapBuffer : 顾名思义，底层存储使用数组的数据结构将数据存储在JVM的堆空间上面—-&gt; ByteBuf.array() 来获取byte[]数据</li>
-<li>DirectBuffer：同Nio 中的Direct Buffer，Netty通过内存池的概念来解决其分配内存和释放内存的复杂的问题，通过间接方式来对directBuffer来读写</li>
-</ul>
-</li>
-</ul>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ByteBuf directBuf = Unpooled.directBuffer(<span class="number">16</span>);</div><div class="line">    directBuf.writeBytes(<span class="string">"I'm datas"</span>.getBytes());</div><div class="line">    <span class="keyword">if</span> (!directBuf.hasArray())&#123; <span class="comment">//如果Bytebuf 的存储状态不是 堆</span></div><div class="line">        <span class="keyword">int</span> len = directBuf.readableBytes(); <span class="comment">// 首先得到其长度</span></div><div class="line">        <span class="keyword">byte</span>[] arr = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</div><div class="line">        directBuf.getBytes(<span class="number">0</span>,arr);</div><div class="line">        System.out.println(<span class="keyword">new</span> String(arr));</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-</code></pre><ul>
-<li>Composite Buffer： <ul>
-<li>Composite Buffer 的hasArray总是返回false,虽然它有可能会在堆内存上有存储 </li>
-</ul>
-</li>
-<li>对于已读字节，以readerIndex 为准，使用 discardReadBytes，可以清楚【0…readerIndex】区间的字节</li>
-<li>利用ByteBuf的clear 函数来 复位readerIndex和writerIndex为0,clear不会清空ByteBuf的内容，它影响的只是Index。。。</li>
-<li>Netty Buffer包中的工具类<ul>
-<li>BufferAllactor 用来分配ButyBuf实例</li>
-<li>Unpooled 是一个用来创建缓冲区的工具</li>
-<li>ByteBufUtil,其中的 HexDump 用来返回ByteBuf中 16进制信息。可以用来调试</li>
-</ul>
-</li>
-</ul>
-<h1 id="Netty中的编解码"><a href="#Netty中的编解码" class="headerlink" title="Netty中的编解码"></a>Netty中的编解码</h1><ul>
-<li>编码器负责入站，而解码器负责出站。<strong>他们是怎么实现区分入站和出站的区别判断的？</strong></li>
-<li>MessageToByteEncoder和ByteToMessageDecoder是使用最多的编解码类。尝试读这两个类的源码，另外还有MessageToMessageEncode和MessageToMessageDecoder两个类</li>
-</ul>
-<h1 id="Netty-中的Http"><a href="#Netty-中的Http" class="headerlink" title="Netty 中的Http"></a>Netty 中的Http</h1><ul>
-<li>在netty中处理Http请求，需要两个编解码类 分别为 HttpReqestDecoder，HttpRequestDecoder,HttpResponseDecoder,HttpResponseEncoder…其中一般在HttpRequestDecoder和HttpResponseEncoder 用的较多</li>
-<li>Netty Server 处理Request请求时比较底层，没有做过多的封装，需要自行判断握手，信息传递，长连接判断，和trailer header的判断<br>最后在Netty中映射的类分别为 <code>HttpRequst -----&gt; HttpCotent...HttpContent -----&gt; LastHttpContent</code></li>
-</ul>
-<h1 id="测试Neety-代码"><a href="#测试Neety-代码" class="headerlink" title="测试Neety 代码"></a>测试Neety 代码</h1>
+
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2017/01/18/Netty(二)/" class="archive-article-date">
-  	<time datetime="2017-01-18T05:30:25.306Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-18</time>
+      <a href="/2017/02/28/Log4J/" class="archive-article-date">
+  	<time datetime="2017-02-28T00:42:00.071Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-28</time>
 </a>
       
       
@@ -613,124 +376,24 @@ MongoCollection<document> collection = database.getCollection("restaurants")
 
 
   
-    <article id="post-学习Netty" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-运维相关知识" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/13/学习Netty/">netty 基础学习（一）</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h1><ul>
-<li><p>建立一个Netty Server的步奏</p>
-<ul>
-<li>需要一个EventLoopGroup 作为ParentEventLoop 来接受外部的request，还有一个EvnentLoop作为Childs 来处理进入的链接</li>
-<li>利用一个BootStrap类group 方法包裹住这两个EventLoop来启动这个服务</li>
-<li>然后利用BootStrap的channel方法指定channel</li>
-<li>然后指定handler。</li>
+        <ul>
+<li>怎样监控Mysql执行语句？ 将Mysql 的变量 general_log打开即可</li>
 </ul>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup();  <span class="comment">//用来接受进来的连接</span></div><div class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup(); <span class="comment">//用来处理已经被接受的连接</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</div><div class="line">    b.group(bossGroup,workerGroup)     <span class="comment">//group 之后 boss接受到的连接都会映射到 work上面</span></div><div class="line">            .channel(NioServerSocketChannel.class)</div><div class="line">            .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</div><div class="line">                <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                    ch.pipeline().addLast(<span class="keyword">new</span> DiscardServerHandler())</div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeServerHandler()) <span class="comment">//在这里添加一个新的channel handler.</span></div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeEncoder())</div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeServerHandler2());  <span class="comment">//应该在将Encoder 放在 server handler 之前！</span></div><div class="line">                &#125;</div><div class="line">            &#125;)</div><div class="line">            .option(ChannelOption.SO_BACKLOG,<span class="number">128</span>)   <span class="comment">//为NioServerSocketChannel 设置的选项</span></div><div class="line">            .childOption(ChannelOption.SO_KEEPALIVE,<span class="keyword">true</span>); <span class="comment">//为parent Server group 设置的选项</span></div><div class="line"></div><div class="line">    <span class="comment">//绑定端口，开始接收进来的连接</span></div><div class="line">    ChannelFuture f = b.bind(port).sync();</div><div class="line">    <span class="comment">//等待服务器 Socket 关闭</span></div><div class="line">    f.channel().closeFuture().sync();</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    <span class="comment">//...优雅的关闭。。。这名字，我也是醉了</span></div><div class="line">    workerGroup.shutdownGracefully();</div><div class="line">    bossGroup.shutdownGracefully();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>每个Netty 的Server都需要一个 HandlerAdpater，来处理接收到的消息  ChandleHandlerAdapter<br>+</li>
-</ul>
-<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Netty中的缓冲区"><a href="#Netty中的缓冲区" class="headerlink" title="Netty中的缓冲区"></a>Netty中的缓冲区</h2><p>Netty使用<a href="http://netty.io/5.0/api/io/netty/buffer/package-summary.html#package_description" target="_blank" rel="external">自建的buffer Api,而不是NIO 的byte buffer</a> 来标示一个连续的字节序列。</p>
-<ul>
-<li>如果需要吗，允许使用自定义的缓冲实现。</li>
-<li>复合缓冲类型中内置的透明的零拷贝实现</li>
-<li>开箱即用的动态缓冲类型，具有像StringBuffer一样的动态缓冲能力</li>
-<li>不再需要调用的flip() 方法。</li>
-<li>正常情况下具有比ByteBuffer更快的相应速度</li>
-</ul>
-<h3 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h3><p>ByteBuf 具有丰富的操作集，可以实现快速的协议优化。你可以扩展包装现有的缓冲类型来提供方便的访问。自定义缓冲仍然实现自ByteBuf接口，而不是引入一个不兼容的类型。</p>
-<h3 id="透明的零拷贝"><a href="#透明的零拷贝" class="headerlink" title="透明的零拷贝"></a>透明的零拷贝</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 复合类型与组件类型是兼容的。</span></div><div class="line">ByteBuf message = Unpooled.wrappedBuffer(header, body);</div><div class="line"><span class="comment">// 因此，你甚至可以通过混合复合类型与普通缓冲区来创建一个复合类型。</span></div><div class="line">ByteBuf messageWithFooter = Unpooled.wrappedBuffer(message, footer);</div><div class="line"><span class="comment">// 由于复合类型仍是 ByteBuf，访问其内容很容易，</span></div><div class="line"><span class="comment">//并且访问方法的行为就像是访问一个单独的缓冲区，</span></div><div class="line"><span class="comment">//即使你想访问的区域是跨多个组件。</span></div><div class="line"><span class="comment">//这里的无符号整数读取位于 body 和 footer</span></div><div class="line">messageWithFooter.getUnsignedInt(</div><div class="line">messageWithFooter.readableBytes() - footer.readableBytes() - <span class="number">1</span>);</div></pre></td></tr></table></figure>
-<h3 id="自动增量扩展"><a href="#自动增量扩展" class="headerlink" title="自动增量扩展"></a>自动增量扩展</h3><h3 id="更好的性能"><a href="#更好的性能" class="headerlink" title="更好的性能"></a>更好的性能</h3><p>相对于ByteBuffer ByteBuf的实现 是一个非常薄的字节数组包装器（例如一个字节），它没有复杂的边界检查和索引检查补偿，因此对于JVM的优化缓冲区的访问更加简单。ByteBuf更多是在对缓冲区的切分和重组，它的性能和ByteBuffer几乎相当</p>
-<h2 id="Netty中的IO实现"><a href="#Netty中的IO实现" class="headerlink" title="Netty中的IO实现"></a>Netty中的IO实现</h2><h3 id="更好的API兼容"><a href="#更好的API兼容" class="headerlink" title="更好的API兼容"></a>更好的API兼容</h3><p>不想原生Java 的<strong>IO/NIO/AIO</strong> 的的API，Netty的所有类型的IO 实现都通过同一个接口<a href="http://netty.io/4.0/api/io/netty/channel/package-summary.html#package_description" target="_blank" rel="external">Channel</a>,如果你想切换不的IO实现，只需要很简单的步奏，例如选择一个<a href="http://netty.io/4.0/api/io/netty/bootstrap/ChannelFactory.html" target="_blank" rel="external">ChannelFactory 的实现</a></p>
-<ul>
-<li>基于 NIO 的 TCP/IP 传输 (见 io.netty.channel.nio),</li>
-<li>基于 OIO 的 TCP/IP 传输 (见 io.netty.channel.oio),</li>
-<li>基于 OIO 的 UDP/IP 传输, 和本地传输 (见 io.netty.channel.local)</li>
-</ul>
-<p>并且你还可以继承Channle 添加自定义的实现!</p>
-<h2 id="Netty中的事件模型"><a href="#Netty中的事件模型" class="headerlink" title="Netty中的事件模型"></a>Netty中的事件模型</h2><p>Netty 中事件模型的核心组件是<a href="http://netty.io/4.0/api/io/netty/channel/ChannelPipeline.html" target="_blank" rel="external">ChannelPipeline</a></p>
-<pre>
-                                                 I/O Request
-                                            via <a href="http://netty.io/4.0/api/io/netty/channel/Channel.html" title="interface in io.netty.channel" target="_blank" rel="external"><code>Channel</code></a> or
-                                        <a href="../../../io/netty/channel/ChannelHandlerContext.html" title="interface in io.netty.channel"><code>ChannelHandlerContext</code></a>
-                                                      |
-  +---------------------------------------------------+---------------+
-  |                           ChannelPipeline         |               |
-  |                                                  \|/              |
-  |    +---------------------+            +-----------+----------+    |
-  |    | Inbound Handler  N  |            | Outbound Handler  1  |    |
-  |    +----------+----------+            +-----------+----------+    |
-  |              /|\                                  |               |
-  |               |                                  \|/              |
-  |    +----------+----------+            +-----------+----------+    |
-  |    | Inbound Handler N-1 |            | Outbound Handler  2  |    |
-  |    +----------+----------+            +-----------+----------+    |
-  |              /|\                                  .               |
-  |               .                                   .               |
-  | ChannelHandlerContext.fireIN_EVT() ChannelHandlerContext.OUT_EVT()|
-  |        [ method call]                       [method call]         |
-  |               .                                   .               |
-  |               .                                  \|/              |
-  |    +----------+----------+            +-----------+----------+    |
-  |    | Inbound Handler  2  |            | Outbound Handler M-1 |    |
-  |    +----------+----------+            +-----------+----------+    |
-  |              /|\                                  |               |
-  |               |                                  \|/              |
-  |    +----------+----------+            +-----------+----------+    |
-  |    | Inbound Handler  1  |            | Outbound Handler  M  |    |
-  |    +----------+----------+            +-----------+----------+    |
-  |              /|\                                  |               |
-  +---------------+-----------------------------------+---------------+
-                  |                                  \|/
-  +---------------+-----------------------------------+---------------+
-  |               |                                   |               |
-  |       [ Socket.read() ]                    [ Socket.write() ]     |
-  |                                                                   |
-  |  Netty Internal I/O Threads (Transport Implementation)            |
-  +-------------------------------------------------------------------+
- </pre>
-
-
-<p>在netty 5.0 中<code>ChannelInboundHandler</code> 和<code>ChannelOutboundHandler</code> 合并为<code>ChannelHandler</code>，统一的Adapter也是一样合并了 </p>
-<h2 id="SSL-TLS-支持"><a href="#SSL-TLS-支持" class="headerlink" title="SSL/TLS 支持"></a>SSL/TLS 支持</h2><ul>
-<li>通过类<a href="http://netty.io/4.0/api/io/netty/handler/ssl/SslHandler.html" target="_blank" rel="external">SslHandler </a> </li>
-<li>check the example <a href="http://netty.io/4.1/xref/io/netty/example/securechat/package-summary.html" target="_blank" rel="external"> Secure Chat </a></li>
-<li><p>netty <a href="http://stackoverflow.com/questions/26803353/ssl-support-in-netty-io-through-custom-certificate" target="_blank" rel="external">使用自签名作为SSL认证</a></p>
-<ul>
-<li>第一步： 配置好OpenSSL环境</li>
-<li>第二步： 利用命令<code>openssl req -x509 -keyout abc.key -out xyz.csr -newkey                  rsa:2048</code>     产生证书文件和私匙文件  </li>
-<li>第三步： 利用命令<code>openssl pkcs8 -topk8 -inform PEM -outform PEM -in abc.key -out abc.pem</code> 将key转换为 pkcs8 格式的格式</li>
-<li><p>第四步： 创建一个SSLContext</p>
-<pre> SslContext sslCtx = SslContext.newServerContext(new File(
-      "./key/xyz.csr"), new File("./key/abc.key"),"password");</pre>
-
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="WebSocket-实现"><a href="#WebSocket-实现" class="headerlink" title="WebSocket 实现"></a>WebSocket 实现</h2><h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这个架构由三部分组成——缓冲（ buffer） ，通道（ channel） ，事件模型（ event<br>model） ——所有的高级特性都构建在这三个核心组件之上。</p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2017/01/13/学习Netty/" class="archive-article-date">
-  	<time datetime="2017-01-13T02:17:28.272Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-13</time>
+      <a href="/2017/02/27/运维相关知识/" class="archive-article-date">
+  	<time datetime="2017-02-27T04:07:24.642Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-27</time>
 </a>
       
       
@@ -750,333 +413,616 @@ MongoCollection<document> collection = database.getCollection("restaurants")
 
 
   
-    <article id="post-Spring test" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Leetcode题解(Mysql)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/10/Spring test/">利用Spring Boot 进行单元测试</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><h2 id="测试Controller"><a href="#测试Controller" class="headerlink" title="测试Controller"></a>测试Controller</h2><h2 id="mock"><a href="#mock" class="headerlink" title="mock"></a>mock</h2>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2017/01/10/Spring test/" class="archive-article-date">
-  	<time datetime="2017-01-10T05:50:57.049Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Spring AOP" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/10/Spring AOP/">Spring AOP编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><h3 id="AOP概念"><a href="#AOP概念" class="headerlink" title="AOP概念"></a>AOP概念</h3><ul>
-<li>切面：切入系统的一个切面，比如事务管理是一个切面，权限管理也是一个切面</li>
-<li>连接点：进行横向切入的位置</li>
-<li>通知：切面在某个连接点执行的操作<ul>
-<li>Before advice</li>
-<li>After returning advice</li>
-<li>After throw exception</li>
-<li>After advice</li>
-<li>Around advice</li>
-</ul>
-</li>
-<li>切点: 通知定义了 “什么”和 “何时”，切点定义了”何处”。切点会匹配通知要织入的一个或多个连接点<br>通常使用明确的的类或者方法来指定这些切点。  作用是通知被应用的位置</li>
-<li>引入：引入允许我们向现有的类中添加方法活属性</li>
-<li>织入：切面在指定的连接点被织入到目标对象中，在目标对象中的生命周期中有多个点可以织入<ul>
-<li>编译器：需要特殊的编译器，例如AspectJ的织入编译器</li>
-<li>类加载期</li>
-<li>运行期：切面在应用运行期间的某个时刻织入。一般情况下，在织入切面的时候，AOP容器会为目标对象</li>
-</ul>
-</li>
-</ul>
-<h3 id="Spring-AOP-笔记"><a href="#Spring-AOP-笔记" class="headerlink" title="Spring AOP 笔记"></a>Spring AOP 笔记</h3><ul>
-<li>Spring 中的AOP都是动态代理的AOP，即通过反射实现的。</li>
-<li><p style="color : #f00">要导入aspectJrt 和aspectJrtweaver 两个依赖的jar包</p></li>
-<li><img src="e3cae7de-448b-4c69-aee2-94032a9b9d1b_128_files/d6640a43-6df6-47cf-a644-06a82e418ad6.png" alt=""></li>
-<li>运算符 还有 “||” “!” “&amp;&amp;” 三种操作运算符</li>
-<li>声明的切面类，要使其成为一个bean（一般是这样做的）</li>
-<li>利用@Pointcut(“”) …声明一个切点</li>
-<li>@Around 注解adviced 的方法一定要带一个ProceedingJoinPonit参数,这个参数在执行proceed()方法后会移动继续进行下面的advice…（如果这个proceed() 方法没有被执行，那么被Adviced的方法将不会被执行！！）其实ProceeingJIi</li>
-</ul>
-<hr>
-<ul>
-<li>注解arg(“—-“),注意，在应用时，要保证advice method 的参数个数和名字要个args() 里面的保持一致</li>
-<li>within（””） ，可以接受包或者类的路径，用来限制advice方法在 只有在指定的这个包或者类下面的adviced方法被调用时才会被唤起</li>
-<li>target 后面跟一个完整的类名，用来确定一个目标类</li>
-</ul>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2017/01/10/Spring AOP/" class="archive-article-date">
-  	<time datetime="2017-01-10T02:42:25.031Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Golang学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/22/Golang学习笔记/">Golang学习笔记</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>记录在学习golang的过程中遇到的各种坑，不涉及各种基本语法。</p>
+        <h2 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h2><h3 id="Occupations"><a href="#Occupations" class="headerlink" title="Occupations"></a><a href="https://www.hackerrank.com/challenges/occupations" target="_blank" rel="external">Occupations</a></h3><blockquote>
+<p>典型的按 某个列的值，进行按列分类查询</p>
 </blockquote>
 <ul>
-<li><p>在import package 中出现的 “import for side-effect” error：<strong>golang 遵循一个原则，“用多少，拿多少”，如果你拿的东西比你用的多，它就会报出error。。在这里你导入的包，包里面的东西你从来没用过他就报出这个error。同样的变量声明也是一样的！</strong> </p>
+<li>这个提的思路是，首先建立一个子查询，将通过Occpution的Index 将 名称加上，即完成对特定的Occpuation进行递增，</li>
+<li>然后每个name，和Index 成单一对立的关系。说明现在将其中一个作为 Group选项即可！！在这里明显是要用Index来做Group By聚合</li>
+<li><p>下面解决的问题自然是没有需要一个聚合函数将四个列的属性选出，在这里用了Min函数</p>
 </li>
-<li><p>golang 中 range遍历</p>
+<li><p>第一步 ： 产生一个临时表</p>
+  <pre>
+  select  
+   case 
+   when occupation = 'Doctor ' then (@r1 := @r1 +1)  
+   when occupation = 'Professor  ' then  @r2 := @r2 +1
+   when occupation = 'Singer ' then  @r3 := @r3 +1
+   when occupation = 'Actor' then  @r4 := @r4 +1   
+   end num,
+   case when occupation = 'Doctor ' then name end Doctor,
+   case when occupation = 'Professor  ' then name end Professor,
+   case when occupation = 'Singer ' then name end Singer,
+   case when occupation = 'Actor' then name  end Actor
+   from occupations  temp
+  </pre> 
+
+<p>这一步完成创建一个 表，将 属性分类，但是会有很多个 NULL 在里面！。</p>
+</li>
+<li><p>上面的l临时表暂且命名为 temp,利用r1.num 作为Group 对象，但是现在那四个列没有作为select的选项，因为没有聚合参加。所以现在要有一个聚合，这里用了 min，作为聚合函数！！</p>
+<pre>
+select  min(Doctor),min(Professor),min(Singer),min(Actor) from  temp  group by r1.num; 
+</pre>
+
+
+</li>
+</ul>
+<h3 id="The-Report"><a href="#The-Report" class="headerlink" title="The Report"></a><a href="https://www.hackerrank.com/challenges/the-report" target="_blank" rel="external">The Report</a></h3><blockquote>
+<p>一个联表查询，不同的是。它的对应关系比较特别，一个表的数据需要对应另一个表的区间值。这个可以直接用一个 联合的判断语句来进行筛选，在这里就时 <code>on student.mark &gt;= gtades.min_mark &amp;&amp; students.mark &lt;= grade.max_mark</code></p>
+</blockquote>
+<ul>
+<li><strong>union 和union all 的区别是 union all 会keep duplicate element ，union 会将 重复的元素 移除掉</strong></li>
+<li><strong>没有 所谓的 right inner join 或者 left inner join,只有 inner join，inner join 会 select 出连个表同时m满足的 元素，right join 和 left join会 select 出 右表 或者 左表 全部的元素，和 左表或者右表 满足 join条件的元素，如果 不够 则是 补 null。。。。。</strong></li>
+<li><strong>union 会破坏啷个表的排序！ 所以对两个已经排序的表，在union后还要保持排序状态是不可能的</strong></li>
+</ul>
+<h3 id="Top-Competitors"><a href="#Top-Competitors" class="headerlink" title="Top Competitors "></a><a href="https://www.hackerrank.com/challenges/full-score" target="_blank" rel="external">Top Competitors </a></h3><blockquote>
+<p>本题的难度在于怎么解决 某个出现在表中的元素出现的次数，并利用这个次数哦作为筛选条件？</p>
+</blockquote>
+<ul>
+<li><p>对于 次数作为筛选条件，可以用在排序之后，做一个 case 判断<br>  <pre><br>   set @pre_id = -1,@count = 0;<br>   case </pre></p>
+<pre><code>when @pre_id = h_id then @count := @count +1  
+else @count := 0
+end count , @pre_id,@pre_id := h_id 
+</code></pre><p>  <br>以上利用一个列在作为。元素出现的次数的判断。然后再做一次 select 查询。利用 max(…)作为 aggrate 的条件即可。</p>
+</li>
+<li><p><strong>注意！ 在 select 语句中的order by 是在 执行完 select 语句，也就是说，是在</strong></p>
 </li>
 </ul>
 <pre>
-strings := []string{"1256","dasdal"};
-for _,str := range strings{} //遍历的是值
-for str := range strings{} //遍历的是index
-//在用range遍历一个字符串的时候，其可以返回两个值
-//第一个值是 index,第二个值是 value，类型为run == int32 
-for i, c := range "go" {
-      fmt.Println(i, c)
+set @pre_id = -1,@count = 0;
+select  hacker_id,name   from hackers inner join  (select h_id,case 
+          when @pre_id = h_id then @count := @count +1  
+          else @count := 0
+          end count , @pre_id,@pre_id := h_id from difficulty inner join  (select 
+          submissions.hacker_id h_id,submissions.score score,challenges.difficulty_level d_level from
+          submissions inner join challenges on submissions.challenge_id = challenges.challenge_id 
+          order by h_id)r1 on r1.d_level = difficulty_level && r1.score = difficulty.score) r2 on 
+         hackers.hacker_id = r2.h_id  where r2.count >= 1 group by hacker_id order by max(count) 
+        desc ,hacker_id;
+
+</pre>
+
+<p><strong>在利用 一个元素的max（xxx） ，或者 case 时，没有必要将这个列作为 select 的选项之一 select 出来！</strong></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/24/Leetcode题解(Mysql)/" class="archive-article-date">
+  	<time datetime="2017-02-24T05:24:57.535Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-24</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-测试工具" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title-测试工具"><a href="#title-测试工具" class="headerlink" title="title:测试工具"></a>title:测试工具</h2><h1 id="压力测试工具"><a href="#压力测试工具" class="headerlink" title="压力测试工具"></a>压力测试工具</h1><h2 id="Http-并发连接-测试"><a href="#Http-并发连接-测试" class="headerlink" title="Http 并发连接 测试"></a>Http 并发连接 测试</h2><h2 id="数据库连接测试"><a href="#数据库连接测试" class="headerlink" title="数据库连接测试"></a>数据库连接测试</h2>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/23/测试工具/" class="archive-article-date">
+  	<time datetime="2017-02-23T03:51:31.210Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-23</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-负载均衡Nginx" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/23/负载均衡Nginx/">Nginx 负载均衡</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><ul>
+<li>模块划分<ul>
+<li>Core 核心模块</li>
+<li>Events事件模块</li>
+<li>HTTP 模块</li>
+<li>Mail邮件模块</li>
+</ul>
+</li>
+<li><a href="http://seanlook.com/2015/05/17/nginx-location-rewrite/" target="_blank" rel="external"> Nginx 中的正则表达式语法</a><ul>
+<li>第一优先级：  已=开头表示精确匹配</li>
+<li>第二优先级：^~ 开头表示uri以某个常规字符串开头，不是正则匹配</li>
+<li>第三优先级：~ 开头表示区分大小写的正则匹配;~* 开头表示不区分大小写的正则匹配 </li>
+<li>第四优先级：/ 通用匹配, 如果没有其它匹配,任何请求都会匹配到</li>
+</ul>
+</li>
+</ul>
+<pre>
+location = / {
+    # 仅仅匹配请求 /  **第一优先级，因为好含有 "="**
+    [ configuration A ]
+}
+location / {
+    # 匹配所有以 / 开头的请求。但是如果有更长的同类型的表达式，则选择更长的表达式。如果有正则表达式可以匹配，则    
+    # 优先匹配正则表达式。 **常规匹配**
+    [ configuration B ]
+}
+location /documents/ {
+    # 匹配所有以 /documents/ 开头的请求。但是如果有更长的同类型的表达式，则选择更长的表达式。
+    #如果有正则表达式可以匹配，则优先匹配正则表达式。
+    [ configuration C ]
+}
+location ^~ /images/ { 
+    # 匹配所有以 /images/ 开头的表达式，如果匹配成功，则停止匹配查找。所以，即便有符合的正则表达式location，也
+    # 不会被使用 **第二优先级 ，**^~ 所有 以image 开头的url 利用这个**
+    [ configuration D ]
+}
+location ~* \.(gif|jpg|jpeg)$ {
+    # 匹配所有以 gif jpg jpeg结尾的请求。但是 以 /images/开头的请求，将使用 Configuration D
+    [ configuration E ]
 }
 </pre>
 
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/22/Golang学习笔记/" class="archive-article-date">
-  	<time datetime="2016-12-22T03:23:45.578Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-22</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Mysql触发器" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/08/Mysql触发器/">Mysql 触发器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>创建一个触发器：</p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><h2 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h2><ul>
+<li><strong>注意当你的负责均衡服务器也要做为服务器时，负载监听端口一定不能和服务接口一致</strong></li>
+<li><p><strong>Nginx 负载均衡有几种配置方案</strong></p>
+<ol>
+<li><strong>轮询(Round Robin)：</strong> 根据Nginx配置文件中的顺序，<code>依次</code>将客户端的请求分发到后端服务器上</li>
+<li><strong>最少连接(Least_Conn)：</strong> 将客户端的web请求分发到分发到连接最少的服务器上</li>
+<li><strong>IP地址Hash(Ip_hash) ： 如果处理的连接比较复杂，通过IP计算的hash值将统一客户端的Web请求分发到统一服务器上去处理</strong><pre>
+upstream backend {
+      server 127.0.0.1:8080 ;
+   server 127.0.0.1:9090 ;
+      ip_hash;
+}
+</pre></li>
+<li><p><strong>基于权重的负载均衡（Weight）</strong> ，下面是一个基于权重的负载均衡配置</p>
 <pre>
-create trigger trigger_name trigger_time trigger_event on table_name for each row trigger_stmt
+upstream Server_Name { # 这个Server_Name 就是你的配置的Nginx 服务器的Servern_Name，  
+
+#ip_hash;   
+# down 表示这个指定的Server 暂时不参与负载均衡
+server 127.0.0.1:8083 down;    
+ # Weight 表示当前的负载权重
+server 127.0.0.1:8084 weight=3;   
+
+server 127.0.0.1:8001;   
+ @
+server 127.0.0.1:8002 backup;
+}
 </pre>
 
-<p>解释：</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="代理设置"><a href="#代理设置" class="headerlink" title="代理设置"></a>代理设置</h2><h3 id="反向代理设置"><a href="#反向代理设置" class="headerlink" title="反向代理设置"></a>反向代理设置</h3><p>反向代理，其实是将代理服务器作为客户端可见的服务器作为 客户端的相应，所以你在访问的时候其实是在访问这个代理服务器！<br>在下面的这个例子中其实是访问 的 <code>http:localhost:85</code></p>
+<pre>
+   # 定义上游服务器,并提供负载均衡
+    upstream  web{   
+        server localhost:8084;  
+        server localhost:8083;  
+        server localhost:8082;  
+    }  
+
+    server {
+        # Http 监听的端口
+        listen       85;
+        # Host name ，Server name 即为 服务器的 地址，确保能被发现
+        server_name  localhost;  
+        # 
+        charset utf-8;
+        # 访问日志存储目录
+        access_log  logs/host.access.log;
+
+        location / {
+            # 当前这个Server 反向代理的 上游服务器 看上面的 UpStream
+            proxy_pass  http://web;
+            root   html;
+            index  index.html index.htm;
+            #  Nginx默认是不转发client的 Host 名字的
+            #  这个利用这个变量 Nginx会转发 <a href="http://www.pureage.info/2014/02/22/host-variable-#in-nginx.html" target="_blank" rel="external">Client Host</a> 
+            proxy_set_header Host $host;  
+            # 转发时隐藏中 指定的Client 请求中的Header 信息   
+            proxy_hide_header Cache-Control;
+            # proxy_next_upstream 表示 当当前的上游服务器发生故障时，去找下一个上游服务器  
+            #proxy_next_upstream
+            # proxy_pass_request_body 是否向上游服务器转发Request的请求体部分
+            # proxy_pass_request_body on|off
+        }
+
+</pre>
+
+
+
 <ul>
-<li>trigger_name : 触发器名字</li>
-<li>trigger_time : 触发器的触发时间<ul>
-<li>before: 检查约束前触发</li>
-<li>after：检查约束后触发</li>
+<li>proxy_redirect<br>一个典型的配置 <code>proxy_redirect http://localhost:8000/two/ http://frontend/one/;</code>如果上游 服务器返回302状态重定向到   <a href="http://localhost:8000/two/" target="_blank" rel="external">http://localhost:8000/two/</a> 通过这个 配置 其实是定向到 <a href="http://frontend/one/some/uri/。" target="_blank" rel="external">http://frontend/one/some/uri/。</a></li>
+</ul>
+<h3 id="正向代理设置"><a href="#正向代理设置" class="headerlink" title="正向代理设置"></a>正向代理设置</h3><p>正向代理，其实是将代理服务器作为客户端的一个DNS 解析器而已,一个正先发代理的例子</p>
+<pre>
+server {
+ listen 8090;
+ location / {
+
+     resolver 8.8.8.8; //设置一个DNS 服务器作为Client 端请求服务器的解析服务器
+     resolver_timeout 30s;
+     proxy_pass http://$host$request_uri;
+ }
+ access_log  /data/httplogs/proxy-$host-aceess.log;      
+}
+</pre>
+
+<h1 id="怎样对Nginx-运行状态进行监控"><a href="#怎样对Nginx-运行状态进行监控" class="headerlink" title="怎样对Nginx 运行状态进行监控"></a>怎样对Nginx 运行状态进行监控</h1><h1 id="Nginx-的安全过滤"><a href="#Nginx-的安全过滤" class="headerlink" title="Nginx 的安全过滤"></a>Nginx 的安全过滤</h1><p>首选 认识Nginx 中的这些内置百变量</p>
+<pre><code class="hljs lang-gams"><span class="hljs-meta"><span class="hljs-meta-keyword">$args</span> ：这个变量等于请求行中的参数，同$query_string</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$content</span>_length ： 请求头中的Content-length字段。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$content</span>_type ： 请求头中的Content-Type字段。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$document</span>_root ： 当前请求在root指令中指定的值。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$host</span> ： 请求主机头字段，否则为服务器名称。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$http</span>_user_agent ： 客户端agent信息</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$http</span>_cookie ： 客户端cookie信息</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$limit</span>_rate ： 这个变量可以限制连接速率。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$request</span>_method ： 客户端请求的动作，通常为GET或POST。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$remote</span>_addr ： 客户端的IP地址。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$remote</span>_port ： 客户端的端口。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$remote</span>_user ： 已经经过Auth Basic Module验证的用户名。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$request</span>_filename ： 当前请求的文件路径，由root或alias指令与URI请求生成。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$scheme</span> ： HTTP方法（如http，https）。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_protocol ： 请求使用的协议，通常是HTTP/1.0或HTTP/1.1。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_addr ： 服务器地址，在完成一次系统调用后可以确定这个值。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_name ： 服务器名称。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_port ： 请求到达服务器的端口号。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$request</span>_uri ： 包含请求参数的原始URI，不包含主机名，如：”/foo/bar.php?arg=baz”。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$uri</span> ： 不带请求参数的当前URI，$uri不包含主机名，如”/foo/bar.html”。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$document</span>_uri ： 与$uri相同。</span>
+</code></pre>
+
+
+<p>一些内置的条件判断：</p>
+<ul>
+<li>-f和!-f用来判断是否存在文件</li>
+<li>-d和!-d用来判断是否存在目录</li>
+<li>-e和!-e用来判断是否存在文件或目录</li>
+<li>-x和!-x用来判断文件是否可执行</li>
+</ul>
+<p>例子</p>
+<pre># 如果文件不存在则返回400
+if (!-f $request_filename) {
+    return 400;
+}
+
+# 如果host不是xuexb.com，则301到xuexb.com中
+if ( $host != "xuexb.com" ){
+    rewrite ^/(.*)$ https://xuexb.com/$1 permanent;
+}
+
+# 如果请求类型不是POST则返回405
+if ($request_method = POST) {
+    return 405;
+}
+
+# 如果参数中有 a=1 则301到指定域名
+if ($args ~ a=1) {
+    rewrite ^ http://example.com/ permanent;
+}
+在某种场景下可结合location规则来使用，如：
+
+# 访问 /test.html 时
+location = /test.html {
+    # 默认值为xiaowu
+    set $name xiaowu;
+
+    # 如果参数中有 name=xx 则使用该值
+    if ($args ~* name=(\w+?)(&|$)) {
+        set $name $1;
+    }
+
+    # 301
+    rewrite ^ /$name.html permanent;
+}
+上面表示：
+
+/test.html => /xiaowu.html
+/test.html?name=ok => /ok.html?name=ok</pre>
+
+<h1 id="页面缓存"><a href="#页面缓存" class="headerlink" title="页面缓存"></a>页面缓存</h1>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/23/负载均衡Nginx/" class="archive-article-date">
+  	<time datetime="2017-02-23T02:03:35.284Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-23</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Web相关" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/22/Web相关/">Web 相关</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="怎样管理Session"><a href="#怎样管理Session" class="headerlink" title="怎样管理Session"></a>怎样管理Session</h1><ol>
+<li>服务器端的产生Session ID ： </li>
+<li>服务器端和客户端存储Session ID ： 客户端（Brower 一般保存在 Cookie 中，Android 这边一般就是保存到SP文件中），Server端一般就是保存到Redis中，不需要做持久换处理</li>
+<li>从HTTP Header中提取Session ID ： 提取Cookie 中的键值对</li>
+<li>根据Session ID从服务器端的Hash中获取请求者身份信息</li>
+<li>如果客户端Cookie被禁用，那么利用重写 URL的方式来标记客户端<br>利用缓存数据库Redis来管理Session</li>
+</ol>
+<ul>
+<li>键-值存储模型</li>
+<li>读写速度</li>
+<li>支持数据过期和清除</li>
+<li>部署简单，语法简单</li>
+</ul>
+<h2 id="分布式Session的实现机制"><a href="#分布式Session的实现机制" class="headerlink" title="分布式Session的实现机制"></a>分布式Session的实现机制</h2><h2 id="Session-安全性问题"><a href="#Session-安全性问题" class="headerlink" title="Session 安全性问题"></a>Session 安全性问题</h2>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/22/Web相关/" class="archive-article-date">
+  	<time datetime="2017-02-22T10:37:26.956Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-22</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-中间件" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/21/中间件/">中间件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="消息队列框架-kafka"><a href="#消息队列框架-kafka" class="headerlink" title="消息队列框架 kafka"></a>消息队列框架 kafka</h1><ul>
+<li>关键词： <code>Producer</code>,<code>Consumer</code>,<code>Broker</code>,<code>Topic</code>,<code>Offset</code><ul>
+<li><strong>Topic :</strong> 主题，由用户定义并配置在Kafka服务器上，用于建立生产者和消费者之间的订阅关系。生产者生产消息到这个Topic下，消费者从这个Topic下取消息进行消费</li>
+<li><strong>Broker :</strong> Kafka的服务器，用于保存消息队列，Kafka集群中一台服务器就相当于一台broker</li>
+<li><strong>Paritions :</strong> Topic 物理上的分组，一个 Topic可以有多个Parition，每个parition是一个有序数列，并且其值必须要从0开始</li>
+<li><strong>Offset :</strong> 相当于Parition中的消息的“键”</li>
+<li><strong>Segment :</strong> Partion 保存数据文件的最小单位，Partion 对其管理的时候都是以Segment 作为单位进行管理的。比如对Older 消息进行删除等操作  </li>
 </ul>
 </li>
-<li>trigger_event：触发事件： will be insert,update,delete….</li>
-<li>trigger_stmt : 即为在前面的触发条件被触发后，mysql需要做的动作</li>
 </ul>
-<p><strong>注:对同一个表的相同触发时间的触发事件只能配置一个触发器</strong></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">delimiter $$ </div><div class="line"><span class="keyword">create</span> <span class="keyword">trigger</span> ins_film <span class="keyword">after</span> <span class="keyword">insert</span> <span class="keyword">on</span> film <span class="keyword">for</span> <span class="keyword">each</span> <span class="keyword">row</span> <span class="keyword">begin</span> </div><div class="line"> <span class="keyword">insert</span> <span class="keyword">into</span> film_text (film_name,film_id,title ,description)</div><div class="line"> <span class="keyword">values</span>(new.film_id,new.title,new.description);</div><div class="line"> <span class="keyword">END</span>;</div><div class="line"> $$</div></pre></td></tr></table></figure>
-<p>创建一个触发器 ins_film， 每次在表film插入字段后，都将插入的相应值插入到表film_text中去。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/08/Mysql触发器/" class="archive-article-date">
-  	<time datetime="2016-12-08T06:05:22.827Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-08</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-MySql存储过程和函数" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/07/MySql存储过程和函数/">Mysql存储过程和函数</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="从一个实例开始"><a href="#从一个实例开始" class="headerlink" title="从一个实例开始"></a>从一个实例开始</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">delimiter $$ </div><div class="line">create procedure film_in_stock (in p_film_id int ,p_film_count int ,p_stor_id int)</div><div class="line">reads sql data</div><div class="line">begin </div><div class="line">	select inventory_id</div><div class="line">    from inventory</div><div class="line">    where film_id = p_film_id</div><div class="line">    and store_id = p_store_id</div><div class="line">    and inventory_in_stock(inventroy_id);</div><div class="line">end $$</div></pre></td></tr></table></figure>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/12/07/MySql存储过程和函数/" class="archive-article-date">
-  	<time datetime="2016-12-07T07:45:15.859Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Mysql性能优化(二)New Document" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/07/Mysql性能优化(二)New Document/">Mysql的性能优化（索引篇）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Mysql中每个表的至少支持16个索引，MyISAM和InnoDB的存储引擎表默认创建的数据格式是都BTree，支持前缀索引，不支持函数索引。其中MyIsam支持全文本索引。</p>
-<h1 id="设计索引的原则"><a href="#设计索引的原则" class="headerlink" title="设计索引的原则"></a>设计索引的原则</h1><ul>
-<li>最适合索引的列是出现在 WHERE 语句中列</li>
-<li>使用前缀索引的话，尽量缩短前缀长度。</li>
-<li>使用最左前缀</li>
-<li>不要过度索引，额外的索引会占用额外的磁盘空间，降低写操作的性能，在修改表的内容时，索引必须进行更新，有必要时要进行重构。</li>
-<li>对于InnoDB来讲，记录会按照一定的顺序保存。优先级是 主键 &gt; 唯一索引 &gt; 自动生成的内部列.通常来讲，按照主键和内部列进行访问的速度是最快的。所以尽量选择自己制定主键。当表中同时又多个列都是唯一的时，要选择最常访问键作为主键，提高检查效率。另外，InnoDB表的普通索引都会保存主键的键值，所以主键尽量选择较短的数据类型。可以有效的减少索引的磁盘占用，提高索引的缓存效果。 </li>
+<p><img src="http://img.blog.csdn.net/20160421172632084?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<h1 id="From-Interview"><a href="#From-Interview" class="headerlink" title="From Interview"></a>From Interview</h1><ul>
+<li><strong>Offset的角色是什么：</strong><ul>
+<li>偏移量：</li>
+</ul>
+</li>
+<li><strong>ZooKeeper在Kafkaserver中的角色是什么</strong><ul>
+<li>管理消费者和生产者</li>
+</ul>
+</li>
+<li><strong>Kafka集群，Replicat</strong><ul>
+<li>为保证Kafka Server的高可用性，需要为Kafka添加Replicat 从机。</li>
+</ul>
+</li>
+<li><strong>当插入一个过长数据导致<code>InvalidMessageSizeException</code> 时怎么办</strong><ul>
+<li>kafka-topics.sh –zookeeper localhost:13003 –alter –topic MyTopic –config retention.ms=1000</li>
+</ul>
+</li>
+<li><strong>Kafka中消息被消费后会不会立即删除？</strong><ul>
+<li>Kafka中消息被消费后不会被立即删除，</li>
+</ul>
+</li>
+<li><strong>Partitions的作用</strong><ul>
+<li>通过分区，将日志内容分散保存到不同的server上。避免文件尺寸达到磁盘上限</li>
+</ul>
+</li>
+<li><strong>AsyProducer 和sync producer 的区别</strong><ul>
+<li>区别在于 sync producer 的send 方法会阻塞线程，sync 不会。</li>
+</ul>
+</li>
+<li><strong>安全，SSL加密</strong></li>
+<li><strong>Log数据写入磁盘的策略</strong><ul>
+<li>通过消息数量 </li>
+<li>通过时间间隔</li>
+</ul>
+</li>
+</ul>
+<h1 id="From-StackOverflow"><a href="#From-StackOverflow" class="headerlink" title="From StackOverflow"></a>From StackOverflow</h1><ul>
+<li><strong>怎么删除一个 Topic</strong> ： 怎么删除一个 :<code>kafka-topics.sh --delete --zookeeper localhost:2181 --topic your_topic_name</code> </li>
+</ul>
+<h1 id="From-FAQ"><a href="#From-FAQ" class="headerlink" title="From FAQ"></a><a href="https://cwiki.apache.org/confluence/display/KAFKA/FAQ#FAQ-Isitpossibletodeleteatopic?" target="_blank" rel="external">From FAQ</a></h1><ul>
+<li><strong>什么时候你的Record 会包含一个时间戳</strong></li>
+<li><strong>当出现一个QueueFullException时，你又不想数据丢失。应该怎么做？</strong><ul>
+<li>将生产的enqueue Timeout 时间设置成 -1，这样会导致producer 被堵塞，但是不会丢失丢失数据</li>
+</ul>
+</li>
+<li><strong>当我的kafka服务器没有接收到生产者发送的数据，会是什么问题？</strong><ul>
+<li>问题多了去了。</li>
+</ul>
+</li>
+<li><strong>Partion 是什么 ？ Partition分区策略</strong><ul>
+<li>利用 Hash作为分区策略</li>
+</ul>
+</li>
+<li><strong>删除Topic 之前需要做的操作</strong><ul>
+<li>需要将 Topic mark为 delete</li>
+</ul>
+</li>
+<li><strong>如果消费者一直没有接收到数据，会是什么问题</strong><ul>
+<li>Consumer 只会接收在启动之后 发送到broker上的数据，也可以通过设置<code>auto.offset.reset</code>来设置</li>
+</ul>
+</li>
+<li><strong>生产者出现invalidMessageException会是什么问题</strong>  参考这个<a href="http://stackoverflow.com/questions/21020347/kafka-sending-a-15mb-message" target="_blank" rel="external"> stackover flow </a><ul>
+<li>可能的原因是 fetch size 太小、然而数据太大，合理的配置 好 consumer 的 fetch.max.byte的大小，或者注意生产者发送数据量的大小</li>
+<li>为了避免这个问题 ： 最好就在 broker 端将 message.max.bytes 的大小 设置成大于consumer 端的 message.max.bytes。这样的话broker 接收的数据都能被 consumer 正确的消费</li>
+<li>在集群中，只有那些 被正确 replicat的消息会被正确到达 consumer 端，所以你也搞保证 broker <code>replica.fetch.max.bytes</code>的设置正确。、</li>
+<li>保证 consumer端 <code>fetch.message.max.bytes</code> ， broker 端 <code>replica.fetch.max.bytes</code>,<code>message.max.bytes</code>都设置正确！</li>
+</ul>
+</li>
+<li><strong>Consumer的group id 是属于整个集群的</strong><ul>
+<li>稳定状态下每一个Consumer实例只会消费某一个或多个特定 Partition的数据，而某个Partition的数据只会被某一个特定的Consumer实例所消费</li>
+</ul>
+</li>
+<li><strong>Kafka读取特定</strong></li>
+<li><strong>Kafka 在传输大文件时是怎么做的 ？</strong><ul>
+<li>通过对较大数据进行压缩，Producer实现压缩，Consumer实现解压缩，这样可以解决网络传输带来的瓶颈，但是会对cpu造成负载</li>
+</ul>
+</li>
+<li><strong>Prducer 发布消息的流程</strong><ol>
+<li>producer 先从 zookeeper 的 “/brokers/…/state” 节点找到该 partition 的 leader</li>
+<li>producer 将消息发送给该 leader</li>
+<li>leader 将消息写入本地 log</li>
+<li>followers 从 leader pull 消息，写入本地 log 后 leader 发送 ACK</li>
+<li>leader 收到所有 ISR 中的 replica 的 ACK 后，增加 HW（high watermark，最后 commit 的 offset） 并向 producer 发送 ACK</li>
+</ol>
+</li>
+<li><strong>Producer 发送一条消息到Broker会不会被重复发送多次？</strong><ul>
+<li>由于网络原因，会发送多次。这是Kafka的一个机制，也就是说保证消息至少发送一次</li>
+</ul>
+</li>
+<li><strong>Consumer消费消息时有那两套机制？</strong> <ul>
+<li><strong>High-level Consumer Api ：</strong> 这个API 具有Consumer Group 语义，一个消息只能被group内的一个Consumer所消费，且Consumer消费消息时 不关注 <strong>Offset</strong>。</li>
+<li><strong>The SimpleConsumer API:</strong> 需要自己跟踪Offset，从而决定下一个消费的消息在哪里，Consumber需要通过程序获知每个Parition的leader是谁，需要处理Leader的变更</li>
+<li><strong>最终就是 一个获取消息时需要指定Offset 一个不需要指定 Offset</strong></li>
+</ul>
+</li>
+<li><strong>Consumber Group：</strong> 每个Consumer 都属于一个Consumer group ，一个 parition只能被同一个Group内的一个Consumer 所消费（保证一个消息只能被group 内的一个Consumer 消费 （消息都是以Topic区分的）！）。  </li>
+<li><strong>如果某些group 中的 Consumer没有接收到消息，会是什么原因？</strong><ul>
+<li>可能是Parition 不太够的原因，因为Consumer Group 对应关系是 Topic，Group中每个Consumer 对应一个Parition,如果有的Consumer没有接收到消息，说明应该增加Parition的数量了</li>
+</ul>
+</li>
+<li><strong>如果你的Consumer 忽然挂了，下次重新启动以后，Consumer 会发生什么？</strong><ul>
+<li>Consumer 会接着从挂的地方的offset接着消费，因为从哪里开始的Offset并没有消费，Consumer 自己！！！！</li>
+</ul>
+</li>
+<li><strong>怎样避免重复数据</strong><ul>
+<li><strong>在生产者这边</strong></li>
+<li>在每次得到网络错误的时候，检查最后写入的消息是不是现在正要发送的消息  </li>
+<li>在消息中包含UUID作为header ，在消费者这边检查这个header，避免重复</li>
+<li><strong>在消费者这边</strong></li>
+</ul>
+</li>
+<li><strong>ZooKeeper在Kafka中的作用？</strong><ul>
+<li>服务宕机检测</li>
+<li>数据的分区</li>
+<li>数据备份</li>
+</ul>
+</li>
+<li><strong>Customer 查询消息的时间复杂度为什么是常量级的</strong><ul>
+<li>我认为查询的时间复杂度并不是常量级的应该是 O logN, 在传输中 topic 每个Partion将消息保存Segment。Segment的文件名称为保存消息开始的那个Offset。当Customer通过一个Offset查找消息时，通过二分法首先定位到这个Segment文件，又因为Segment文件的大小是固定的 所以在Segment中查询消息的时间复杂度是常量级的。所以我感觉应该是常量级的</li>
+</ul>
+</li>
+<li><strong>如果一个Producer 要发送一个大文件，你要怎么做？</strong><ul>
+<li>先将文件进行压缩，另外保证broker能接受的最大字节数和 Replication最大复制字节数，Consumer能接收的最大字节数大于这个值</li>
+</ul>
+</li>
+</ul>
+<h1 id="重要的参数配置"><a href="#重要的参数配置" class="headerlink" title="重要的参数配置"></a>重要的参数配置</h1><h2 id="Broker-端"><a href="#Broker-端" class="headerlink" title="Broker 端"></a>Broker 端</h2><ul>
+<li><strong>log.flush.scheduler.interval.ms</strong>    检查数据是否要写入到硬盘的时间间隔。</li>
+<li><strong>message.max.bytes</strong>        一个socket 请求的最大字节数、</li>
+<li><strong>fetch.message.max.bytes</strong>        控制在一个请求中获取的消息的最大字节数。<h2 id="Consumer-duyan"><a href="#Consumer-duyan" class="headerlink" title="Consumer duyan"></a>Consumer duyan</h2></li>
 </ul>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/12/07/Mysql性能优化(二)New Document/" class="archive-article-date">
-  	<time datetime="2016-12-07T05:39:40.893Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
+      <a href="/2017/02/21/中间件/" class="archive-article-date">
+  	<time datetime="2017-02-21T01:02:11.296Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-21</time>
 </a>
       
       
@@ -1098,7 +1044,7 @@ create trigger trigger_name trigger_time trigger_event on table_name for each ro
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 

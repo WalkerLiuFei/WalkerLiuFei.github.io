@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="MysqlOccupations
+典型的按 某个列的值，进行按列分类查询
+
+
+这个提的思路是，首先建立一个子查询，将通过Occpution的Index 将 名称加上，即完成对特定的Occpuation进行递增，
+然后每个name，和Index 成单一对立的关系。说明现在将其中一个作为 Group选项即可！！在这里明显是要用Index来做Group By聚合
+下面解决的问题自然是没有需要一个聚合函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Walker的博客">
+<meta property="og:url" content="http://yoursite.com/2017/02/24/Leetcode题解(Mysql)/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta property="og:description" content="MysqlOccupations
+典型的按 某个列的值，进行按列分类查询
+
+
+这个提的思路是，首先建立一个子查询，将通过Occpution的Index 将 名称加上，即完成对特定的Occpuation进行递增，
+然后每个name，和Index 成单一对立的关系。说明现在将其中一个作为 Group选项即可！！在这里明显是要用Index来做Group By聚合
+下面解决的问题自然是没有需要一个聚合函数">
+<meta property="og:updated_time" content="2017-02-26T02:41:00.707Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Walker的博客">
+<meta name="twitter:description" content="MysqlOccupations
+典型的按 某个列的值，进行按列分类查询
+
+
+这个提的思路是，首先建立一个子查询，将通过Occpution的Index 将 名称加上，即完成对特定的Occpuation进行递增，
+然后每个name，和Index 成单一对立的关系。说明现在将其中一个作为 Group选项即可！！在这里明显是要用Index来做Group By聚合
+下面解决的问题自然是没有需要一个聚合函数">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Leetcode题解(Mysql)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h2><h3 id="Occupations"><a href="#Occupations" class="headerlink" title="Occupations"></a><a href="https://www.hackerrank.com/challenges/occupations" target="_blank" rel="external">Occupations</a></h3><blockquote>
+<p>典型的按 某个列的值，进行按列分类查询</p>
+</blockquote>
+<ul>
+<li>这个提的思路是，首先建立一个子查询，将通过Occpution的Index 将 名称加上，即完成对特定的Occpuation进行递增，</li>
+<li>然后每个name，和Index 成单一对立的关系。说明现在将其中一个作为 Group选项即可！！在这里明显是要用Index来做Group By聚合</li>
+<li><p>下面解决的问题自然是没有需要一个聚合函数将四个列的属性选出，在这里用了Min函数</p>
+</li>
+<li><p>第一步 ： 产生一个临时表</p>
+  <pre>
+  select  
+   case 
+   when occupation = 'Doctor ' then (@r1 := @r1 +1)  
+   when occupation = 'Professor  ' then  @r2 := @r2 +1
+   when occupation = 'Singer ' then  @r3 := @r3 +1
+   when occupation = 'Actor' then  @r4 := @r4 +1   
+   end num,
+   case when occupation = 'Doctor ' then name end Doctor,
+   case when occupation = 'Professor  ' then name end Professor,
+   case when occupation = 'Singer ' then name end Singer,
+   case when occupation = 'Actor' then name  end Actor
+   from occupations  temp
+  </pre> 
+
+<p>这一步完成创建一个 表，将 属性分类，但是会有很多个 NULL 在里面！。</p>
+</li>
+<li><p>上面的l临时表暂且命名为 temp,利用r1.num 作为Group 对象，但是现在那四个列没有作为select的选项，因为没有聚合参加。所以现在要有一个聚合，这里用了 min，作为聚合函数！！</p>
+<pre>
+select  min(Doctor),min(Professor),min(Singer),min(Actor) from  temp  group by r1.num; 
+</pre>
+
+
+</li>
+</ul>
+<h3 id="The-Report"><a href="#The-Report" class="headerlink" title="The Report"></a><a href="https://www.hackerrank.com/challenges/the-report" target="_blank" rel="external">The Report</a></h3><blockquote>
+<p>一个联表查询，不同的是。它的对应关系比较特别，一个表的数据需要对应另一个表的区间值。这个可以直接用一个 联合的判断语句来进行筛选，在这里就时 <code>on student.mark &gt;= gtades.min_mark &amp;&amp; students.mark &lt;= grade.max_mark</code></p>
+</blockquote>
+<ul>
+<li><strong>union 和union all 的区别是 union all 会keep duplicate element ，union 会将 重复的元素 移除掉</strong></li>
+<li><strong>没有 所谓的 right inner join 或者 left inner join,只有 inner join，inner join 会 select 出连个表同时m满足的 元素，right join 和 left join会 select 出 右表 或者 左表 全部的元素，和 左表或者右表 满足 join条件的元素，如果 不够 则是 补 null。。。。。</strong></li>
+<li><strong>union 会破坏啷个表的排序！ 所以对两个已经排序的表，在union后还要保持排序状态是不可能的</strong></li>
+</ul>
+<h3 id="Top-Competitors"><a href="#Top-Competitors" class="headerlink" title="Top Competitors "></a><a href="https://www.hackerrank.com/challenges/full-score" target="_blank" rel="external">Top Competitors </a></h3><blockquote>
+<p>本题的难度在于怎么解决 某个出现在表中的元素出现的次数，并利用这个次数哦作为筛选条件？</p>
+</blockquote>
+<ul>
+<li><p>对于 次数作为筛选条件，可以用在排序之后，做一个 case 判断<br>  <pre><br>   set @pre_id = -1,@count = 0;<br>   case </pre></p>
+<pre><code>when @pre_id = h_id then @count := @count +1  
+else @count := 0
+end count , @pre_id,@pre_id := h_id 
+</code></pre><p>  <br>以上利用一个列在作为。元素出现的次数的判断。然后再做一次 select 查询。利用 max(…)作为 aggrate 的条件即可。</p>
+</li>
+<li><p><strong>注意！ 在 select 语句中的order by 是在 执行完 select 语句，也就是说，是在</strong></p>
+</li>
+</ul>
+<pre>
+set @pre_id = -1,@count = 0;
+select  hacker_id,name   from hackers inner join  (select h_id,case 
+          when @pre_id = h_id then @count := @count +1  
+          else @count := 0
+          end count , @pre_id,@pre_id := h_id from difficulty inner join  (select 
+          submissions.hacker_id h_id,submissions.score score,challenges.difficulty_level d_level from
+          submissions inner join challenges on submissions.challenge_id = challenges.challenge_id 
+          order by h_id)r1 on r1.d_level = difficulty_level && r1.score = difficulty.score) r2 on 
+         hackers.hacker_id = r2.h_id  where r2.count >= 1 group by hacker_id order by max(count) 
+        desc ,hacker_id;
+
+</pre>
+
+<p><strong>在利用 一个元素的max（xxx） ，或者 case 时，没有必要将这个列作为 select 的选项之一 select 出来！</strong></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/24/Leetcode题解(Mysql)/" class="archive-article-date">
+  	<time datetime="2017-02-24T05:24:57.535Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-24</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/27/运维相关知识/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/23/测试工具/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title"></div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Leetcode题解(Mysql)" data-title="" data-url="http://yoursite.com/2017/02/24/Leetcode题解(Mysql)/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

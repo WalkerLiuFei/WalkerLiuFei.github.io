@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java基础
+你对ClassLoader的理解
+ClassLoader默认提供的三个ClassLoader，Bootstrap, Extension ClassLoader，APPClassLoader，后面这俩其实是第一个加载出来的，第一个是属于JVM的。不是一个层次的东西
+Bootstrp 负责加载jdk的核心库。
+Extension ClassLoader：扩展类加载器，负责加载Java的扩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Walker的博客">
+<meta property="og:url" content="http://yoursite.com/2017/02/14/Java基础/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta property="og:description" content="Java基础
+你对ClassLoader的理解
+ClassLoader默认提供的三个ClassLoader，Bootstrap, Extension ClassLoader，APPClassLoader，后面这俩其实是第一个加载出来的，第一个是属于JVM的。不是一个层次的东西
+Bootstrp 负责加载jdk的核心库。
+Extension ClassLoader：扩展类加载器，负责加载Java的扩">
+<meta property="og:updated_time" content="2017-02-21T06:16:29.970Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Walker的博客">
+<meta name="twitter:description" content="Java基础
+你对ClassLoader的理解
+ClassLoader默认提供的三个ClassLoader，Bootstrap, Extension ClassLoader，APPClassLoader，后面这俩其实是第一个加载出来的，第一个是属于JVM的。不是一个层次的东西
+Bootstrp 负责加载jdk的核心库。
+Extension ClassLoader：扩展类加载器，负责加载Java的扩">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Java基础" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><ul>
+<li><strong>你对ClassLoader的理解</strong><ul>
+<li>ClassLoader默认提供的三个ClassLoader，Bootstrap, Extension ClassLoader，APPClassLoader，后面这俩其实是第一个加载出来的，第一个是属于JVM的。不是一个层次的东西</li>
+<li>Bootstrp 负责加载jdk的核心库。</li>
+<li>Extension ClassLoader：扩展类加载器，负责加载Java的扩展类库</li>
+<li>APP ClassLoader：系统类加载器，负责加载ClassPath下所有的jar包和Class文件</li>
+<li>可以继承ClassLoader实现自己的类加载器 </li>
+<li>如果你在去找通过Class类 找ClassLoader 它返回null的时候，说明他的类加载器是BootStrapClassLoader，所以说不要通过java核心库去找ClassLoader 加载配置文件什么的<br><code>System.out.println(String.class.getClassLoader());</code>就是输出的null</li>
+<li>双亲委派模型,其实就是父类的Class先去加载，父类找不到，再交给子类的ClassLoader加载….这样就不会造成类加载时的冲突</li>
+<li>对于不同ClassLoader加载出来的类，虽然它们有可能会是同一个字节码文件(同一个类文件)JVM也会认为他们属于不同的类</li>
+<li>利用 java -Xbootstrap/a; 添加bootstrap 需要加载的类的jar包的路径</li>
+</ul>
+</li>
+<li><p>64位JDK 不变不如32位JDK</p>
+</li>
+<li><p><strong>谈谈你对Java线程池的理解</strong></p>
+<blockquote>
+<ul>
+<li><strong>实现原理</strong>：关键词 <code>生产者消费者模型</code>、<code>HashSet</code>、<code>ThreadPoolExcutors</code>、<code>额外的任务管理线程</code>。核心类是 ThreadPoolExcutors，其维护一个corePoolSize，maxPoolSize,缓冲队列和一个HashSet 作为Task集合。内部通过一个BlockQueue作为 work queue维护一个生产消费者模型。线程池其实就是一个HashSet来存放所有的工作集。内部维护了一个名字叫Worker的类，用来管理工作集的执行，换句话说，ThreadPoolExcutors也额外需要一个线程来执行它维护的线程。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>Syntronized 属于悲观锁，lock属于乐观锁。lock更方便用于负责逻辑的。 </p>
+</li>
+<li>java中的公平锁和非公平锁<ul>
+<li>公平锁：先来先得</li>
+<li>费公平锁：不管先后顺序，来了就给（看释放时间）。</li>
+<li>Java中的RetreenLock 默认是非公平锁</li>
+</ul>
+</li>
+<li>ConcurrentHashMap 和Collections.synchronized(map)之间的区别：<br>  <strong>ConcurrentHashMap允许多个线程同时修改Map中的元素，而不是阻塞其中的某个线程.Collections.synchronized(map)是利用阻塞线程来实现的线程安全访问。如果你想及时看到Map中实时更新的元素，使用Collections.Syntronized。如果你的往Map里面插入的操作很多，而读的操作很少。并且想拥有较好的性能。那么使用ConcurrentHashMap</strong>，另外ConcurrentHashMap不允许插入null值。。HashTable和Collections.syntronized(HashMap)的表现是一致的。都是在整个集合上建立一个读写锁。concurrentMap主要关注的是get动作</li>
+<li>java dump 文件<ul>
+<li>heap dump:用来分析java对象的内存占用情况 ： jmap -dump:live ,format=b,file=heap.hprof xxx(java 进程号)</li>
+<li>thread dump：用来分析java应用的执行情况。一般用来解决java执行时的block问题：jstack XXX(java 进程号)</li>
+<li>使用工具MAT来分析dump文件是一个比较好的选择</li>
+</ul>
+</li>
+<li><p>java -x m命令</p>
+</li>
+<li><p>java内存模型</p>
+<ul>
+<li>线程共享</li>
+<li>程序计数器：java执行字节码的指示器</li>
+<li>Java虚拟机堆：用来为java方法执行时建立的内存模型，包含局部变量，操作数栈，动态链接，方法出口。</li>
+<li>线程共享</li>
+<li>Java堆，用来存放对象，是GC主要区域，分为新生代和老生代</li>
+<li>方法区（永久代）：用于存储虚拟机加载的类信息，常量，静态变量等。这个区域的内存回收主要针对的是常量池的回收和对类型的卸载！</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li>JavaGC 算法，可达性分析算法。判断一个对象的引用是否能达到GC Root Set。不能则说明是可以回收的</li>
+</ul>
+<ul>
+<li>垃圾回收算法<br>&gt;<ul>
+<li>标记清除算法：先对所有的需要回收的对象进行标记，然后统一回收。缺点是会产生大量的内存碎片</li>
+<li>复制算法：将可用内存按照容量分成大小相同的两块，每次使用的时候只用其中的一块。使用完毕后，进行一次内存回收。将还存活的对象复制到另一块内存，并对先前的那块内存进行清理。缺点显而易见</li>
+<li>分代回收算法：老年代单线程标记整理算法，新生代复制收集算法</li>
+<li>可以利用–XX:PretenureSizeThrshold 参数 设定一个阈值，令大于这个阈值的对象直接在老年代分配。这样做的目的是避免Eden区以及Survivor区之间发生大量的内存复制（新生代采用内存复制算法来进行GC）</li>
+<li>通过指定MinorGC次数(默认15次)的对象将进入老年代区域</li>
+<li>注意区别 full gc ，minor gc  的区别已经出发条件</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li><strong>java 中计算hashcode 用 31作为因子?</strong><blockquote>
+<p> 首先因为其是一个素数</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><strong>利用 foreach 循环删除元素时为什么会抛出一个 ConncurrentException ？</strong> (测试环境 jdk 8)<br>&gt;<ul>
+<li>首先，foreach 循环只能遍历 可以Iterable的对象，比如Collections包里面各类集合类和 数组。Iterable 对象的遍历在编译期被编程成 <code>for(Iterator i = list.iterator;i.next;){...}</code>,而数组的的编译成（之前会首先有个引用！）， <code>for(int index = 0;index &lt; arr.length();index ++){...}</code></li>
+<li>在单线程的情况下并不是真正意义上的并发异常。原因是，可 Iterable 的集合类，内部维护了一个子类Iterator,这个子类有一个 属性 expectCount 这个count是当前list集合元素的数量。如果你利用List 直接去Remove，会造成这个属性值和 list值不一致！如果你在modify list元素数量然后再用Iterator 去 进行next 操作的时候会抛出一个ConcurrentException</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/14/Java基础/" class="archive-article-date">
+  	<time datetime="2017-02-14T07:39:13.214Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-14</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/15/Redis Interview/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/13/Spring 面试/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Spring 学习</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Java基础" data-title="" data-url="http://yoursite.com/2017/02/14/Java基础/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

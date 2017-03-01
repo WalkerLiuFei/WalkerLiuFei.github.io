@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>中间件 | Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="消息队列框架 kafka
+关键词： Producer,Consumer,Broker,Topic,Offset
+Topic : 主题，由用户定义并配置在Kafka服务器上，用于建立生产者和消费者之间的订阅关系。生产者生产消息到这个Topic下，消费者从这个Topic下取消息进行消费
+Broker : Kafka的服务器，用于保存消息队列，Kafka集群中一台服务器就相当于一台broker
+Pari">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中间件">
+<meta property="og:url" content="http://yoursite.com/2017/02/21/中间件/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta property="og:description" content="消息队列框架 kafka
+关键词： Producer,Consumer,Broker,Topic,Offset
+Topic : 主题，由用户定义并配置在Kafka服务器上，用于建立生产者和消费者之间的订阅关系。生产者生产消息到这个Topic下，消费者从这个Topic下取消息进行消费
+Broker : Kafka的服务器，用于保存消息队列，Kafka集群中一台服务器就相当于一台broker
+Pari">
+<meta property="og:image" content="http://img.blog.csdn.net/20160421172632084?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2017-02-23T02:16:12.708Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="中间件">
+<meta name="twitter:description" content="消息队列框架 kafka
+关键词： Producer,Consumer,Broker,Topic,Offset
+Topic : 主题，由用户定义并配置在Kafka服务器上，用于建立生产者和消费者之间的订阅关系。生产者生产消息到这个Topic下，消费者从这个Topic下取消息进行消费
+Broker : Kafka的服务器，用于保存消息队列，Kafka集群中一台服务器就相当于一台broker
+Pari">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160421172632084?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-中间件" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      中间件
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="消息队列框架-kafka"><a href="#消息队列框架-kafka" class="headerlink" title="消息队列框架 kafka"></a>消息队列框架 kafka</h1><ul>
+<li>关键词： <code>Producer</code>,<code>Consumer</code>,<code>Broker</code>,<code>Topic</code>,<code>Offset</code><ul>
+<li><strong>Topic :</strong> 主题，由用户定义并配置在Kafka服务器上，用于建立生产者和消费者之间的订阅关系。生产者生产消息到这个Topic下，消费者从这个Topic下取消息进行消费</li>
+<li><strong>Broker :</strong> Kafka的服务器，用于保存消息队列，Kafka集群中一台服务器就相当于一台broker</li>
+<li><strong>Paritions :</strong> Topic 物理上的分组，一个 Topic可以有多个Parition，每个parition是一个有序数列，并且其值必须要从0开始</li>
+<li><strong>Offset :</strong> 相当于Parition中的消息的“键”</li>
+<li><strong>Segment :</strong> Partion 保存数据文件的最小单位，Partion 对其管理的时候都是以Segment 作为单位进行管理的。比如对Older 消息进行删除等操作  </li>
+</ul>
+</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20160421172632084?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<h1 id="From-Interview"><a href="#From-Interview" class="headerlink" title="From Interview"></a>From Interview</h1><ul>
+<li><strong>Offset的角色是什么：</strong><ul>
+<li>偏移量：</li>
+</ul>
+</li>
+<li><strong>ZooKeeper在Kafkaserver中的角色是什么</strong><ul>
+<li>管理消费者和生产者</li>
+</ul>
+</li>
+<li><strong>Kafka集群，Replicat</strong><ul>
+<li>为保证Kafka Server的高可用性，需要为Kafka添加Replicat 从机。</li>
+</ul>
+</li>
+<li><strong>当插入一个过长数据导致<code>InvalidMessageSizeException</code> 时怎么办</strong><ul>
+<li>kafka-topics.sh –zookeeper localhost:13003 –alter –topic MyTopic –config retention.ms=1000</li>
+</ul>
+</li>
+<li><strong>Kafka中消息被消费后会不会立即删除？</strong><ul>
+<li>Kafka中消息被消费后不会被立即删除，</li>
+</ul>
+</li>
+<li><strong>Partitions的作用</strong><ul>
+<li>通过分区，将日志内容分散保存到不同的server上。避免文件尺寸达到磁盘上限</li>
+</ul>
+</li>
+<li><strong>AsyProducer 和sync producer 的区别</strong><ul>
+<li>区别在于 sync producer 的send 方法会阻塞线程，sync 不会。</li>
+</ul>
+</li>
+<li><strong>安全，SSL加密</strong></li>
+<li><strong>Log数据写入磁盘的策略</strong><ul>
+<li>通过消息数量 </li>
+<li>通过时间间隔</li>
+</ul>
+</li>
+</ul>
+<h1 id="From-StackOverflow"><a href="#From-StackOverflow" class="headerlink" title="From StackOverflow"></a>From StackOverflow</h1><ul>
+<li><strong>怎么删除一个 Topic</strong> ： 怎么删除一个 :<code>kafka-topics.sh --delete --zookeeper localhost:2181 --topic your_topic_name</code> </li>
+</ul>
+<h1 id="From-FAQ"><a href="#From-FAQ" class="headerlink" title="From FAQ"></a><a href="https://cwiki.apache.org/confluence/display/KAFKA/FAQ#FAQ-Isitpossibletodeleteatopic?" target="_blank" rel="external">From FAQ</a></h1><ul>
+<li><strong>什么时候你的Record 会包含一个时间戳</strong></li>
+<li><strong>当出现一个QueueFullException时，你又不想数据丢失。应该怎么做？</strong><ul>
+<li>将生产的enqueue Timeout 时间设置成 -1，这样会导致producer 被堵塞，但是不会丢失丢失数据</li>
+</ul>
+</li>
+<li><strong>当我的kafka服务器没有接收到生产者发送的数据，会是什么问题？</strong><ul>
+<li>问题多了去了。</li>
+</ul>
+</li>
+<li><strong>Partion 是什么 ？ Partition分区策略</strong><ul>
+<li>利用 Hash作为分区策略</li>
+</ul>
+</li>
+<li><strong>删除Topic 之前需要做的操作</strong><ul>
+<li>需要将 Topic mark为 delete</li>
+</ul>
+</li>
+<li><strong>如果消费者一直没有接收到数据，会是什么问题</strong><ul>
+<li>Consumer 只会接收在启动之后 发送到broker上的数据，也可以通过设置<code>auto.offset.reset</code>来设置</li>
+</ul>
+</li>
+<li><strong>生产者出现invalidMessageException会是什么问题</strong>  参考这个<a href="http://stackoverflow.com/questions/21020347/kafka-sending-a-15mb-message" target="_blank" rel="external"> stackover flow </a><ul>
+<li>可能的原因是 fetch size 太小、然而数据太大，合理的配置 好 consumer 的 fetch.max.byte的大小，或者注意生产者发送数据量的大小</li>
+<li>为了避免这个问题 ： 最好就在 broker 端将 message.max.bytes 的大小 设置成大于consumer 端的 message.max.bytes。这样的话broker 接收的数据都能被 consumer 正确的消费</li>
+<li>在集群中，只有那些 被正确 replicat的消息会被正确到达 consumer 端，所以你也搞保证 broker <code>replica.fetch.max.bytes</code>的设置正确。、</li>
+<li>保证 consumer端 <code>fetch.message.max.bytes</code> ， broker 端 <code>replica.fetch.max.bytes</code>,<code>message.max.bytes</code>都设置正确！</li>
+</ul>
+</li>
+<li><strong>Consumer的group id 是属于整个集群的</strong><ul>
+<li>稳定状态下每一个Consumer实例只会消费某一个或多个特定 Partition的数据，而某个Partition的数据只会被某一个特定的Consumer实例所消费</li>
+</ul>
+</li>
+<li><strong>Kafka读取特定</strong></li>
+<li><strong>Kafka 在传输大文件时是怎么做的 ？</strong><ul>
+<li>通过对较大数据进行压缩，Producer实现压缩，Consumer实现解压缩，这样可以解决网络传输带来的瓶颈，但是会对cpu造成负载</li>
+</ul>
+</li>
+<li><strong>Prducer 发布消息的流程</strong><ol>
+<li>producer 先从 zookeeper 的 “/brokers/…/state” 节点找到该 partition 的 leader</li>
+<li>producer 将消息发送给该 leader</li>
+<li>leader 将消息写入本地 log</li>
+<li>followers 从 leader pull 消息，写入本地 log 后 leader 发送 ACK</li>
+<li>leader 收到所有 ISR 中的 replica 的 ACK 后，增加 HW（high watermark，最后 commit 的 offset） 并向 producer 发送 ACK</li>
+</ol>
+</li>
+<li><strong>Producer 发送一条消息到Broker会不会被重复发送多次？</strong><ul>
+<li>由于网络原因，会发送多次。这是Kafka的一个机制，也就是说保证消息至少发送一次</li>
+</ul>
+</li>
+<li><strong>Consumer消费消息时有那两套机制？</strong> <ul>
+<li><strong>High-level Consumer Api ：</strong> 这个API 具有Consumer Group 语义，一个消息只能被group内的一个Consumer所消费，且Consumer消费消息时 不关注 <strong>Offset</strong>。</li>
+<li><strong>The SimpleConsumer API:</strong> 需要自己跟踪Offset，从而决定下一个消费的消息在哪里，Consumber需要通过程序获知每个Parition的leader是谁，需要处理Leader的变更</li>
+<li><strong>最终就是 一个获取消息时需要指定Offset 一个不需要指定 Offset</strong></li>
+</ul>
+</li>
+<li><strong>Consumber Group：</strong> 每个Consumer 都属于一个Consumer group ，一个 parition只能被同一个Group内的一个Consumer 所消费（保证一个消息只能被group 内的一个Consumer 消费 （消息都是以Topic区分的）！）。  </li>
+<li><strong>如果某些group 中的 Consumer没有接收到消息，会是什么原因？</strong><ul>
+<li>可能是Parition 不太够的原因，因为Consumer Group 对应关系是 Topic，Group中每个Consumer 对应一个Parition,如果有的Consumer没有接收到消息，说明应该增加Parition的数量了</li>
+</ul>
+</li>
+<li><strong>如果你的Consumer 忽然挂了，下次重新启动以后，Consumer 会发生什么？</strong><ul>
+<li>Consumer 会接着从挂的地方的offset接着消费，因为从哪里开始的Offset并没有消费，Consumer 自己！！！！</li>
+</ul>
+</li>
+<li><strong>怎样避免重复数据</strong><ul>
+<li><strong>在生产者这边</strong></li>
+<li>在每次得到网络错误的时候，检查最后写入的消息是不是现在正要发送的消息  </li>
+<li>在消息中包含UUID作为header ，在消费者这边检查这个header，避免重复</li>
+<li><strong>在消费者这边</strong></li>
+</ul>
+</li>
+<li><strong>ZooKeeper在Kafka中的作用？</strong><ul>
+<li>服务宕机检测</li>
+<li>数据的分区</li>
+<li>数据备份</li>
+</ul>
+</li>
+<li><strong>Customer 查询消息的时间复杂度为什么是常量级的</strong><ul>
+<li>我认为查询的时间复杂度并不是常量级的应该是 O logN, 在传输中 topic 每个Partion将消息保存Segment。Segment的文件名称为保存消息开始的那个Offset。当Customer通过一个Offset查找消息时，通过二分法首先定位到这个Segment文件，又因为Segment文件的大小是固定的 所以在Segment中查询消息的时间复杂度是常量级的。所以我感觉应该是常量级的</li>
+</ul>
+</li>
+<li><strong>如果一个Producer 要发送一个大文件，你要怎么做？</strong><ul>
+<li>先将文件进行压缩，另外保证broker能接受的最大字节数和 Replication最大复制字节数，Consumer能接收的最大字节数大于这个值</li>
+</ul>
+</li>
+</ul>
+<h1 id="重要的参数配置"><a href="#重要的参数配置" class="headerlink" title="重要的参数配置"></a>重要的参数配置</h1><h2 id="Broker-端"><a href="#Broker-端" class="headerlink" title="Broker 端"></a>Broker 端</h2><ul>
+<li><strong>log.flush.scheduler.interval.ms</strong>    检查数据是否要写入到硬盘的时间间隔。</li>
+<li><strong>message.max.bytes</strong>        一个socket 请求的最大字节数、</li>
+<li><strong>fetch.message.max.bytes</strong>        控制在一个请求中获取的消息的最大字节数。<h2 id="Consumer-duyan"><a href="#Consumer-duyan" class="headerlink" title="Consumer duyan"></a>Consumer duyan</h2></li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/21/中间件/" class="archive-article-date">
+  	<time datetime="2017-02-21T01:02:11.296Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-21</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/22/Web相关/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Web 相关
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/20/Mysql优化篇md/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Mysql 优化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="中间件" data-title="中间件" data-url="http://yoursite.com/2017/02/21/中间件/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

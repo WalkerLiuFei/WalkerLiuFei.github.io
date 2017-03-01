@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Mysql 相关事务处理
+原子性：用于标示事务事务是否完全完成。对于事务而言，其所有的操作都在内存中执行，只有当所有的操作都完成 成功后，才会永久化写入到硬盘。
+一致性：事务在系统完整性中实施一致性，通过保证系统的任何事务最后都处于有效状态来实现。事务出错，系统将返回原始状态
+隔离性： 为防止混乱，再两个事务同时执行时，使用乐观锁的机制，保证对同一数据，同一时间只有一个请求在对其访问。隔离性保证了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Walker的博客">
+<meta property="og:url" content="http://yoursite.com/2017/02/16/Mysql/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta property="og:description" content="Mysql 相关事务处理
+原子性：用于标示事务事务是否完全完成。对于事务而言，其所有的操作都在内存中执行，只有当所有的操作都完成 成功后，才会永久化写入到硬盘。
+一致性：事务在系统完整性中实施一致性，通过保证系统的任何事务最后都处于有效状态来实现。事务出错，系统将返回原始状态
+隔离性： 为防止混乱，再两个事务同时执行时，使用乐观锁的机制，保证对同一数据，同一时间只有一个请求在对其访问。隔离性保证了">
+<meta property="og:updated_time" content="2017-02-16T09:30:24.177Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Walker的博客">
+<meta name="twitter:description" content="Mysql 相关事务处理
+原子性：用于标示事务事务是否完全完成。对于事务而言，其所有的操作都在内存中执行，只有当所有的操作都完成 成功后，才会永久化写入到硬盘。
+一致性：事务在系统完整性中实施一致性，通过保证系统的任何事务最后都处于有效状态来实现。事务出错，系统将返回原始状态
+隔离性： 为防止混乱，再两个事务同时执行时，使用乐观锁的机制，保证对同一数据，同一时间只有一个请求在对其访问。隔离性保证了">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Mysql" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Mysql-相关"><a href="#Mysql-相关" class="headerlink" title="Mysql 相关"></a>Mysql 相关</h1><h2 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h2><ul>
+<li>原子性：用于标示事务事务是否完全完成。对于事务而言，其所有的操作都在内存中执行，只有当所有的操作都完成 成功后，才会永久化写入到硬盘。</li>
+<li>一致性：事务在系统完整性中实施一致性，通过保证系统的任何事务最后都处于有效状态来实现。事务出错，系统将返回原始状态</li>
+<li>隔离性： 为防止混乱，再两个事务同时执行时，使用乐观锁的机制，保证对同一数据，同一时间只有一个请求在对其访问。隔离性保证了，在本次事务完成之前，其他操作对于数据的访问都不会受到未完成事务的影响</li>
+<li><p>事务的回滚并不能释放锁</p>
+<h2 id="Mysql-锁"><a href="#Mysql-锁" class="headerlink" title="Mysql 锁"></a>Mysql 锁</h2></li>
+<li><p>排它锁（写锁）：若事务T对对象A加上X锁，则只允许T读取和修改A，其他任何事务不得对A加任何锁，直至T释放A的锁。这就意味着T在释放A之前无法读取和修改A</p>
+</li>
+<li>共享锁（读锁）：若事务T对对象A加上S锁，其他事务可以访问对象A，但是不能为其添加X锁，知道事务T对对象释放了锁S    </li>
+<li>更新锁： 未解决死锁而引入的概念</li>
+<li>在InnoDB存储引擎中，UPdate 操作会将所有你要更新的数据列加锁，这样会相对的影响更新效率</li>
+</ul>
+<h2 id="处理并发问题的步奏："><a href="#处理并发问题的步奏：" class="headerlink" title="处理并发问题的步奏："></a>处理并发问题的步奏：</h2><ul>
+<li>开启事务</li>
+<li>申请写权限，给对象加锁<ul>
+<li>失败。稍后重试</li>
+</ul>
+</li>
+<li>成功，进行编辑操作</li>
+<li>写入编辑的结果</li>
+<li>写入成功，则提交事务完成操作</li>
+<li>写入失败，回滚事务</li>
+</ul>
+<h1 id="JDBC-连接池"><a href="#JDBC-连接池" class="headerlink" title="JDBC 连接池"></a>JDBC 连接池</h1><ul>
+<li>连接池的作用，用来避免客户端在连接数据库时频繁的建立连接导致的性能问题</li>
+<li>静态连接池：连接在系统初始化时就已经分配好，不能随意关闭。。</li>
+<li>连接池的复用策略同Java的 GC 一样使用 reference count（引用计数）算法。空闲的连接优先分配给客户端来使用。如果</li>
+<li>连接池最大连接和最小连接数需要在实践中确定</li>
+<li>连接池管理的事务处理：每一个事务独占一个连接，JDBC 通过建立一个事务注册表，以Thread作为ID 来标识使用者。</li>
+<li>虽然事务连接和普通连接的分配策略不一致，但JavaAPI通过多态均将这些操作封装到了DBCollections 接口中</li>
+</ul>
+<h1 id="Btree"><a href="#Btree" class="headerlink" title="Btree"></a>Btree</h1><blockquote>
+<p>B树是一种自平衡树 （Balance tree）</p>
+</blockquote>
+<ul>
+<li>B树的一个 比较好理解的数据结构是 2 - 3树,父节点的关键码的数量必须是其子节点的 -1 ；即 k的关键码，其子节点为 k-1 个可类比于2~3树,</li>
+<li>2 - 3 树的数据结构其实就是一个 3 阶的B树</li>
+<li>B树存储的都是主关键码？对主关键码（Index）进行索引来进行查找？</li>
+<li>Mysql表中每个索引都会以B树的数据结构建立一个文件，查找数据时可以对其进行缩短查找的时间复杂度 从 O（N） 缩短到 O（LogN）</li>
+<li>时间复杂度<ul>
+<li>搜索O(log n) </li>
+<li>插入O log n </li>
+<li>插入 O log n </li>
+<li>删除 O logn</li>
+</ul>
+</li>
+<li><p>B树的性质</p>
+<ul>
+<li>根结点只有1个，关键字字数的范围[1,m-1]，分支数量范围[2,m]；</li>
+<li>除根以外的非叶结点，每个结点包含分支数范围[[m/2],m]，即关键字字数的范围是[[m/2]-1,m-1]，其中[m/2]表示取大于m/2的最小整数；</li>
+<li>非叶结点是由叶结点分裂而来的，所以叶结点关键字个数也满足[[m/2]-1,m-1]；</li>
+<li><p>所有的非终端结点包含信息：(n，P0，K1，P1，K2，P2，……，Kn，Pn)，</p>
+<p> 其中Ki为关键字，Pi为指向子树根结点的指针，并且Pi-1所指子树中的关键字均小于Ki，而Pi所指的关键字均大于Ki（i=1，2，……，n），n+1表示B-树的阶，n表示关键字个数，即[ceil(m / 2)-1]&lt;= n &lt;= m-1；</p>
+</li>
+<li><p>所有叶子结点都在同一层，并且指针域为空，具有如下性质：</p>
+</li>
+</ul>
+</li>
+<li><strong>删除和更新，插入时要保持树的平衡，这个比较复杂</strong></li>
+</ul>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
+<li>Innodb 中的日志： <ul>
+<li>binlog：二进制日志</li>
+<li>查询日志：</li>
+<li>慢日志</li>
+<li>错误日志</li>
+<li>中继日志：</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/16/Mysql/" class="archive-article-date">
+  	<time datetime="2017-02-16T03:25:55.323Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-16</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/17/GoServerLearn/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Go Server(一)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/16/设计模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title"></div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Mysql" data-title="" data-url="http://yoursite.com/2017/02/16/Mysql/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

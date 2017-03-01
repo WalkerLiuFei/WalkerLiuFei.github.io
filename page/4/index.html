@@ -126,7 +126,7 @@
       <div class="body-wrap">
         
   
-    <article id="post-ImageLoder" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-学习Netty" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -136,7 +136,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/ImageLoder/">ImageLoder源码阅读笔记</a>
+      <a class="article-title" href="/2017/01/13/学习Netty/">netty 基础学习（一）</a>
     </h1>
   
 
@@ -144,471 +144,106 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>开源框架ImageLoader的源码阅读笔记,重点集中在线程管理机制和网络请求和缓存管理。其它繁琐内容暂且不去管。基于最新的1.95版本。文中有错还请纠正。我也是个菜鸟。互相学习</p>
-</blockquote>
-<p>首先通过源码来了解下 ImageLoader 中的displayImage方法的去了解ImageLoader的大概架构，因为这个方法是我们使用ImageLoader中调用最多的方法了。也是最重要的方法了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">displayImage</span><span class="params">(String uri, ImageAware imageAware, DisplayImageOptions options,  </span></span></div><div class="line">        ImageSize targetSize, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) &#123;  </div><div class="line">  </div><div class="line">    <span class="comment">//一些检查工作  </span></div><div class="line">    checkConfiguration();  </div><div class="line">    <span class="keyword">if</span> (imageAware == <span class="keyword">null</span>) &#123;  </div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(ERROR_WRONG_ARGUMENTS);  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">if</span> (listener == <span class="keyword">null</span>) &#123;  </div><div class="line">        listener = defaultListener;  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">if</span> (options == <span class="keyword">null</span>) &#123;  </div><div class="line">        options = configuration.defaultDisplayImageOptions;  </div><div class="line">    &#125;  </div><div class="line">      </div><div class="line">    <span class="keyword">if</span> (TextUtils.isEmpty(uri)) &#123;  </div><div class="line">        <span class="comment">//这里有个ImageLoaderEngine 对象engine，这是个很重要的类，下文详解  </span></div><div class="line">        engine.cancelDisplayTaskFor(imageAware);  </div><div class="line">        listener.onLoadingStarted(uri, imageAware.getWrappedView());  </div><div class="line">        <span class="keyword">if</span> (options.shouldShowImageForEmptyUri()) &#123;  </div><div class="line">            imageAware.setImageDrawable(options.getImageForEmptyUri(configuration.resources));  </div><div class="line">        &#125; <span class="keyword">else</span> &#123;  </div><div class="line">            imageAware.setImageDrawable(<span class="keyword">null</span>);  </div><div class="line">        &#125;  </div><div class="line">        listener.onLoadingComplete(uri, imageAware.getWrappedView(), <span class="keyword">null</span>);  </div><div class="line">        <span class="keyword">return</span>;  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="keyword">if</span> (targetSize == <span class="keyword">null</span>) &#123;  </div><div class="line">        targetSize = ImageSizeUtils.defineTargetSizeForView(imageAware, configuration.getMaxImageSize());  </div><div class="line">    &#125;  </div><div class="line">    <span class="comment">//生成存储键值  </span></div><div class="line">    String memoryCacheKey = MemoryCacheUtils.generateKey(uri, targetSize);  </div><div class="line">    engine.prepareDisplayTaskFor(imageAware, memoryCacheKey);  </div><div class="line">  </div><div class="line">    listener.onLoadingStarted(uri, imageAware.getWrappedView());  </div><div class="line">    <span class="comment">//从一级缓存中去取缓存的bitmap   </span></div><div class="line">    Bitmap bmp = configuration.memoryCache.get(memoryCacheKey);  </div><div class="line">    <span class="keyword">if</span> (bmp != <span class="keyword">null</span> &amp;&amp; !bmp.isRecycled()) &#123;  </div><div class="line">        <span class="comment">//存在即加载喽......  </span></div><div class="line">        L.d(LOG_LOAD_IMAGE_FROM_MEMORY_CACHE, memoryCacheKey);  </div><div class="line">        <span class="comment">//如果需要在源bitmap上有一些额外操作  </span></div><div class="line">        <span class="keyword">if</span> (options.shouldPostProcess()) &#123;  </div><div class="line">            ImageLoadingInfo imageLoadingInfo = <span class="keyword">new</span> ImageLoadingInfo(uri, imageAware, targetSize, memoryCacheKey,  </div><div class="line">                    options, listener, progressListener, engine.getLockForUri(uri));  </div><div class="line">            <span class="comment">//这个Task可以在显示前由 程序员自定义对原bitmap的操作，（通过实现 bitmapProcessor接口）！  </span></div><div class="line">            ProcessAndDisplayImageTask displayTask = <span class="keyword">new</span> ProcessAndDisplayImageTask(engine, bmp, imageLoadingInfo,  </div><div class="line">                    defineHandler(options));  </div><div class="line">            <span class="keyword">if</span> (options.isSyncLoading()) &#123;  </div><div class="line">                <span class="comment">//如果是同步显示，则run开始走  </span></div><div class="line">                displayTask.run();  </div><div class="line">            &#125; <span class="keyword">else</span> &#123;  </div><div class="line">                <span class="comment">//若是异步，那就就提交到线程池中执行  </span></div><div class="line">                engine.submit(displayTask);  </div><div class="line">            &#125;  </div><div class="line">        &#125; <span class="keyword">else</span> &#123;  </div><div class="line">            <span class="comment">//没有的话，就去显示bitmap  </span></div><div class="line">            options.getDisplayer().display(bmp, imageAware, LoadedFrom.MEMORY_CACHE);  </div><div class="line">            listener.onLoadingComplete(uri, imageAware.getWrappedView(), bmp);  </div><div class="line">        &#125;  </div><div class="line">    &#125; <span class="keyword">else</span> &#123;  </div><div class="line">        <span class="comment">//加载时显示的图片  </span></div><div class="line">        <span class="keyword">if</span> (options.shouldShowImageOnLoading()) &#123;  </div><div class="line">            imageAware.setImageDrawable(options.getImageOnLoading(configuration.resources));  </div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (options.isResetViewBeforeLoading()) &#123;  </div><div class="line">            imageAware.setImageDrawable(<span class="keyword">null</span>);  </div><div class="line">        &#125;  </div><div class="line">  </div><div class="line">        ImageLoadingInfo imageLoadingInfo = <span class="keyword">new</span> ImageLoadingInfo(uri, imageAware, targetSize, memoryCacheKey,  </div><div class="line">                options, listener, progressListener, engine.getLockForUri(uri));  </div><div class="line">        LoadAndDisplayImageTask displayTask = <span class="keyword">new</span> LoadAndDisplayImageTask(engine, imageLoadingInfo,  </div><div class="line">                defineHandler(options));  </div><div class="line">        <span class="keyword">if</span> (options.isSyncLoading()) &#123;  </div><div class="line">            displayTask.run();  </div><div class="line">        &#125; <span class="keyword">else</span> &#123;  </div><div class="line">            engine.submit(displayTask);  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><strong>从上面的代码可以看到displayImage这个方法中比较核心的几个类依次是ImageLoaderConfigura</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">submit</span><span class="params">(<span class="keyword">final</span> LoadAndDisplayImageTask task)</span> </span>&#123;</div><div class="line">	taskDistributor.execute(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">			<span class="comment">//先从本地缓存中读取已有的缓存</span></div><div class="line">			File image = configuration.diskCache.get(task.getLoadingUri());</div><div class="line">			<span class="keyword">boolean</span> isImageCachedOnDisk = image != <span class="keyword">null</span> &amp;&amp; image.exists();</div><div class="line">			initExecutorsIfNeed();</div><div class="line">			<span class="comment">//若有的话就从另外的线程去读</span></div><div class="line">			<span class="keyword">if</span> (isImageCachedOnDisk) &#123;</div><div class="line">				taskExecutorForCachedImages.execute(task);</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				taskExecutor.execute(task);</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>从engine的submit方法中看出，最终的加载显示的过程还是在LoadAndDisplayImageTask这个类中（废话。。）。下面我们来整体的看看这个Task类。首先来看它的run方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="comment">/*</span></div><div class="line">			最主要的就是通过engine类检查 </div><div class="line">			是否有线程池是否处于pause状态，若处于，则wait/</div><div class="line">			另外这个方法还检查了 当前持有的view对象是非被GC </div><div class="line">			是否被用于其他image等 若是的话侧return</div><div class="line">		*/</div><div class="line">		<span class="keyword">if</span> (waitIfPaused()) <span class="keyword">return</span>;</div><div class="line">		<span class="comment">//你在options 中设置的delay</span></div><div class="line">		<span class="keyword">if</span> (delayIfNeed()) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">		ReentrantLock loadFromUriLock = imageLoadingInfo.loadFromUriLock;</div><div class="line">		L.d(LOG_START_DISPLAY_IMAGE_TASK, memoryCacheKey);</div><div class="line">		<span class="keyword">if</span> (loadFromUriLock.isLocked()) &#123;</div><div class="line">			L.d(LOG_WAITING_FOR_IMAGE_LOADED, memoryCacheKey);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		loadFromUriLock.lock();</div><div class="line">		Bitmap bmp;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			checkTaskNotActual();</div><div class="line">				</div><div class="line">			bmp = configuration.memoryCache.get(memoryCacheKey);</div><div class="line">			<span class="keyword">if</span> (bmp == <span class="keyword">null</span> || bmp.isRecycled()) &#123;</div><div class="line">				bmp = tryLoadBitmap();</div><div class="line">				<span class="keyword">if</span> (bmp == <span class="keyword">null</span>) <span class="keyword">return</span>; <span class="comment">// listener callback already was fired</span></div><div class="line"></div><div class="line">				checkTaskNotActual();</div><div class="line">				checkTaskInterrupted();</div><div class="line">				</div><div class="line">				<span class="keyword">if</span> (options.shouldPreProcess()) &#123;</div><div class="line">					L.d(LOG_PREPROCESS_IMAGE, memoryCacheKey);</div><div class="line">					<span class="comment">//处理bitmap</span></div><div class="line">					bmp = options.getPreProcessor().process(bmp);</div><div class="line">					<span class="keyword">if</span> (bmp == <span class="keyword">null</span>) &#123;</div><div class="line">						L.e(ERROR_PRE_PROCESSOR_NULL, memoryCacheKey);</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line"></div><div class="line">				<span class="keyword">if</span> (bmp != <span class="keyword">null</span> &amp;&amp; options.isCacheInMemory()) &#123;</div><div class="line">					L.d(LOG_CACHE_IMAGE_IN_MEMORY, memoryCacheKey);</div><div class="line">					configuration.memoryCache.put(memoryCacheKey, bmp);</div><div class="line">				&#125;</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line">				loadedFrom = LoadedFrom.MEMORY_CACHE;</div><div class="line">				L.d(LOG_GET_IMAGE_FROM_MEMORY_CACHE_AFTER_WAITING, memoryCacheKey);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			<span class="keyword">if</span> (bmp != <span class="keyword">null</span> &amp;&amp; options.shouldPostProcess()) &#123;</div><div class="line">				L.d(LOG_POSTPROCESS_IMAGE, memoryCacheKey);</div><div class="line">				bmp = options.getPostProcessor().process(bmp);</div><div class="line">				<span class="keyword">if</span> (bmp == <span class="keyword">null</span>) &#123;</div><div class="line">					L.e(ERROR_POST_PROCESSOR_NULL, memoryCacheKey);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			checkTaskNotActual();</div><div class="line">			checkTaskInterrupted();</div><div class="line">		&#125; <span class="keyword">catch</span> (TaskCancelledException e) &#123;</div><div class="line">			fireCancelEvent();</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125; <span class="keyword">finally</span> &#123;</div><div class="line">			loadFromUriLock.unlock();</div><div class="line">		&#125;</div><div class="line">		<span class="comment">//最后，downBitmap完成，就要去显示了，又是交到另一个bitmap中去了</span></div><div class="line">		DisplayBitmapTask displayBitmapTask = <span class="keyword">new</span> DisplayBitmapTask(bmp, imageLoadingInfo, engine, loadedFrom);</div><div class="line">		runTask(displayBitmapTask, syncLoading, handler, engine);</div><div class="line">	&#125;</div><div class="line">从上面的代码可以看到 run方法的逻辑还是比较清晰的，下面看一下 tryLoadBitmap方法</div><div class="line">	<span class="function"><span class="keyword">private</span> Bitmap <span class="title">tryLoadBitmap</span><span class="params">()</span> <span class="keyword">throws</span> TaskCancelledException </span>&#123;</div><div class="line">		Bitmap bitmap = <span class="keyword">null</span>;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			<span class="comment">//又是检查缓存..</span></div><div class="line">			File imageFile = configuration.diskCache.get(uri);</div><div class="line">			<span class="keyword">if</span> (imageFile != <span class="keyword">null</span> &amp;&amp; imageFile.exists() &amp;&amp; imageFile.length() &gt; <span class="number">0</span>) &#123;</div><div class="line">				L.d(LOG_LOAD_IMAGE_FROM_DISK_CACHE, memoryCacheKey);</div><div class="line">				loadedFrom = LoadedFrom.DISC_CACHE;</div><div class="line">				</div><div class="line">				checkTaskNotActual();</div><div class="line">				<span class="comment">//包裹成 “file://”形式，吐槽：真心不明白为什么要多次一举，因为在读取文件的时候又把这个scheme给去掉了</span></div><div class="line">				bitmap = decodeImage(Scheme.FILE.wrap(imageFile.getAbsolutePath()));</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">if</span> (bitmap == <span class="keyword">null</span> || bitmap.getWidth() &lt;= <span class="number">0</span> || bitmap.getHeight() &lt;= <span class="number">0</span>) &#123;</div><div class="line">				L.d(LOG_LOAD_IMAGE_FROM_NETWORK, memoryCacheKey);</div><div class="line"></div><div class="line">				loadedFrom = LoadedFrom.NETWORK;</div><div class="line">				</div><div class="line">				String imageUriForDecoding = uri;</div><div class="line">				<span class="comment">/*</span></div><div class="line">					这一块的逻辑就是 若果有配置了缓存的逻辑，那么就从网络上拿下Bitmap对象，然后保存到本地</div><div class="line">					保存到本地后。ImageUri就是本地的Uri 即以 “file://”开头的Sceme.</div><div class="line">				*/</div><div class="line">				<span class="keyword">if</span> (options.isCacheOnDisk() &amp;&amp; tryCacheImageOnDisk()) &#123;</div><div class="line">					imageFile = configuration.diskCache.get(uri);</div><div class="line">					<span class="keyword">if</span> (imageFile != <span class="keyword">null</span>) &#123;</div><div class="line">						imageUriForDecoding = Scheme.FILE.wrap(imageFile.getAbsolutePath());</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">				</div><div class="line">				checkTaskNotActual();</div><div class="line">				<span class="comment">//很明显的,最终无论走的 从网络取bitmap还是本地，都是走的这个方法</span></div><div class="line">				bitmap = decodeImage(imageUriForDecoding);</div><div class="line"></div><div class="line">				<span class="keyword">if</span> (bitmap == <span class="keyword">null</span> || bitmap.getWidth() &lt;= <span class="number">0</span> || bitmap.getHeight() &lt;= <span class="number">0</span>) &#123;</div><div class="line">					fireFailEvent(FailType.DECODING_ERROR, <span class="keyword">null</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125; <span class="keyword">catch</span> (IllegalStateException e) &#123;</div><div class="line">			fireFailEvent(FailType.NETWORK_DENIED, <span class="keyword">null</span>);</div><div class="line">		&#125; <span class="keyword">catch</span> (TaskCancelledException e) &#123;</div><div class="line">			<span class="keyword">throw</span> e;</div><div class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">			L.e(e);</div><div class="line">			fireFailEvent(FailType.IO_ERROR, e);</div><div class="line">		&#125; <span class="keyword">catch</span> (OutOfMemoryError e) &#123;</div><div class="line">			L.e(e);</div><div class="line">			fireFailEvent(FailType.OUT_OF_MEMORY, e);</div><div class="line">		&#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">			L.e(e);</div><div class="line">			fireFailEvent(FailType.UNKNOWN, e);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> bitmap;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">可以看的出来，最后的 拿bitmap都是交给 的decoder.decode方法，这个decoder的类是怎样的哪？ 我们可以招到 ImageDecoder这个和其实现 BaseImageDecoder类，这个BaseImageDecoder的类，就是默认的decode实现。 看代码</div><div class="line">	</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> Bitmap <span class="title">decode</span><span class="params">(ImageDecodingInfo decodingInfo)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">		Bitmap decodedBitmap;</div><div class="line">		ImageFileInfo imageInfo;</div><div class="line">		<span class="comment">/*</span></div><div class="line">			拿到InputStream 流，有各种得到iS的方法。基本用法全部在BaseImageDownLoader这里面。</div><div class="line">			当然你也可以通过实现ImageDownLoader来定义自己的方法</div><div class="line">		*/</div><div class="line">		InputStream imageStream = getImageStream(decodingInfo);</div><div class="line">		<span class="keyword">if</span> (imageStream == <span class="keyword">null</span>) &#123;</div><div class="line">			L.e(ERROR_NO_IMAGE_STREAM, decodingInfo.getImageKey());</div><div class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			<span class="comment">//下面就是通过你自动定义的Options 来定义解析Bitmap的options。最后解析出来 就OK了</span></div><div class="line">			imageInfo = defineImageSizeAndRotation(imageStream, decodingInfo);</div><div class="line">			imageStream = resetStream(imageStream, decodingInfo);</div><div class="line">			Options decodingOptions = prepareDecodingOptions(imageInfo.imageSize, decodingInfo);</div><div class="line">			decodedBitmap = BitmapFactory.decodeStream(imageStream, <span class="keyword">null</span>, decodingOptions);</div><div class="line">		&#125; <span class="keyword">finally</span> &#123;</div><div class="line">			IoUtils.closeSilently(imageStream);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (decodedBitmap == <span class="keyword">null</span>) &#123;</div><div class="line">			L.e(ERROR_CANT_DECODE_IMAGE, decodingInfo.getImageKey());</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			decodedBitmap = considerExactScaleAndOrientatiton(decodedBitmap, decodingInfo, imageInfo.exif.rotation,</div><div class="line">					imageInfo.exif.flipHorizontal);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> decodedBitmap;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"> 看上面的getImageStream方法，我们知道，ImageLoader不仅可以加载网络图片。还可以加载本地图片，甚至视频文件的一帧作为等等。最终的就是通过这个getStream调用的ImageDownLoader实现的。其基本实现是BaseImageDownLoader，我们可以看一下其里面的几个方法</div><div class="line">	</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> InputStream <span class="title">getStream</span><span class="params">(String imageUri, Object extra)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">		<span class="keyword">switch</span> (Scheme.ofUri(imageUri)) &#123;</div><div class="line">			<span class="keyword">case</span> HTTP:</div><div class="line">			<span class="keyword">case</span> HTTPS:</div><div class="line">				<span class="keyword">return</span> getStreamFromNetwork(imageUri, extra);</div><div class="line">			<span class="keyword">case</span> FILE:</div><div class="line">				<span class="keyword">return</span> getStreamFromFile(imageUri, extra);</div><div class="line">			<span class="keyword">case</span> CONTENT:</div><div class="line">				<span class="keyword">return</span> getStreamFromContent(imageUri, extra);</div><div class="line">			<span class="keyword">case</span> ASSETS:</div><div class="line">				<span class="keyword">return</span> getStreamFromAssets(imageUri, extra);</div><div class="line">			<span class="keyword">case</span> DRAWABLE:</div><div class="line">				<span class="keyword">return</span> getStreamFromDrawable(imageUri, extra);</div><div class="line">			<span class="keyword">case</span> UNKNOWN:</div><div class="line">			<span class="keyword">default</span>:</div><div class="line">				<span class="keyword">return</span> getStreamFromOtherSource(imageUri, extra);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">上面的代码，就是通过Sceme 头来判断我到底改怎么去获取图片。网络，本地。Content，Assert文件还是...... 下面就是拿 NetWork 和本地File作为的源码看一下，其他的请读者自己研究</div><div class="line">从网络获取</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">protected</span> InputStream <span class="title">getStreamFromNetwork</span><span class="params">(String imageUri, Object extra)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">		<span class="comment">//创建 UrlConnection</span></div><div class="line">		HttpURLConnection conn = createConnection(imageUri, extra);</div><div class="line"></div><div class="line">		<span class="keyword">int</span> redirectCount = <span class="number">0</span>;</div><div class="line">		<span class="comment">//如果遇到重定向，最大重定向数目为5，</span></div><div class="line">		<span class="keyword">while</span> (conn.getResponseCode() / <span class="number">100</span> == <span class="number">3</span> &amp;&amp; redirectCount &lt; MAX_REDIRECT_COUNT) &#123;</div><div class="line">			conn = createConnection(conn.getHeaderField(<span class="string">"Location"</span>), extra);</div><div class="line">			redirectCount++;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		InputStream imageStream;</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			imageStream = conn.getInputStream();</div><div class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">			<span class="comment">// Read all data to allow reuse connection (http://bit.ly/1ad35PY)</span></div><div class="line">			IoUtils.readAndCloseStream(conn.getErrorStream());</div><div class="line">			<span class="keyword">throw</span> e;</div><div class="line">		&#125;</div><div class="line">		<span class="comment">// ResponseCode 不是200 ，肯定有错</span></div><div class="line">		<span class="keyword">if</span> (!shouldBeProcessed(conn)) &#123;</div><div class="line">			IoUtils.closeSilently(imageStream);</div><div class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Image request failed with response code "</span> + conn.getResponseCode());</div><div class="line">		&#125;</div><div class="line">		<span class="comment">//生成buffer，供BitmapFactory 使用</span></div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ContentLengthInputStream(<span class="keyword">new</span> BufferedInputStream(imageStream, BUFFER_SIZE), conn.getContentLength());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">从本地读的代码比较简单，这里就不加注释了</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">protected</span> InputStream <span class="title">getStreamFromFile</span><span class="params">(String imageUri, Object extra)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">		String filePath = Scheme.FILE.crop(imageUri);</div><div class="line">		<span class="keyword">if</span> (isVideoFileUri(imageUri)) &#123;</div><div class="line">			<span class="keyword">return</span> getVideoThumbnailStream(filePath);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			BufferedInputStream imageStream = <span class="keyword">new</span> BufferedInputStream(<span class="keyword">new</span> FileInputStream(filePath), BUFFER_SIZE);</div><div class="line">			<span class="keyword">return</span> <span class="keyword">new</span> ContentLengthInputStream(imageStream, (<span class="keyword">int</span>) <span class="keyword">new</span> File(filePath).length());</div><div class="line">		&#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/02/ImageLoder/" class="archive-article-date">
-  	<time datetime="2016-11-02T07:14:05.378Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-音视频编解码项目笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/音视频编解码项目笔记/">项目中的音视频编解码笔记</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近的项目是一个智能摄像头的项目，对于我们Android客户端来讲，肯定核心的是就是音视频编解码了。对于硬件端，也就是摄像头端，在我接手项目的时候，他们都已经订好了技术方案。往客户端（iOS,Android，PC）三端传输的数据是音视频分开的。音频通过G711u，视频通过H264。我们客户端这边需要做的就是解码H264拿到未压缩的视频帧，和转码G711u到PCM可以播放 <em>*</em></p>
-<p>视频解码，一开始由于项目紧张，人员也比较缺，这边没有懂视频的解码。所以当时就随便在网络上搜罗了一个H264的解码器（只有SO库），没想到的是竟然可以用。所以本着互联网思维（这里省略100个呵呵），我们就临时用了这个解码器，虽然效果不理想但是还算可以用。后来到了项目中期，我们开始自己学习写解码器。这里推荐三个搭建<a href="http://lib.csdn.net/base/15" title="undefined" target="_blank" rel="external">Android</a> Stuido 搭建NDK开发环境的文章。</p>
-<ol>
-<li><a href="http://www.jianshu.com/p/e689d0196a17" target="_blank" rel="external">超级简单的Android Studio jni 实现(无需命令行)</a></li>
-<li><a href="http://www.jianshu.com/p/7844aafe897d" target="_blank" rel="external">Android Studio使用gradle-experimental构建NDK工程(无需Android.mk、Application.mk文件)</a></li>
-<li><a href="http://www.jianshu.com/p/178a2169b7ff" target="_blank" rel="external">Android Studio NDk调试(基于gradle-experimental插件与LLDB)</a></li>
-</ol>
-<p>下面是我的Gradle的配置,供大家参考</p>
-<pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px;">apply plugin: 'com.android.model.application'
-
-model {
-    android {
-        compileSdkVersion 23
-        buildToolsVersion "23.0.3"
-
-        defaultConfig.with {
-            applicationId "liufei.person.ffmpegproject"
-            minSdkVersion.apiLevel = 15
-            targetSdkVersion.apiLevel = 23
-        }
-    }
-    android.ndk {
-        moduleName = "MyLibrary"
-        ldLibs.addAll(['android', 'log'])
-    }
-
-    repositories {
-        MyLibrary(PrebuiltLibraries) {
-
-            ffmpeg {
-                binaries.withType(SharedLibraryBinary) {
-                    sharedLibraryFile = file("src/main/jni/libffmpeg.so");
-                }
-            }
-        }
-    }
-    android.productFlavors {
-        create("arm") {
-            ndk.abiFilters.add("armeabi")
-        }
-        create("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-        }
-        // To include all cpu architectures, leaves abiFilters emptycreate("all")
-    }
-    android.sources {
-        main {
-            jni {
-                exportedHeaders  {
-                    srcDir "src/main/jni/include"
-                }
-                dependencies{
-                    library "ffmpeg"
-
-                }
-            }
-        }
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.txt'))
-        }
-    }
-
-}
-
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:cardview-v7:23.+'
-    compile 'com.android.support:design:23.2.1'
-}
-
-</pre>
-
-<p>在搭建好环境后，就是视频编解码的相关知识，这里推荐<a href="http://blog.csdn.net/leixiaohua1020?viewmode=contents" target="_blank" rel="external">雷霄骅(leixiaohua1020)的专栏</a>,里面对于音视频编码的讲解真的是面面俱到，并且例子很丰富。对我这样的音视频编解码的新手真的很有帮助。通过阅读和总结雷神的例子，结合我的实际需求，下面是我自己实现的H264视频的解码程序</p>
-<pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px;">unsigned int *rgb_2_pix = NULL;
-unsigned int *r_2_pix = NULL;
-unsigned int *g_2_pix = NULL;
-unsigned int *b_2_pix = NULL;
-
-typedef struct DecoderContext {
-    int color_format;
-    struct AVCodec *codec;
-    struct AVCodecContext *codec_ctx;
-    struct AVFrame *src_frame;
-    struct AVFrame *dst_frame;
-    struct SwsContext *convert_ctx;
-    int frame_ready;
-    long timeBase;
-    int frameIndex;
-} DecoderContext;
-
-static void set_ctx(JNIEnv *env, jobject thiz, void *ctx) {
-    jclass cls = (*env)->GetObjectClass(env, thiz);
-    //最后一个参数的含义表示这个属性的类型为 int
-    jfieldID fid = (*env)->GetFieldID(env, cls, "cdata", "I");
-    //为fid 设值为ctx...相当于给个映射 和java层，然后在get
-    (*env)->SetIntField(env, thiz, fid, (jint) ctx);
-}
-static long getCurrentTimeStamp(){
-    //得到的单位是 nanosecond 级别的，所以要除以1000
-    clock_t t = clock();
-    return t / 1000;
-}
-static void *get_ctx(JNIEnv *env, jobject thiz) {
-    jclass cls = (*env)->GetObjectClass(env, thiz);
-    jfieldID fid = (*env)->GetFieldID(env, cls, "cdata", "I");
-    return (void *) (*env)->GetIntField(env, thiz, fid);
-}
-
-static void av_log_callback(void *ptr, int level, const char *fmt, __va_list vl) {
-    static char line[1024] = {0};
-    vsnprintf(line, sizeof(line), fmt, vl);
-    D(line);
-}
-
-JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    av_register_all();
-    av_log_set_callback(av_log_callback);
-    return JNI_VERSION_1_4;
-}
-
-JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
-
-}
-/*
- * thiz 是调用这个Jni接口函数的java object
- */
-JNIEXPORT void JNICALL Java_person_walker_natives_H264Decoder_nativeInit(JNIEnv *env, jobject thiz,
-                                                                       jint color_format) {
-    D("get into init method");
-    DecoderContext *ctx = calloc(1, sizeof(DecoderContext));
-
-    D("Creating native H264 decoder context");
-
-    switch (color_format) {
-        case COLOR_FORMAT_YUV420:
-            ctx->color_format = PIX_FMT_YUV420P;
-            break;
-        case COLOR_FORMAT_RGB565LE:
-            ctx->color_format = PIX_FMT_RGB565LE;
-            break;
-        case COLOR_FORMAT_BGR32:
-            ctx->color_format = PIX_FMT_BGR32;
-            break;
-    }
-    ctx->codec = avcodec_find_decoder(CODEC_ID_H264);
-    ctx->codec_ctx = avcodec_alloc_context3(ctx->codec);
-    //ctx->codec_ctx->pix_fmt = PIX_FMT_YUV420P;
-    //ctx->codec_ctx->flags2 |= CODEC_FLAG2_CHUNKS;
-
-    ctx->src_frame = av_frame_alloc();
-    ctx->dst_frame = av_frame_alloc();
-    ctx->timeBase = getCurrentTimeStamp();
-    ctx->frameIndex = 0;
-    avcodec_open2(ctx->codec_ctx, ctx->codec, NULL);
-    //为这个对象的cdata设置数据
-    set_ctx(env, thiz, ctx);
-}
-
-JNIEXPORT void JNICALL Java_person_walker_natives_H264Decoder_nativeDestroy(JNIEnv *env,
-                                                                          jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-
-    D("Destroying native H264 decoder context");
-
-    avcodec_close(ctx->codec_ctx);
-    avcodec_free_context(&(ctx->codec_ctx));
-    av_free(ctx->src_frame);
-    av_free(ctx->dst_frame);
-    free(ctx);
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_consumeNalUnitsFromDirectBuffer(
-        JNIEnv *env, jobject thiz,
-        jbyteArray nal_units, jint num_bytes, jlong pkt_pts) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    void *buf = NULL;
-    if (nal_units == NULL) {
-        D("Received null buffer, sending empty packet to decoder");
-    }
-    else {
-        buf  = (*env) -> GetByteArrayElements(env,nal_units,0);
-        if (buf == NULL) {
-            /*  buf = (*env)->GetByteArrayElements(env, nal_units);
-              if (buf == NULL) {*/
-            D("Error getting direct buffer address");
-            (*env)->ReleaseByteArrayElements(env, nal_units, buf, 0);
-            return -1;
-        }
-    }
-    long pts = getCurrentTimeStamp() - ctx->timeBase;
-    //将buf,这里指的是传入进来的H264数据组合成packet 结构体对象
-    AVPacket packet = {
-            .data = (uint8_t *) buf,
-            .size = num_bytes,
-    };
-
-    int frameFinished = 0;
-    //将packet里面的数据decode解码到 ctx->指向的src_frame中去，AvCodecContext已经初始化 在init时候
-    //作用是解码一帧数据
-    int res = avcodec_decode_video2(ctx->codec_ctx, ctx->src_frame, &frameFinished, &packet);
-    //int res2 = avcodec_decode_video2(ctx->codec_ctx, ctx->src_frame, &frameFinished, &packet);
-    if (frameFinished)
-        ctx->frame_ready = 1;
-    D("goted frame is : %d", frameFinished);
-    (*env)->ReleaseByteArrayElements(env, nal_units, buf, 0);
-
-    return res;
-}
-
-JNIEXPORT jboolean JNICALL Java_person_walker_natives_H264Decoder_isFrameReady(JNIEnv *env,
-                                                                             jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return ctx->frame_ready ? JNI_TRUE : JNI_FALSE;
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_getWidth(JNIEnv *env, jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return ctx->codec_ctx->width;
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_getHeight(JNIEnv *env, jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return ctx->codec_ctx->height;
-}
-
-JNIEXPORT jint JNICALL Java_person_walker_natives_H264Decoder_getOutputByteSize(JNIEnv *env,
-                                                                              jobject thiz) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-    return avpicture_get_size(ctx->color_format, ctx->codec_ctx->width, ctx->codec_ctx->height);
-}
-
-JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFrameToDirectBuffer
-        (JNIEnv *env, jobject thiz, jbyteArray out_buffer, jint out_len) {
-    DecoderContext *ctx = get_ctx(env, thiz);
-
-/*  if (!ctx->frame_ready)
-  return -1;*/
-
-    void *out_buf = (*env)->GetByteArrayElements(env, out_buffer, 0);
-    if (out_buf == NULL) {
-        D("Error getting direct buffer address");
-        return -2;
-    }
-
-    // long out_buf_len = i
-
-    int pic_buf_size = avpicture_get_size(ctx->color_format, ctx->codec_ctx->width,
-                                          ctx->codec_ctx->height);
-
-    if (out_len </pre>
-
-<h2 id="音频解码"><a href="#音频解码" class="headerlink" title="音频解码"></a><a name="t0" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>音频解码</h2><p>其实我们工程里面并有涉及到音频解码的内容，更多是音频的转码和编码压缩。这里重点说一下音频的压缩编码。因为我们的项目里面确实是用到了G711u转码到PCM的内容，但是我们是利用的网络上开源的代码，这里就不详细说了。对于PCM编码.我们后来是放弃了FFMpeg利用的ANdroid 新推出的mediacodec API.下面上代码</p>
-<h3 id="Mediacodec-初始化"><a href="#Mediacodec-初始化" class="headerlink" title="Mediacodec 初始化"></a><a name="t1" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>Mediacodec 初始化</h3><pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;">    private void initMediaCodec() {
-        //查找机器所支持的编码器
-        try {
-            mAebi = new MediaCodec.BufferInfo();
-            presentationTimeUs = System.currentTimeMillis();
-            mediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_AUDIO_AAC);
-            MediaFormat aformat = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, 8000, 1);
-            aformat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
-            aformat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 0);
-            aformat.setInteger(MediaFormat.KEY_BIT_RATE, 24000);
-            mediaCodec.configure(aformat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-            mediaCodec.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }`re>
-
-</pre>
-
-<h3 id="编码过程"><a href="#编码过程" class="headerlink" title="编码过程"></a><a name="t2" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>编码过程</h3><pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;">        try {
-            ByteBuffer[] inBuffers = mediaCodec.getInputBuffers();
-            ByteBuffer[] outBuffers = mediaCodec.getOutputBuffers();
-
-            if (true) {
-                int inBufferIndex = 0;
-                inBufferIndex = mediaCodec.dequeueInputBuffer(-1);
-                //Log.i(TAG, String.format("try to dequeue input vbuffer, ii=%d", inBufferIndex));
-                if (inBufferIndex >= 0) {
-           //这个inBuffers是我们保存原始PCM的buffer数组
-                    ByteBuffer bb = inBuffers[inBufferIndex];
-                    bb.clear();
-                    bb.put(bytes, 0, size);
-                    long pts = System.currentTimeMillis() - presentationTimeUs;
-                    mediaCodec.queueInputBuffer(inBufferIndex, 0, size, pts, 0);
-                }
-            }
-
-            while (true) {
-                int outBufferIndex = mediaCodec.dequeueOutputBuffer(mAebi, 0);
-                if (outBufferIndex >= 0) {
-                    ByteBuffer bb = outBuffers[outBufferIndex];
-
-                    int outPacketSize = mAebi.size + 7;//头部大小加buffer大小
-                    bb.position(mAebi.offset);
-                    bb.limit(mAebi.offset + mAebi.size);
-                    byte[] outBytes = new byte[outPacketSize];
-        //对于PCM编码，一定不要忘记为AAC数据加上ADT头
-                    addADTStoPacket(outBytes, outPacketSize);
-                    bb.get(outBytes, 7, mAebi.size);
-                    bb.position(mAebi.offset);
-                    mPcmDatas.offer(outBytes, 100, TimeUnit.MILLISECONDS);
-                    mediaCodec.releaseOutputBuffer(outBufferIndex, false);
-                } else {
-                    break;
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-        }
-</pre>
-
-<p>// (Must match defines in person.walker.androidh264decoder.H264Decoder.java)</p>
-<p>//short *tmp_pic=NULL;</p>
-<h3 id="为编码好的AAC数据添加AAC头"><a href="#为编码好的AAC数据添加AAC头" class="headerlink" title="为编码好的AAC数据添加AAC头"></a><a name="t3" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>为编码好的AAC数据添加AAC头</h3><pre style="white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; margin: 0px 0px 10.5px; font-family: &quot;Source Code Pro&quot;, monospace; display: block; padding: 10px; font-size: 14px; line-height: 1.45; word-break: break-all; color: rgb(51, 51, 51); background-color: rgba(128, 128, 128, 0.0470588); border: 1px solid rgba(128, 128, 128, 0.0745098); border-radius: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px;">/**
-     * AAC每个数据块钱都要添加ADTS头，不然播放不了
-     *
-     * @param packet
-     * @param packetLen
-     */
-    private void addADTStoPacket(byte[] packet, int packetLen) {
-        int profile = 2; // AAC LC
-        int freqIdx = 11; // 8KHz
-        int chanCfg = 1; // 单声道
-
-        // fill in ADTS data
-        packet[0] = (byte) 0xFF;
-        packet[1] = (byte) 0xF9;
-        packet[2] = (byte) (((profile - 1) </pre>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a name="t4" style="color: rgb(51, 102, 153); text-decoration: none; box-sizing: border-box;"></a>总结</h2><hr>
-<p>从项目一开始设计到音视频编码，到自学完成入门，再到应用到项目中，前前后后也花了不少时间。一开始以为音视频编解码是一个很是高大上工程，但是真正接触到才体会到，虽然音视频编解码确实是很高深，但是使用起来并不困难，因为前人已经为你走过了很多路，能让你快速掌握并且应用到项目中。即使遇到问题，也可以通过各种问答社区例如stackoverflow 寻找到解决办法。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/02/音视频编解码项目笔记/" class="archive-article-date">
-  	<time datetime="2016-11-02T07:05:24.722Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-多线程概念" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/多线程概念/">多线程概念</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h1><h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><blockquote>
-<p>信号量又称为信号灯，它是用来协调不同进程间的数据对象的，而最主要的应用是共享内存方式的线程间通信。本质上，信号量是一个计数器，它用来记录对某个资源（如共享内存）的存取状况。</p>
-</blockquote>
-<h3 id="信号量的操作流程"><a href="#信号量的操作流程" class="headerlink" title="信号量的操作流程"></a>信号量的操作流程</h3><p>&emsp;&emsp;信号量相当于一个计数器，如果线程想要访问某个资源，则先要获得这个资源的信号量，并且信号量内部的计数器减1 ，信号量内部的计数器大于0则意味着有可以使用的资源,当线程使用完某个资源时，必须释放这个资源的信号量。</p>
+        <h1 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h1><ul>
+<li><p>建立一个Netty Server的步奏</p>
 <ul>
-<li>测试控制该资源的信号量。 </li>
-<li>若此信号量的值为正，则允许进行使用该资源。进程将信号量减1。</li>
-<li>若此信号量为0，则该资源目前不可用，进程进入睡眠状态，直至信号量值大于0，线程被唤醒，转入步骤（1）。 </li>
-<li>当线程程不再使用一个信号量控制的资源时，信号量值加1。如果此时有进程正在睡眠等待此信号量，则唤醒此进程。 </li>
+<li>需要一个EventLoopGroup 作为ParentEventLoop 来接受外部的request，还有一个EvnentLoop作为Childs 来处理进入的链接</li>
+<li>利用一个BootStrap类group 方法包裹住这两个EventLoop来启动这个服务</li>
+<li>然后利用BootStrap的channel方法指定channel</li>
+<li>然后指定handler。</li>
 </ul>
-<h3 id="信号量概念在Java中的应用"><a href="#信号量概念在Java中的应用" class="headerlink" title="信号量概念在Java中的应用"></a>信号量概念在Java中的应用</h3><p>&emsp;&emsp; 信号量在java中的应用是类<strong>Semaphore</strong>，其位于包<strong>concurrent</strong>下面。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup();  <span class="comment">//用来接受进来的连接</span></div><div class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup(); <span class="comment">//用来处理已经被接受的连接</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</div><div class="line">    b.group(bossGroup,workerGroup)     <span class="comment">//group 之后 boss接受到的连接都会映射到 work上面</span></div><div class="line">            .channel(NioServerSocketChannel.class)</div><div class="line">            .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</div><div class="line">                <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                    ch.pipeline().addLast(<span class="keyword">new</span> DiscardServerHandler())</div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeServerHandler()) <span class="comment">//在这里添加一个新的channel handler.</span></div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeEncoder())</div><div class="line">                                 .addLast(<span class="keyword">new</span> TimeServerHandler2());  <span class="comment">//应该在将Encoder 放在 server handler 之前！</span></div><div class="line">                &#125;</div><div class="line">            &#125;)</div><div class="line">            .option(ChannelOption.SO_BACKLOG,<span class="number">128</span>)   <span class="comment">//为NioServerSocketChannel 设置的选项</span></div><div class="line">            .childOption(ChannelOption.SO_KEEPALIVE,<span class="keyword">true</span>); <span class="comment">//为parent Server group 设置的选项</span></div><div class="line"></div><div class="line">    <span class="comment">//绑定端口，开始接收进来的连接</span></div><div class="line">    ChannelFuture f = b.bind(port).sync();</div><div class="line">    <span class="comment">//等待服务器 Socket 关闭</span></div><div class="line">    f.channel().closeFuture().sync();</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line">    <span class="comment">//...优雅的关闭。。。这名字，我也是醉了</span></div><div class="line">    workerGroup.shutdownGracefully();</div><div class="line">    bossGroup.shutdownGracefully();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
-<li>下面是Semaphore类的基本使用，很简单，注释也已经可能详细。</li>
+<li>每个Netty 的Server都需要一个 HandlerAdpater，来处理接收到的消息  ChandleHandlerAdapter<br>+</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SemaphoreExample</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">2</span>); <span class="comment">//同时允许两个线程访问同步资源</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(String threadName)</span></span>&#123;</div><div class="line">            <span class="keyword">super</span>(threadName);</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>.run();</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                    semaphore.acquire(); <span class="comment">//线程在执行到这里的时候回去询问，获取信号量信息，如果信号量不满足，线程会堵塞在这里</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" get the lock success and executing the syn code current time is: "</span> + System.currentTimeMillis()/<span class="number">1000</span>);</div><div class="line">                    Thread.sleep(<span class="number">5000</span>); <span class="comment">//这里只是做个模拟动作,模拟一个执行时长为5 秒的动作</span></div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" executed syn code over and release the permit"</span>);</div><div class="line">                    semaphore.release();</div><div class="line">                    Thread.sleep(<span class="number">1000</span>); <span class="comment">//释放完之后模仿去做其他操作,而不是循环的去获取锁</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		<span class="comment">//我们创建四个工作线程来循环获取信号量</span></div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread(<span class="string">"Thread One"</span>);</div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Two"</span>);</div><div class="line">        MyThread thread3 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Three"</span>);</div><div class="line">        MyThread thread4 = <span class="keyword">new</span> MyThread(<span class="string">"Thread Four"</span>);</div><div class="line">        thread1.start();</div><div class="line">        thread2.start();</div><div class="line">        thread3.start();</div><div class="line">        thread4.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>Console 中的输出信息</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two get the lock success and executing the syn code current time is: 1478067374</div><div class="line">Thread Two executed syn code over and release the permit</div><div class="line">Thread One executed syn code over and release the permit</div><div class="line">Thread Three get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four get the lock success and executing the syn code current time is: 1478067379</div><div class="line">Thread Four executed syn code over and release the permit</div><div class="line">Thread Three executed syn code over and release the permit</div><div class="line">Thread One get the lock success and executing the syn code current time is: 1478067384</div><div class="line">Thrad Two get the lock success and executing the syn code current time is: 1478067384</div></pre></td></tr></table></figure>
-<p>&emsp;&emsp; 通过控制台输出的信息，第五行。我们在初始化Semaphore时传入的permits值为2，就是指两个线程同时访问，只有当已经当获取到信号量的线程显式的释放掉信号量后，后续等待访问的线程才能访问同步资源</p>
-<h2 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h2><blockquote>
-<p>互斥锁，相对于信号量更多的被应用在实战当中，互斥锁在java中的实现就是 ReetranLock , 在访问一个同步资源时，它的对象需要通过方法 tryLock() 获得这个锁，如果失败，返回 false，成功返回true。根据返回的信息来判断是否要访问这个被同步的资源。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReentranLockExample</span> </span>&#123;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ReentrantLock reentrantLock = <span class="keyword">new</span> ReentrantLock();  </div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;  </div><div class="line">  </div><div class="line">        <span class="meta">@Override</span>  </div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;  </div><div class="line">            <span class="keyword">super</span>.run();  </div><div class="line">            <span class="keyword">try</span> &#123;  </div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;  </div><div class="line">                    <span class="comment">//不同于Semaphore的acquire 方法，这个tryLock询问是立即返回不会造成线程堵塞的</span></div><div class="line">                    <span class="keyword">boolean</span> result = reentrantLock.tryLock();  </div><div class="line">                    <span class="keyword">if</span> (result)&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock success and run the syn code "</span> + count ++);  </div><div class="line">                        reentrantLock.unlock();  </div><div class="line">                    &#125;<span class="keyword">else</span>&#123;  </div><div class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">"get the lock failed and run the syn code "</span> + count);  </div><div class="line">                    &#125;  </div><div class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">"run the asyntronized code  "</span> + count);  </div><div class="line">                    Thread.sleep(<span class="number">500</span>);  </div><div class="line">                &#125;  </div><div class="line">  </div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;  </div><div class="line">                e.printStackTrace();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;  </div><div class="line">        MyThread thread1 = <span class="keyword">new</span> MyThread();  </div><div class="line">        MyThread thread2 = <span class="keyword">new</span> MyThread();  </div><div class="line">        thread1.start();  </div><div class="line">        thread2.start();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>互斥锁在Java上应用很广，比如Syntronized代码块，读写锁等。</p>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="Netty中的缓冲区"><a href="#Netty中的缓冲区" class="headerlink" title="Netty中的缓冲区"></a>Netty中的缓冲区</h2><p>Netty使用<a href="http://netty.io/5.0/api/io/netty/buffer/package-summary.html#package_description" target="_blank" rel="external">自建的buffer Api,而不是NIO 的byte buffer</a> 来标示一个连续的字节序列。</p>
+<ul>
+<li>如果需要吗，允许使用自定义的缓冲实现。</li>
+<li>复合缓冲类型中内置的透明的零拷贝实现</li>
+<li>开箱即用的动态缓冲类型，具有像StringBuffer一样的动态缓冲能力</li>
+<li>不再需要调用的flip() 方法。</li>
+<li>正常情况下具有比ByteBuffer更快的相应速度</li>
+</ul>
+<h3 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h3><p>ByteBuf 具有丰富的操作集，可以实现快速的协议优化。你可以扩展包装现有的缓冲类型来提供方便的访问。自定义缓冲仍然实现自ByteBuf接口，而不是引入一个不兼容的类型。</p>
+<h3 id="透明的零拷贝"><a href="#透明的零拷贝" class="headerlink" title="透明的零拷贝"></a>透明的零拷贝</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 复合类型与组件类型是兼容的。</span></div><div class="line">ByteBuf message = Unpooled.wrappedBuffer(header, body);</div><div class="line"><span class="comment">// 因此，你甚至可以通过混合复合类型与普通缓冲区来创建一个复合类型。</span></div><div class="line">ByteBuf messageWithFooter = Unpooled.wrappedBuffer(message, footer);</div><div class="line"><span class="comment">// 由于复合类型仍是 ByteBuf，访问其内容很容易，</span></div><div class="line"><span class="comment">//并且访问方法的行为就像是访问一个单独的缓冲区，</span></div><div class="line"><span class="comment">//即使你想访问的区域是跨多个组件。</span></div><div class="line"><span class="comment">//这里的无符号整数读取位于 body 和 footer</span></div><div class="line">messageWithFooter.getUnsignedInt(</div><div class="line">messageWithFooter.readableBytes() - footer.readableBytes() - <span class="number">1</span>);</div></pre></td></tr></table></figure>
+<h3 id="自动增量扩展"><a href="#自动增量扩展" class="headerlink" title="自动增量扩展"></a>自动增量扩展</h3><h3 id="更好的性能"><a href="#更好的性能" class="headerlink" title="更好的性能"></a>更好的性能</h3><p>相对于ByteBuffer ByteBuf的实现 是一个非常薄的字节数组包装器（例如一个字节），它没有复杂的边界检查和索引检查补偿，因此对于JVM的优化缓冲区的访问更加简单。ByteBuf更多是在对缓冲区的切分和重组，它的性能和ByteBuffer几乎相当</p>
+<h2 id="Netty中的IO实现"><a href="#Netty中的IO实现" class="headerlink" title="Netty中的IO实现"></a>Netty中的IO实现</h2><h3 id="更好的API兼容"><a href="#更好的API兼容" class="headerlink" title="更好的API兼容"></a>更好的API兼容</h3><p>不想原生Java 的<strong>IO/NIO/AIO</strong> 的的API，Netty的所有类型的IO 实现都通过同一个接口<a href="http://netty.io/4.0/api/io/netty/channel/package-summary.html#package_description" target="_blank" rel="external">Channel</a>,如果你想切换不的IO实现，只需要很简单的步奏，例如选择一个<a href="http://netty.io/4.0/api/io/netty/bootstrap/ChannelFactory.html" target="_blank" rel="external">ChannelFactory 的实现</a></p>
+<ul>
+<li>基于 NIO 的 TCP/IP 传输 (见 io.netty.channel.nio),</li>
+<li>基于 OIO 的 TCP/IP 传输 (见 io.netty.channel.oio),</li>
+<li>基于 OIO 的 UDP/IP 传输, 和本地传输 (见 io.netty.channel.local)</li>
+</ul>
+<p>并且你还可以继承Channle 添加自定义的实现!</p>
+<h2 id="Netty中的事件模型"><a href="#Netty中的事件模型" class="headerlink" title="Netty中的事件模型"></a>Netty中的事件模型</h2><p>Netty 中事件模型的核心组件是<a href="http://netty.io/4.0/api/io/netty/channel/ChannelPipeline.html" target="_blank" rel="external">ChannelPipeline</a></p>
+<pre>
+                                                 I/O Request
+                                            via <a href="http://netty.io/4.0/api/io/netty/channel/Channel.html" title="interface in io.netty.channel" target="_blank" rel="external"><code>Channel</code></a> or
+                                        <a href="../../../io/netty/channel/ChannelHandlerContext.html" title="interface in io.netty.channel"><code>ChannelHandlerContext</code></a>
+                                                      |
+  +---------------------------------------------------+---------------+
+  |                           ChannelPipeline         |               |
+  |                                                  \|/              |
+  |    +---------------------+            +-----------+----------+    |
+  |    | Inbound Handler  N  |            | Outbound Handler  1  |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  |               |
+  |               |                                  \|/              |
+  |    +----------+----------+            +-----------+----------+    |
+  |    | Inbound Handler N-1 |            | Outbound Handler  2  |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  .               |
+  |               .                                   .               |
+  | ChannelHandlerContext.fireIN_EVT() ChannelHandlerContext.OUT_EVT()|
+  |        [ method call]                       [method call]         |
+  |               .                                   .               |
+  |               .                                  \|/              |
+  |    +----------+----------+            +-----------+----------+    |
+  |    | Inbound Handler  2  |            | Outbound Handler M-1 |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  |               |
+  |               |                                  \|/              |
+  |    +----------+----------+            +-----------+----------+    |
+  |    | Inbound Handler  1  |            | Outbound Handler  M  |    |
+  |    +----------+----------+            +-----------+----------+    |
+  |              /|\                                  |               |
+  +---------------+-----------------------------------+---------------+
+                  |                                  \|/
+  +---------------+-----------------------------------+---------------+
+  |               |                                   |               |
+  |       [ Socket.read() ]                    [ Socket.write() ]     |
+  |                                                                   |
+  |  Netty Internal I/O Threads (Transport Implementation)            |
+  +-------------------------------------------------------------------+
+ </pre>
+
+
+<p>在netty 5.0 中<code>ChannelInboundHandler</code> 和<code>ChannelOutboundHandler</code> 合并为<code>ChannelHandler</code>，统一的Adapter也是一样合并了 </p>
+<h2 id="SSL-TLS-支持"><a href="#SSL-TLS-支持" class="headerlink" title="SSL/TLS 支持"></a>SSL/TLS 支持</h2><ul>
+<li>通过类<a href="http://netty.io/4.0/api/io/netty/handler/ssl/SslHandler.html" target="_blank" rel="external">SslHandler </a> </li>
+<li>check the example <a href="http://netty.io/4.1/xref/io/netty/example/securechat/package-summary.html" target="_blank" rel="external"> Secure Chat </a></li>
+<li><p>netty <a href="http://stackoverflow.com/questions/26803353/ssl-support-in-netty-io-through-custom-certificate" target="_blank" rel="external">使用自签名作为SSL认证</a></p>
+<ul>
+<li>第一步： 配置好OpenSSL环境</li>
+<li>第二步： 利用命令<code>openssl req -x509 -keyout abc.key -out xyz.csr -newkey                  rsa:2048</code>     产生证书文件和私匙文件  </li>
+<li>第三步： 利用命令<code>openssl pkcs8 -topk8 -inform PEM -outform PEM -in abc.key -out abc.pem</code> 将key转换为 pkcs8 格式的格式</li>
+<li><p>第四步： 创建一个SSLContext</p>
+<pre> SslContext sslCtx = SslContext.newServerContext(new File(
+      "./key/xyz.csr"), new File("./key/abc.key"),"password");</pre>
+
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="WebSocket-实现"><a href="#WebSocket-实现" class="headerlink" title="WebSocket 实现"></a>WebSocket 实现</h2><h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这个架构由三部分组成——缓冲（ buffer） ，通道（ channel） ，事件模型（ event<br>model） ——所有的高级特性都构建在这三个核心组件之上。</p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/02/多线程概念/" class="archive-article-date">
-  	<time datetime="2016-11-02T03:49:42.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
+      <a href="/2017/01/13/学习Netty/" class="archive-article-date">
+  	<time datetime="2017-01-13T02:17:28.272Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-13</time>
 </a>
       
       
@@ -628,7 +263,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
 
 
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Spring test" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -638,7 +273,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/hello-world/">搭建Github page笔记遇到的坑</a>
+      <a class="article-title" href="/2017/01/10/Spring test/">利用Spring Boot 进行单元测试</a>
     </h1>
   
 
@@ -646,22 +281,667 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="配置Hexo遇到的坑"><a href="#配置Hexo遇到的坑" class="headerlink" title="配置Hexo遇到的坑"></a>配置Hexo遇到的坑</h2><ol>
-<li>在配置hexo的_config.yml文件时 <pre>
- deploy:
-   type: git //前面要加空格！
-   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
-   branch: master
- </pre></li>
-<li>每次提交新文章的时候，hexo会清空github仓库（坑！），所以我在其他地方提交的文件，例如定向文件CNAME会被清空掉，所以这个文件药房你的hexo博客目录下面的source文件夹下！</li>
-</ol>
+        <h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><h2 id="测试Controller"><a href="#测试Controller" class="headerlink" title="测试Controller"></a>测试Controller</h2><h2 id="mock"><a href="#mock" class="headerlink" title="mock"></a>mock</h2>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/01/10/Spring test/" class="archive-article-date">
+  	<time datetime="2017-01-10T05:50:57.049Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Spring AOP" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/10/Spring AOP/">Spring AOP编程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><h3 id="AOP概念"><a href="#AOP概念" class="headerlink" title="AOP概念"></a>AOP概念</h3><ul>
+<li>切面：切入系统的一个切面，比如事务管理是一个切面，权限管理也是一个切面</li>
+<li>连接点：进行横向切入的位置</li>
+<li>通知：切面在某个连接点执行的操作<ul>
+<li>Before advice</li>
+<li>After returning advice</li>
+<li>After throw exception</li>
+<li>After advice</li>
+<li>Around advice</li>
+</ul>
+</li>
+<li>切点: 通知定义了 “什么”和 “何时”，切点定义了”何处”。切点会匹配通知要织入的一个或多个连接点<br>通常使用明确的的类或者方法来指定这些切点。  作用是通知被应用的位置</li>
+<li>引入：引入允许我们向现有的类中添加方法活属性</li>
+<li>织入：切面在指定的连接点被织入到目标对象中，在目标对象中的生命周期中有多个点可以织入<ul>
+<li>编译器：需要特殊的编译器，例如AspectJ的织入编译器</li>
+<li>类加载期</li>
+<li>运行期：切面在应用运行期间的某个时刻织入。一般情况下，在织入切面的时候，AOP容器会为目标对象</li>
+</ul>
+</li>
+</ul>
+<h3 id="Spring-AOP-笔记"><a href="#Spring-AOP-笔记" class="headerlink" title="Spring AOP 笔记"></a>Spring AOP 笔记</h3><ul>
+<li>Spring 中的AOP都是动态代理的AOP，即通过反射实现的。</li>
+<li><p style="color : #f00">要导入aspectJrt 和aspectJrtweaver 两个依赖的jar包</p></li>
+<li><img src="e3cae7de-448b-4c69-aee2-94032a9b9d1b_128_files/d6640a43-6df6-47cf-a644-06a82e418ad6.png" alt=""></li>
+<li>运算符 还有 “||” “!” “&amp;&amp;” 三种操作运算符</li>
+<li>声明的切面类，要使其成为一个bean（一般是这样做的）</li>
+<li>利用@Pointcut(“”) …声明一个切点</li>
+<li>@Around 注解adviced 的方法一定要带一个ProceedingJoinPonit参数,这个参数在执行proceed()方法后会移动继续进行下面的advice…（如果这个proceed() 方法没有被执行，那么被Adviced的方法将不会被执行！！）其实ProceeingJIi</li>
+</ul>
+<hr>
+<ul>
+<li>注解arg(“—-“),注意，在应用时，要保证advice method 的参数个数和名字要个args() 里面的保持一致</li>
+<li>within（””） ，可以接受包或者类的路径，用来限制advice方法在 只有在指定的这个包或者类下面的adviced方法被调用时才会被唤起</li>
+<li>target 后面跟一个完整的类名，用来确定一个目标类</li>
+</ul>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/02/hello-world/" class="archive-article-date">
-  	<time datetime="2016-11-02T02:54:31.743Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
+      <a href="/2017/01/10/Spring AOP/" class="archive-article-date">
+  	<time datetime="2017-01-10T02:42:25.031Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Golang学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/22/Golang学习笔记/">Golang学习笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>在Golang中以大写字母开头的 结构体，函数，变量是外部可见的！</li>
+<li><p>defer 声明用来在 函数范围内所有的函数执行完之后才会被执行，可以类比于 Java 中finally的使用。（defer statement defers the execution of a function until the surrounding function returns.）</p>
+</li>
+<li><p>在import package 中出现的 “import for side-effect” error：<strong>golang 遵循一个原则，“用多少，拿多少”，如果你拿的东西比你用的多，它就会报出error。。在这里你导入的包，包里面的东西你从来没用过他就报出这个error。同样的变量声明也是一样的！</strong> </p>
+</li>
+<li><p>golang 中 range遍历</p>
+</li>
+</ul>
+<pre>
+strings := []string{"1256","dasdal"};
+for _,str := range strings{} //遍历的是值
+for str := range strings{} //遍历的是index
+//在用range遍历一个字符串的时候，其可以返回两个值
+//第一个值是 index,第二个值是 value，类型为run == int32 
+for i, c := range "go" {
+      fmt.Println(i, c)
+}
+</pre>
+
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/22/Golang学习笔记/" class="archive-article-date">
+  	<time datetime="2016-12-22T03:23:45.578Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-22</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql触发器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/08/Mysql触发器/">Mysql 触发器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>创建一个触发器：</p>
+<pre>
+create trigger trigger_name trigger_time trigger_event on table_name for each row trigger_stmt
+</pre>
+
+<p>解释：</p>
+<ul>
+<li>trigger_name : 触发器名字</li>
+<li>trigger_time : 触发器的触发时间<ul>
+<li>before: 检查约束前触发</li>
+<li>after：检查约束后触发</li>
+</ul>
+</li>
+<li>trigger_event：触发事件： will be insert,update,delete….</li>
+<li>trigger_stmt : 即为在前面的触发条件被触发后，mysql需要做的动作</li>
+</ul>
+<p><strong>注:对同一个表的相同触发时间的触发事件只能配置一个触发器</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">delimiter $$ </div><div class="line"><span class="keyword">create</span> <span class="keyword">trigger</span> ins_film <span class="keyword">after</span> <span class="keyword">insert</span> <span class="keyword">on</span> film <span class="keyword">for</span> <span class="keyword">each</span> <span class="keyword">row</span> <span class="keyword">begin</span> </div><div class="line"> <span class="keyword">insert</span> <span class="keyword">into</span> film_text (film_name,film_id,title ,description)</div><div class="line"> <span class="keyword">values</span>(new.film_id,new.title,new.description);</div><div class="line"> <span class="keyword">END</span>;</div><div class="line"> $$</div></pre></td></tr></table></figure>
+<p>创建一个触发器 ins_film， 每次在表film插入字段后，都将插入的相应值插入到表film_text中去。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/08/Mysql触发器/" class="archive-article-date">
+  	<time datetime="2016-12-08T06:05:22.827Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-MySql存储过程和函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/MySql存储过程和函数/">Mysql存储过程和函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="从一个实例开始"><a href="#从一个实例开始" class="headerlink" title="从一个实例开始"></a>从一个实例开始</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">delimiter $$ </div><div class="line">create procedure film_in_stock (in p_film_id int ,p_film_count int ,p_stor_id int)</div><div class="line">reads sql data</div><div class="line">begin </div><div class="line">	select inventory_id</div><div class="line">    from inventory</div><div class="line">    where film_id = p_film_id</div><div class="line">    and store_id = p_store_id</div><div class="line">    and inventory_in_stock(inventroy_id);</div><div class="line">end $$</div></pre></td></tr></table></figure>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/07/MySql存储过程和函数/" class="archive-article-date">
+  	<time datetime="2016-12-07T07:45:15.859Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql性能优化(二)New Document" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/Mysql性能优化(二)New Document/">Mysql的性能优化（索引篇）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Mysql 的缩影存储支持 Hash索引和BTree索引，<strong>Hash索引只支持  “=”,”&lt;=&gt;”,不支持 &gt; &lt; &gt;=  &lt;= ，between 等比较运算符，Hash</strong>hash索引的时间开销主要发生在建立Hashcode 上，另外，hash索引对于磁盘的的I/O占用会更大。一般是大于O（N）的，而Btree的索引占用的空间只是 O(Log n)<br>Mysql中每个表的至少支持16个索引，MyISAM和InnoDB的存储引擎表默认创建的数据格式是都BTree，支持前缀索引，不支持函数索引。其中MyIsam支持全文本索引。</p>
+<p>索引，简单的可以类比于书的目录。Mysql的索引相当于一种模式，是一个数据库对象，在数据库中加速对表的查询，通过使用快速访问的方法定位数据，减少磁盘的I/O，索引通常与表独立存放，但是其存在依赖于表。</p>
+<h1 id="设计索引的原则"><a href="#设计索引的原则" class="headerlink" title="设计索引的原则"></a>设计索引的原则</h1><ul>
+<li>最适合索引的列是出现在 WHERE 语句中列</li>
+<li>使用前缀索引的话，尽量缩短前缀长度。</li>
+<li>使用最左前缀</li>
+<li>不要过度索引，额外的索引会占用额外的磁盘空间，降低写操作的性能，在修改表的内容时，索引必须进行更新，有必要时要进行重构。</li>
+<li>对于InnoDB来讲，记录会按照一定的顺序保存。优先级是 主键 &gt; 唯一索引 &gt; 自动生成的内部列.通常来讲，按照主键和内部列进行访问的速度是最快的。所以尽量选择自己制定主键。当表中同时又多个列都是唯一的时，要选择最常访问键作为主键，提高检查效率。另外，Inn1oDB表的普通索引都会保存主键的键值，所以主键尽量选择较短的数据类型。可以有效的减少索引的磁盘占用，提高索引的缓存效果。 </li>
+</ul>
+<h1 id="查询语句的优化"><a href="#查询语句的优化" class="headerlink" title="查询语句的优化"></a>查询语句的优化</h1><ol>
+<li>尽量避免在where 子句中使用 <code>!=</code>和<code>&lt;&gt;</code>操作符和null值判，否则存储引擎将放弃    使用索引而进行全表扫描</li>
+</ol>
+<ul>
+<li>对查询进行优化，应尽量避免全表扫描，首先应该考虑在where以及order by设计的列上建立索引</li>
+<li><p>应尽量避免在 where 子句中对字段进行 null 值判断，否则将导致引擎放弃使用索引而进行全表扫描，如：</p>
+<p>  <code>select id from t where num is null</code></p>
+<p>  可以在num上设置默认值0，确保表中num列没有null值，然后这样查询：</p>
+<p>  <code>select id from t where num=0</code></p>
+</li>
+<li><p>尽量避免在where子句中使用<code>or</code>来连接条件，否则将导致引擎放弃使用索引而进行全局扫描 如 </p>
+<p>   <code>select id from t where num=10 or num=20</code><br>   可以使用union </p>
+<p>  <code>select id from t where num = 10</code><br>  union all<br>  <code>select id from t where num = 20</code></p>
+<p>   <strong>注意，前提是 你要在 num 上建立索引，不然两次查表明显没有一次查询来的快</strong></p>
+</li>
+<li><p>in 和 not in 也要慎用，否则会导致全表扫描，如： <code>select id from t where num in (1,2,3)</code> 低于连续的数，能用between 就不要用inselect from t where num betew</p>
+</li>
+<li>避免在where 子句中使用常量，因为sql 只有在运行时才会解析局部变量，但优化程序的不能将访问计划的选择推迟到运行时，它必须在编译时进行选择。<code>select id from t where num = @num</code> 改成 <code>select id from t with(index(索引名)) where num=@num</code></li>
+<li><p>尽量避免在where 子句中进行表达式操作</p>
+<pre><code>`select id from t where num/2 = 100` ----&gt; `select id from t where num = 100*2`
+</code></pre></li>
+<li><p>应尽量避免在where子句中对字段进行函数式操作，这将导致引擎放弃使用索引而进行全表扫描</p>
+  <pre>
+  select id from t where substring(name,1,3)=’abc’–name以abc开头的id
+  select id from t where datediff(day,createdate,’2005-11-30′)=0–’2005-11-30′生成的id
+  </pre>
+
+<p>  —–&gt;<br>  <pre><br>  select id from t where name like ‘abc%’<br>  select id from t where createdate&gt;=’2005-11-30′ and createdate&lt;’2005-12-1′<br>  </pre><br>  更特别的，是否应该在将这些数据读到内存中 再去check,这样的话貌似内存可能不太够用</p>
+</li>
+<li>不要在where 子句中的”=”左边进行函数，算术运算或其他表达式运算，否则系统将可能无法正确使用索引</li>
+<li>在使用索引字段作为条件时，如果该索引是复合索引，那么必须使用到该索引中的第一个字段作为条件时才能保证系统使用该索引，否则该索引将不会被使用，并且应尽可能让字段顺序与字段顺序保持一致</li>
+<li>很多时候 利用exists 代替 in是一个不错的选择<br>  <code>select num from a where num in (select num from b)</code> —&gt; <code>select num from a where exists(select 1 from b where num = a.num)</code></li>
+<li>并不是所有的索引对查询都有效，sql是根据表中数据来进行查询优化的，当索引列有大量数据重复时，sql查询可能不会去利用索引。例如 sex 列只有 female 和male，unknown三种类型，建立了索引，效率也不会有很大改变</li>
+<li>索引固然可以提高相应的select的效率，但是对于insert和update 的效率会有很大的影响。因为insert和update时可能会重建索引。索引建立索引数量一般<strong>不要超过6个，为什么是6个</strong>？</li>
+<li>如果对文本索引尽量使用短索引，查看B树数据额结构就会明白这样的好处     </li>
+<li>尽量避免更新clustered 索引数据列，因为clustered索引数据列的顺序就是表记录的物理存储顺序，一旦该列值改变，将导致整个表记录的顺序的调整，会耗费相当大的资源。若应用系统需要频繁更新clustered索引数据列，那么需要考虑是否应将该索引建立为clustered索引。</li>
+<li>尽量使用数字型字段</li>
+<li>尽可能使用 vchar/ nvchar 代替 char / nchar。首先变长字段可以减小空间占用，其次对于查询来说，一个相对较小的字段搜索效率显然更高</li>
+<li>尽量不要使用 select * from t ,而用查询具体字段。</li>
+<li>尽量使用表变量来代替临时表，如果表变量含有大量数据，请注意索引有限</li>
+<li>尽量避免频繁的删除和创建临时表，以减少表资源的消耗，对于一次性时间尽量使用<strong>导出表</strong></li>
+<li>对于创建的临时表，如果插入的数据两量很大，可以选择使用 select into 代替 create table.避免大量的log.以提高速度。</li>
+<li>如果使用到了临时表，在存储过程的最后务必将所有的临时表显式的删除，先turncate table，然后 drop table,这样可以避免系统表的较长时间锁定。</li>
+<li>尽量避免使用 <strong>游标</strong>，游标的效率较差，如果游标超过一万行，那么就应该考虑改写</li>
+<li>使用基于游标的方法或者临时表方法之前，应先寻找基于集的解决方案来解决问题，基于集的方法通常更有效</li>
+<li>在所有的存储过程和触发器的开始位置SET_COUNT_ON,在结束时SET_COUNT_OFF,无需在执行存储过程和触发器的每个语句后向客户端发送DONE_IN_PROC消息</li>
+<li>避免向客户端发送大量数据</li>
+<li>尽量避免大事务操作，提高系统并发能力</li>
+</ul>
+<h2 id="其他优化策略"><a href="#其他优化策略" class="headerlink" title="其他优化策略"></a>其他优化策略</h2><ul>
+<li>利用 explain 语句对查询进行勘查</li>
+<li>对于字符串的索引可以考虑前缀索引。就像匹配名字，一般名字很少会有超过10个字符的，那可以吧 一个表的<code>name</code>字段的索引设置成为 前十个字符的前缀索引</li>
+<li><p>注意 区别模糊搜索时是否走索引。</p>
+   <pre>
+   SELECT * FROM `houdunwang` WHERE `uname` LIKE'后盾%' -- 走索引
+  SELECT * FROM `houdunwang` WHERE `uname` LIKE "%后盾%" -- 不走索引
+    </pre>
+</li>
+<li><p>通过设置慢查询 的时间阈值来记录慢查询语句，从而进行调优操作</p>
+<ul>
+<li>show variables like ‘%log%’; //查看 log 文件的存储位置</li>
+<li>set global XXXX //设置变量 。。</li>
+</ul>
+</li>
+<li>Mysql 分区</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/07/Mysql性能优化(二)New Document/" class="archive-article-date">
+  	<time datetime="2016-12-07T05:39:40.893Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Mysql的存储引擎" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/06/Mysql的存储引擎/">Mysql的性能优化（存储篇）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Mysql-存储引擎概述"><a href="#Mysql-存储引擎概述" class="headerlink" title="Mysql 存储引擎概述"></a>Mysql 存储引擎概述</h1><p>Mysql 5.0支持的引擎包括MyISAM,InnoDB,BDB等，其中InnoDB和BDB提供事务安全表。其他引擎都是提供的非事务安全表。MySql 5.5以后的默认引擎是InnoDB.</p>
+<p>在创建新表时可以通过ENGINE关键字来指定存储引擎。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE COUNTRY(name=varchar(50) primary key) ENGINE = INNODB</div></pre></td></tr></table></figure>
+<p>可以通过查看表的创建信息来查看表的引擎（其中一种方式）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">show create table 表名</div></pre></td></tr></table></figure>
+<h2 id="选择合适的存储引擎"><a href="#选择合适的存储引擎" class="headerlink" title="选择合适的存储引擎"></a>选择合适的存储引擎</h2><h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p> 不支持事务，不支持外键，优势是访问速度快，对事务完整性没有要求或者以SELECT,INSERT为主的应用选择MyISAM引擎较为合适</p>
+<p>存储的组成部分，在创建表时，可以通过DATA DIRECTORY 和 INDEX DIRECTORY指定存储路径的绝对路径</p>
+<ul>
+<li>.frm(存储表定义)</li>
+<li>.MYD(存储数据</li>
+<li>.MYI(存储索引)</li>
+</ul>
+<p>MyISAM的表的3中存储格式</p>
+<ul>
+<li>静态（固定长度）表</li>
+<li>动态表</li>
+<li>压缩表</li>
+</ul>
+<p>静态表时默认的存储格式。优点是存储迅速，容易缓存，出现故障容易恢复。缺点是字段的字长都是固定的，占用空间比较大，另外，在存储的时候会自动去掉尾部的空格。</p>
+<p>动态表包含变长的字段，记录的数据固定，这样存储的优点是占用的空间相对较小。但是频繁的更新和删除数据会产生碎片，需要定期执行OPTIMIZE TABLE 语句。或者myismchk -r命令来改善性能，并且在出现故障时难以恢复。</p>
+<h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>InnoDB具有提交，回滚和崩溃恢复能力的事务安全。InnoDB处理效率差，并且占用更多的磁盘空间以保存数据和索引。</p>
+<p>特点</p>
+<ul>
+<li>InnoDB的自动增长列（auto_increment）插入0或者null的结果其实是插入的将是自动增长后的值。</li>
+<li>外检约束： 在创建索引时，可以指定在删除，更新父表时，对字表进行的相应操作。<ul>
+<li>RESTRICT，NO Action : 限制在字表有关联的情况下父表不能更新</li>
+<li>CASCADE：表示父表在更新数据或删除数据时，更新字表或删除字表的对应记录。</li>
+<li>SET NULL：表示父表在更新数据或删除数据时，字表致null</li>
+</ul>
+</li>
+</ul>
+<p>存储：</p>
+<ul>
+<li>使用共享空间： 表结构保存在.frm文件中，数据和索引保存在innodb_data_home_dir和innodb_data_file_path定义的表空间中</li>
+<li>使用多表空间： 表结构保存在.frm文件中，每个表的数据和索引单独保存在.idb中。如果是个分区表，则每个分区对应单独的.idb文件，文件名是“表名+分区名”，可以在创建分区的时候指定每个分区的数据文件的位置，以此来将表的IO均匀分布在多个磁盘中。</li>
+</ul>
+<pre><code class="Sql">
+<span class="keyword">CREATE</span> <span class="keyword">TABLE</span> COUNTRY(
+    country_id <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment,
+    country <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NUll</span>,
+    last_update <span class="keyword">timestamp</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">default</span> <span class="keyword">current_timestamp</span> <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">current_timestamp</span>,
+    primary <span class="keyword">key</span>(country_id)
+)<span class="keyword">engine</span>=<span class="keyword">InnoDB</span> <span class="keyword">default</span> <span class="keyword">charset</span>=utf8;
+
+<span class="keyword">create</span> <span class="keyword">table</span> city (
+    city_id <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment,
+    city <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span>,
+    country_id <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">not</span> <span class="literal">null</span>,
+    last_update <span class="keyword">timestamp</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">default</span> <span class="keyword">current_timestamp</span> <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">current_timestamp</span>,
+    primary <span class="keyword">key</span>(city_id),
+    foreign <span class="keyword">key</span> (country_id) <span class="keyword">references</span> country (country_id)     
+    <span class="keyword">on</span> <span class="keyword">delete</span> restrict  <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">cascade</span>  //主表在删除记录时限制，在<span class="keyword">update</span>时不限制....
+)<span class="keyword">engine</span> = <span class="keyword">InnoDB</span> <span class="keyword">default</span> <span class="keyword">charset</span>=utf8;
+</code></pre>
+<h3 id="如何选择合适的存储引擎"><a href="#如何选择合适的存储引擎" class="headerlink" title="如何选择合适的存储引擎"></a>如何选择合适的存储引擎</h3><p>综上所述，</p>
+<ul>
+<li>MyISAM: 应用以读和插入操作为主，只有很少的更新和删除操作，并且对事务的完整性，并发性要求不高。</li>
+<li>InnoDB: 用于事务处理的应用程序，支持外键。如果应用对事务的完整性要求比较高。并且有大量的插入和更新操作，并且对于事务的的完整提交和回滚有要求。</li>
+</ul>
+<h1 id="选择合适的数据类型"><a href="#选择合适的数据类型" class="headerlink" title="选择合适的数据类型"></a>选择合适的数据类型</h1><h2 id="varchar-和char"><a href="#varchar-和char" class="headerlink" title="varchar 和char"></a>varchar 和char</h2><p>varchar 和char 名字看起来varchar多了个前缀var，也就是说varchar的长度是可变的，其占用的存储空间可以是动态的，相较于char固定长度的数据类型，占用的空间更小。</p>
+<ul>
+<li>MyIASM引擎的表，建议使用char类型数据，对于InnoDB,建议使用varchar类型的数据。</li>
+</ul>
+<h2 id="BLOB和TEXT"><a href="#BLOB和TEXT" class="headerlink" title="BLOB和TEXT"></a>BLOB和TEXT</h2><p>主要区别在于BLOB可以存储二进制数据，例如图片。而TEXT只能存储字符数据。对于存有BLOB或者TEXT的表，在大量的删除和更新操作后，会造成存储空间上的空洞，<strong>要经常使用OPTIMIZE TABLE来对表进行碎片整理</strong>。</p>
+<p>   -<strong>以上只针对MyISAM 引擎的数据表，对于InnoDB的数据表支持optimize 命令,但是有问题，参考——&gt;。<a href="http://stackoverflow.com/questions/30635603/what-does-table-does-not-support-optimize-doing-recreate-analyze-instead-me" target="_blank" rel="external">stackoverflow</a></strong>-</p>
+<p>使用合成的Synthetic 索引来提高大文本字段的的查询性能。<strong>利用大文本数据形成一个Hash值保存在一个单独的字段中，通过检索字段来检索文本。</strong>  </p>
+<p>避免检索大量的文本内容，将Blob和TEXT文本保存在单独的表中或者NOSQL数据库中。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>对于字符类型，要根据存储引擎来进行相应的选择。</li>
+<li>对精度要求较高的应用中，建议使用定点数来存储数值，以保证结果的准确性</li>
+<li>对含有TEXT和BLOB字段的表，如果经常做删除和修改记录的操作要定时执行<strong>OPTIMIZE TABLE</strong>功能对表进行碎片整理</li>
+<li>日期类型要根据实际需要选择满足应用最小的存储类型</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/06/Mysql的存储引擎/" class="archive-article-date">
+  	<time datetime="2016-12-06T08:06:15.934Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-06</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-SqlSessionTempalte(线程安全)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/06/SqlSessionTempalte(线程安全)/">SqlSessionTempalt是怎样保证线安全的</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/06/SqlSessionTempalte(线程安全)/" class="archive-article-date">
+  	<time datetime="2016-12-06T06:07:54.061Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-06</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Sql语句记录" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/06/Sql语句记录/">常用Sql语句笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><h2 id="查询的高级用法"><a href="#查询的高级用法" class="headerlink" title="查询的高级用法"></a>查询的高级用法</h2><ul>
+<li>查询结果通过columName 进行降序排序：<strong>SELECT columnName(s) FROM tableName ORDER BY column_name DESC</strong></li>
+<li><code>as new</code>语法可以将查询结果 作为一个临时的新表<br><code>select min(salary) from (select salary from employee order by salary DESC limit 2)  as new limit 2;</code> </li>
+</ul>
+<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><ul>
+<li>批量插入： <strong>INSERT INTO table (field1,field2,field3) VALUES (‘a’,”b”,”c”), (‘a’,”b”,”c”),(‘a’,”b”,”c”)</strong></li>
+<li>批量插入时，利用事务可以提高插入效率</li>
+</ul>
+<h2 id="改变表的信息"><a href="#改变表的信息" class="headerlink" title="改变表的信息"></a>改变表的信息</h2><ul>
+<li>改变列名 ；    <strong>alter table table_name change srcColumnName newColumnName</strong></li>
+<li>改变列的类型： <strong>alter table table_name motify srcColumnName newColumnType</strong>  </li>
+<li>改变表的名字:  <strong>alter table table_name rename newTableName</strong></li>
+<li>index(…列名）创建索引，组合索引，在建表的时候用</li>
+<li>改变某个字段的信息：<strong>alter table t modify id int auto_increment;</strong></li>
+</ul>
+<h2 id="修饰符"><a href="#修饰符" class="headerlink" title="修饰符"></a>修饰符</h2><ul>
+<li>zerofill :对于指定的int长度，插入的数据没有充满前面自动fill zero</li>
+</ul>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p><a href="http://dev.mysql.com/doc/refman/5.7/en/func-op-summary-ref.html" target="_blank" rel="external"> MySql处理函数，来自官方文档</a></p>
+<ul>
+<li>字符串处理函数<ul>
+<li>Concat</li>
+</ul>
+</li>
+</ul>
+<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><ul>
+<li>“=”运算符不能比较null,要比较null用 “&lt;=&gt;”,而”&lt;&gt;”表示两侧不相等 ： <strong>0 &lt;&gt; 1</strong></li>
+</ul>
+<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><ul>
+<li>float(5,3),double(5,3),以及decima。 decimal默认是decimal(10,0).在Mysql中默认以字符串的形式存储</li>
+<li>DESC 降序</li>
+<li>时间类型<ul>
+<li>DATE:4字节 1000-01-01 9999-12-31</li>
+<li>DARATIME:8 ,1000-01-01:0000 9999-12-31:23:59:59</li>
+<li>TIMESTAMP</li>
+</ul>
+</li>
+<li>char会删掉尾部的空格，varchar则不会</li>
+<li>ENUM 枚举类型</li>
+</ul>
+<h2 id="拷贝"><a href="#拷贝" class="headerlink" title="拷贝"></a>拷贝</h2><ul>
+<li>将一个表的数据拷贝到另一张表：<strong>INSERT INTO 目标表 SELECT * FROM 来源表;</strong></li>
+<li>copy之前，或许需要另一个表：<strong>create table newTable like oldTable</strong></li>
+</ul>
+<h2 id="主键-外键约束"><a href="#主键-外键约束" class="headerlink" title="主键 外键约束"></a>主键 外键约束</h2><p>外键取值规则：空值或者参照的主键值</p>
+<ul>
+<li>插入非空值时，如果主键表中没有这个值，则不能插入。</li>
+<li>更新时，不能改为主键表中没有的值</li>
+<li>删除主键表记录时，你可以在建外表时选定外键记录一起级联删除还是拒绝删除</li>
+<li>更新主键记录时，同样有级联更新和拒绝执行的选择</li>
+</ul>
+<p>主键，外键，索引</p>
+<ul>
+<li>主键<ul>
+<li>标示一条记录，不允许为空，不允许重复</li>
+<li>用来保证数据的完整性</li>
+</ul>
+</li>
+<li>外键<ul>
+<li>一个表的外键是另一个表的主键，外键 可以有重复的，也可以是空值</li>
+<li>用来和其他表建立联系使用</li>
+<li>一个表可以有多个外键</li>
+</ul>
+</li>
+<li>索引<ul>
+<li>该字段没有重复值，但可以有一个空值</li>
+<li>用来提高索引的速度</li>
+<li>一个表可以有多个唯一的索引</li>
+</ul>
+</li>
+</ul>
+<p>为一个表添加外键</p>
+<pre>
+alter table 表名
+add constraint FK_字段名--"FK"为外键的缩写
+foreign key (字段名) references 关联的表名(关联的字段名) --注意'关联的表名'和'关联的字段名'
+</pre>
+
+<p>在建表的时候添加指定外键<strong>注意语法合适（逗号）</strong></p>
+<p><pre><br>create table customer(customer_id varchar(50) NOT NULL primary key,<br>ticket_id varchar(50) not null ,foreign key (ticket_id) references ticket(ticket_id))<br> default character set utf8 ;<br></pre><br><strong>创建外键关联时注意，reference 的外键必须要类型&amp;&amp;长度一致，两个表的存储引擎必须一致，编码方式一致</strong></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/06/Sql语句记录/" class="archive-article-date">
+  	<time datetime="2016-12-06T06:07:19.595Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-06</time>
 </a>
       
       
@@ -683,7 +963,7 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 

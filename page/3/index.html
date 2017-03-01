@@ -126,7 +126,7 @@
       <div class="body-wrap">
         
   
-    <article id="post-Java并发实战" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-我的简历" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -134,57 +134,27 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-java并发编程实战笔记"><a href="#title-java并发编程实战笔记" class="headerlink" title="title:java并发编程实战笔记"></a>title:java并发编程实战笔记</h2><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><ul>
-<li>线程拥有自己的程序计数器，栈，本地变量</li>
-<li>同一个程序内的多个线程可以在多CPU的情况下同时进行</li>
-<li>线程为CPU时序调控的最基本单元</li>
+        <h1 id="联系方式"><a href="#联系方式" class="headerlink" title="联系方式"></a>联系方式</h1><ul>
+<li><strong>手机：17080039716</strong></li>
+<li><strong>Email：walkerliu1993@gmail.com</strong> </li>
 </ul>
-<h2 id="第二章-线程安全"><a href="#第二章-线程安全" class="headerlink" title="第二章 线程安全"></a>第二章 线程安全</h2><ul>
-<li>原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）<br>原子操作时不可中断的，不可分割的。<ul>
-<li>竞争条件： 不是所有的竞争条件都是数据竞争，竞争条件并不总是导致失败。</li>
-<li>数据竞争： </li>
-</ul>
-</li>
-<li>不论怎样，线程安全包括原子性和可见性两个方面</li>
-<li>对于每个可被多个线程访问的可变状态变量，如果所有的访问，如果所有访问它的资源在执行时都占有同一个锁，我们称这个变量由这个锁保护。</li>
-<li>每个可变变量都需要由唯一一个确定的锁保护，而维护者应该清楚这个锁。</li>
-<li>为了保证性能，应该致使synchronized 代码块足够短。</li>
-<li>执行耗时计算时，不应该占有所</li>
-</ul>
-<h2 id="第三章-可见性"><a href="#第三章-可见性" class="headerlink" title="第三章 可见性"></a>第三章 可见性</h2><ul>
-<li>Volatile:保证数据不过期</li>
-<li>锁不仅仅是关于同步与互斥，也是关于内存可见的。</li>
-<li>正确应用volatile的方式： 用于确保它们所引用的对象状态的可见性，或者用于标示重要的生命周期事件的发生。</li>
-<li>使用volatile变量的标准<ul>
-<li>写入变量时并不依赖变量的当前值，或者能够确保只有单一的线程修改变量的值</li>
-<li>变量不需要与其他的状态变量共同参与不变约束</li>
-<li>访问变量时没有额外的原因加锁</li>
-</ul>
-</li>
-<li>JDBC 并没有要求connection是线程安全的，但是在应用中，connection 会从线程池中获取一个实例，并且在connection完成操作归还给线程池之前，线程池不会将connection分配给其他线呈</li>
-<li>线程限制技术： 力图安卓的UI操作</li>
-<li>ThreadLocal 是本地化的最规范的方式，应用很广、</li>
-<li>为临时缓存这种简单的事务而直接使用ThreadLocal并没有什么性能优势。在java5.0中，它被一种更直接的方式取代，就是为为每一次调用分配一个新的缓冲区</li>
-<li>对象的引用和以及对象的状态必须同事对其他线程可见。一个正确创建的对象可以通过下面的条件安全的发布<ul>
-<li>通过静态初始化器初始化对象的引用</li>
-<li>将它的引用存储到volatile域或者AtomicReference</li>
-<li>将它的引用存储到正确创建的对象的final域中</li>
-<li>将它的引用存储到由锁正确保护的域中</li>
-</ul>
-</li>
-<li>不可变对象可以在没有额外同步的情况下，安全的用于任意线程，甚至发布它们时亦不需要同步</li>
-<li>　一个线程安全的对象在内部进行同步，所以其他线程无需额外同步，就可以通过公共接口随意访问它</li>
-<li>　一个被守护的对象只能通过特定的锁来访问，被守护的对象包括那些被线程安全对象封装的对象，和已知被特定的锁保护起来的已发布的对象</li>
-</ul>
-<p>##　第四章</p>
+<hr>
+<h1 id="个人信息"><a href="#个人信息" class="headerlink" title="个人信息"></a>个人信息</h1><blockquote>
+<p>团队中的多面手，具有很强的学习能力、沟通能力和自我驱动能力！</p>
+</blockquote>
+<font size="3"><br><br> - 基本信息：刘飞 / 男 / 1993<br> - 学   历：本科<br> - 工作年限：2年<br> - 期望职位：Java 工程师<br> - 期望薪资：面议<br> - 期望城市：北京<br> - 英语水平：六级<br><br><br><br>—<br><br># 技能栈<br><br><br>+ <strong>相对扎实的数据结构算法，网络，计算机组成原理基础。</strong><br>+ <strong>扎实的Java语言基础，对集合、网络通讯、反射、异常处理、多线程等有较深入的了解，了解JNI技术</strong><br>+ 掌握一些常用的其他编程语言如 C/C++，Golang，JavaScript。<br>+ 熟悉Spring 框架,对IOC/ASM的实现有一定了解。<br>+ 熟悉数据库Mysql相关的操作,了解过Mysql一些优化策略。<br>+ 掌握Nosql的操作，包括内存数据库Redis,持久化数据库MongoDB<br>+ 了解分布式框架，了解微服务框架Spring Cloud<br>+ <strong>参与过音视频编解码的工作，掌握音视频编解码框架 FFMPEG</strong><br>+ 熟悉使用常用的开发工具，包括但不限于 Idea ，git/svn,Chrome(debug) , Android Studio<br><br><br><br>—<br><br># 工作经历<br><br><br>## 鹏博士集团 （ 2015年4月（含实习） ~ 至今 ）<br><br><br>### 鹏博士智能硬件管理平台<br><br>+ 项目介绍 : 鹏博士智能硬件管理平台是鹏博士智能 所有智能硬件产品的统一管理平台，平台负责公司所有产品的统一管理。典型的如智能摄像头监控画面，安防配件的状态。对智能产品的状态及时汇报给公司的推送服务器和APP服务器。<br>+ 涉及的技术：<br> + Socket 通信<br> + 加密算法 Des<br> + Redis 内存数据库<br> + NIO框架 Netty<br>+ 我参与的工作：<br> + 负责协同硬件部门讨论技术细节<br> + 门磁红外配件的状态管理<br> + 和推送服务器的对接<br><br><br>### 小鹏生活APP 后台<br><br>+ 小鹏生活APP后台是小鹏生活APP的服务端应用，是小鹏生活APP的服务器接口,负责用户的用户管理，用户名下设备的管理，以及对接上面的鹏博士智能硬件管理平台所管理的硬件设备的状态。<br>+ 涉及到技术：<br> + Java 8.0<br> + 服务器：apache<br> + 框架 ：Spring,Spring-MVC,Spring-Boot<br> + Mysql<br> + IBatis<br>+ 我参与的工作：<br> + 和APP开发进行协同<br> + 负责其中智能硬件管理的接口<br> + 对接智能摄像头的通信协议<br><br><br>### 小鹏调度<br><br>+ 小鹏调度是一款基于公司目前的安防设备建立起来一个自服务平台。主要面向的是各种门店的商家等。由公司的服务人员上门对商家的门店安装，维护各类安防产品。小鹏调度负责对本公司的服务人员进行及时调度。目前项目正在开发中<br>+ 涉及到技术：<br> + Java 8.0<br> + 框架 ：Spring,Spring-MVC,Spring-Boot<br> + Mysql<br> + IBatis<br> + Freemarker<br><br>## 其他项目<br><br>&gt; 在参与各类后台应用的同时我也参与了几个Android APP的开发<br><br>###小鹏生活APP：<br>+ 项目介绍： 小鹏生活APP是一个安卓应用，主要功能是用来对用户名下的智能硬件设备进行呈现，和通知报警等等。另外还包括公司的环境相关的产品例如环境探测器。APP会在产品上进行相应的呈现<br>+ 我参与的工作<br> + 参与了项目的启动<br> + 音视频的编解码<br> + 智能摄像头通信协议的对接<br><br>### 其他项目<br><br>两个正在开发中的APP：小鹏生活和小鹏商业<br><br><br><br></font>                
+
+
+
+
+
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/14/Java并发实战/" class="archive-article-date">
-  	<time datetime="2016-11-14T07:59:57.455Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-14</time>
+      <a href="/2017/02/15/我的简历/" class="archive-article-date">
+  	<time datetime="2017-02-15T10:19:09.694Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-15</time>
 </a>
       
       
@@ -204,124 +174,7 @@
 
 
   
-    <article id="post-WebSocket With Stomp" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/10/WebSocket With Stomp/">搭建一个配合Stomp消息的WebSocket服务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
-<p><a href="http://blog.109yxlm.cc/2016/11/10/WebSocket%E6%9C%8D%E5%8A%A1/" target="_blank" rel="external">最简单的WebSocket服务</a></p>
-</blockquote>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocketMessageBroker</span><span class="comment">//这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息。</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketMessageConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Spring的Web消息功能基于消息代理（message broker）</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">//配置消息代理,客户端在监听相应信息时加加上这个前缀</span></div><div class="line">        registry.enableSimpleBroker(<span class="string">"/client"</span>);</div><div class="line">        <span class="comment">//所有带有"/app*"前缀的请求都会被映射到带有@MessageMapping注解的方法中去</span></div><div class="line">        registry.setApplicationDestinationPrefixes(<span class="string">"/app"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndpointRegistry registry)</span> </span>&#123;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 这些路径即为Stomp 监听WebSocket的路径。</div><div class="line">         * 客户端在配置websocket url时应为 : "ws://localhost:8081/hello/websocket"</div><div class="line">         */</div><div class="line">        registry.addEndpoint(<span class="string">"/hello"</span>,<span class="string">"/client"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>@EnableWebSocketMessageBroker 这个注解不仅配置了WebSocket，还配置了基于代理的STOMP消息</li>
-<li>重写的registerEndPoint里面添加的Endpoint,将“/hello”注册为<strong>STOMP端点</strong>。这个路径与之前发送和接收消息的<strong>目的地路径</strong>有所不同。这是一个端点，客户端在订阅或发布消息到目的地路径前，要通过websocket连接该端点。</li>
-<li>通过重载configureMessageBroker()方法配置了一个简单的消息代理。所以消息代理将会处理前缀为“/client”的消息,除此之外，发往应用程序的消息将会带有“/app”前缀</li>
-<li>所有目的地以“/app”打头的消息都将会路由到带有@MessageMapping注解的方法中，而不会发布到代理队列或主题中。</li>
-</ul>
-<h2 id="处理来自客户端的STOMP消息"><a href="#处理来自客户端的STOMP消息" class="headerlink" title="处理来自客户端的STOMP消息"></a>处理来自客户端的STOMP消息</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Controller</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageController</span> </span>&#123;</div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/hello"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/welcome"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> WelcomeMessage <span class="title">greeting</span><span class="params">(HelloMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WelcomeMessage(<span class="string">"welcome "</span> + message.getName() + <span class="string">"!"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/schedule"</span>)</div><div class="line">    <span class="meta">@SendTo</span>(<span class="string">"/client/schedule"</span>)  </div><div class="line">    <span class="function"><span class="keyword">public</span> ScheduleTaskMessage <span class="title">schedule</span><span class="params">(ScheduleTaskMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        System.out.println(<span class="string">"schedule task message "</span> + message.getContent());</div><div class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// simulated delay</span></div><div class="line">        message.setContent(<span class="string">"I already received the message："</span>+message.getContent());</div><div class="line">        <span class="keyword">return</span> message;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在本例中，这个目的地也就是“/app/hello”和“/app/schedul“ 的消息，“/app”前缀是隐含的，因为我们将其配置为应用的目的地前缀，并发送消息到指定的路径。注意，发送的路径要以在 SimpleBroker开头。不带Stomp接受不到。在这里是以“client开头的”</p>
-<h1 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h1><blockquote>
-<p>Client端是自实现的Stomp协议，有些负责这里只介绍最基本的使用，具体请查看<a href="https://github.com/WalkerLiuFei/WebSocketAction" target="_blank" rel="external">源码</a></p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">StompClient mStompClient = Stomp.over(WebSocket.class, <span class="string">"ws://localhost:8081/hello/websocket"</span>);</div><div class="line">mStompClient.connect(); <span class="comment">//连接到指定路径的WebSocket链接</span></div><div class="line"></div><div class="line"><span class="comment">//订阅Stomp消息</span></div><div class="line">mStompClient.topic(<span class="string">"/client/welcome"</span>).subscribe(topicMessage -&gt; &#123;</div><div class="line">    System.out.println(<span class="string">"the schedule message :"</span> + topicMessage.getPayload()); </div><div class="line">&#125;);</div><div class="line"><span class="comment">//向客户端发送一个Stomp消息</span></div><div class="line">mStompClient.send(<span class="string">"/app/hello"</span>, objectMapper.writeValueAsString(<span class="keyword">new</span> HelloMessage(<span class="string">"walker"</span>))).subscribe();</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/10/WebSocket With Stomp/" class="archive-article-date">
-  	<time datetime="2016-11-10T08:50:12.932Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-WebSocket服务" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/10/WebSocket服务/">搭建一个最简单的WebSocket服务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-</blockquote>
-<h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
-<p>Server 利用Spring Boot Websocket 进行构建。可以参考链接Spring Project的官方文档：<a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#websocket" target="_blank" rel="external">WebSocket Support</a></p>
-</blockquote>
-<p>利用Spring Boot搭建一个最简单的WebSocket服务，首先我们需要在Gradle中添加SpringBootWebSocket的依赖,Spring-boot-start依赖自动为我们添加了开箱即用的其他依赖库。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    compile group: &apos;org.springframework.boot&apos;, name: &apos;spring-boot-starter-websocket&apos;, version: &apos;1.4.1.RELEASE&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableWebSocket</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">implements</span> <span class="title">WebSocketConfigurer</span> </span>&#123;</div><div class="line">    <span class="comment">//当webSocket</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandlers</span><span class="params">(WebSocketHandlerRegistry registry)</span> </span>&#123;</div><div class="line">        registry.addHandler(myHandler(),<span class="string">"/hello"</span>).withSockJS();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandler <span class="title">myHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyHandler();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Client端"><a href="#Client端" class="headerlink" title="Client端"></a>Client端</h1><p>client端利用 java-client这个第三方的库来实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile group: &apos;org.java-websocket&apos;, name: &apos;Java-WebSocket&apos;, version: &apos;1.3.0&apos;</div></pre></td></tr></table></figure>
-<p>然后继承实现一个WebSocketCLient类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleWebSocket</span> <span class="keyword">extends</span> <span class="title">WebSocketClient</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExampleWebSocket</span><span class="params">(URI serverURI)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(serverURI,<span class="keyword">new</span> Draft_17());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(ServerHandshake handshakedata)</span> </span>&#123;</div><div class="line">        Iterator&lt;String&gt; stringIterator = handshakedata.iterateHttpFields();</div><div class="line">        <span class="keyword">while</span> (stringIterator.hasNext())&#123;</div><div class="line">            String name = stringIterator.next();</div><div class="line">            System.out.println(name+<span class="string">" "</span>+handshakedata.getFieldValue(name</div><div class="line">            ));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(String message)</span> </span>&#123;</div><div class="line">        System.out.println(message);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClose</span><span class="params">(<span class="keyword">int</span> code, String reason, <span class="keyword">boolean</span> remote)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"closed:"</span>+reason);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Exception ex)</span> </span>&#123;</div><div class="line">        System.out.println(ex.getMessage());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>最后通过 url进行连接。 注意，这url的路径 /hello就是你在Server端配置的监听路径。另外后继的/webSocket指明这是个WebSocket链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">exampleWebSocket = new ExampleWebSocket(new URI(&quot;ws://127.0.0.1:8081/hello/websocket&quot;));</div><div class="line">exampleWebSocket.connect();</div></pre></td></tr></table></figure></p>
-<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><a href="" git@github.com:walkerliufei="" websocketaction.git="">源码</a></p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/10/WebSocket服务/" class="archive-article-date">
-  	<time datetime="2016-11-10T07:50:00.580Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-lambda表达式" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Redis Interview" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -329,534 +182,49 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title-lambda-表达式笔记"><a href="#title-lambda-表达式笔记" class="headerlink" title="title:lambda 表达式笔记"></a>title:lambda 表达式笔记</h2><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><ul>
-<li>以前的循环方式</li>
+        <h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><h2 id="Redis的应用场景"><a href="#Redis的应用场景" class="headerlink" title="Redis的应用场景"></a>Redis的应用场景</h2><ul>
+<li>缓存 ： 最多的是配合Mysql作为其读的缓存<ul>
+<li>保证表的数据和Redis数据的对应关系，比如让 mysql主键作为Redis这边的key等</li>
+<li>选择一个合适的<strong>序列化方式</strong></li>
+<li>为保证数据一致性，只在数据库查询时将对象放入缓存，如果对象发生了修改或者删除操作，直接清空缓存。在数据库新增和查询后将数据放入缓存，修改后更新缓存。删除后删除换粗    <strong>*怎么实现？</strong> </li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>使用 lambda 表达式以及函数操作(functional operation)</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));</div><div class="line">```  </div><div class="line">   </div><div class="line">+ 在 Java 8 中使用双冒号操作符(double colon operator)</div><div class="line"></div><div class="line">```  </div><div class="line">players.forEach(System.out::println);</div><div class="line">```   </div><div class="line"></div><div class="line">## 匿名内部类</div><div class="line"></div><div class="line">+ 原来的表达式</div><div class="line"></div><div class="line">```  </div><div class="line">btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() &#123;  </div><div class="line">          @Override  </div><div class="line">          public void handle(ActionEvent event) &#123;  </div><div class="line">              System.out.println(&quot;Hello World!&quot;);   </div><div class="line">          &#125;  </div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
-<ul>
-<li>lambda表达式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">btn.setOnAction(event -&gt; System.out.println(&quot;Hello World!&quot;));</div><div class="line">```  </div><div class="line"></div><div class="line">## 集合排序</div><div class="line"></div><div class="line">+ 原表达式</div><div class="line"></div><div class="line">``` </div><div class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </div><div class="line">Arrays.sort(players, sortByName);</div><div class="line">```  </div><div class="line">  </div><div class="line">+ lambda表达式</div><div class="line"></div><div class="line">```  </div><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));</div><div class="line">```  </div><div class="line"></div><div class="line">## Stream</div><div class="line"></div><div class="line">创建一个简单的集合作为例子</div></pre></td></tr></table></figure>
-<p>List<testbean> beans = new ArrayList<testbean>();<br>int count = 0;<br>while (count++ &lt; 50)<br>    beans.add(new TestBean(count,”我的是ID为”+ count +”的成员”));<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### filter</div><div class="line"></div><div class="line">filter比较简单，例如下面的例子。遍历所有id号大于20的元素并输出</div></pre></td></tr></table></figure></testbean></testbean></p>
-<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean);<br>        });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">###  map</div><div class="line"></div><div class="line">将testBean 映射为它的content.</div></pre></td></tr></table></figure></p>
-<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .map(TestBean::getContent)<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean); //输出的的内容为testbean的content内容<br>        });<br>```</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/10/lambda表达式/" class="archive-article-date">
-  	<time datetime="2016-11-10T01:23:39.915Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-WebSocket协议笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h1><h2 id="客户端发出的握手信息类似："><a href="#客户端发出的握手信息类似：" class="headerlink" title="客户端发出的握手信息类似："></a>客户端发出的握手信息类似：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">GET /chat HTTP/1.1</div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http://example.com                //源标示</div><div class="line">Sec-WebSocket-Protocol: chat, superchat   //子协议选项</div><div class="line">Sec-WebSocket-Version: 13</div></pre></td></tr></table></figure>
-<ul>
-<li>第5行：sec-WebSocket-Key: </li>
-<li>第6行：Origin头，表明源标示</li>
-<li>第7行：Sec-WebSocket-protocol。子协议选项，用于标示客户端和服务端使用的是哪一种子协议 </li>
-</ul>
-<h2 id="服务端回应的握手信息类式："><a href="#服务端回应的握手信息类式：" class="headerlink" title="服务端回应的握手信息类式："></a>服务端回应的握手信息类式：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
-<ul>
-<li>第4行：Sec-WebSocket-Accept标示server是否接受了client的请求。这个值必须要不为空，并且符合client Request请求的规则才算是满足了请求</li>
-<li>第5行：返回的子协议，必须是client请求时携带的子协议之一</li>
-<li>服务端的返回也可以携带cookie信息</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li><p>WebSocket类似于Http，同样是一个基于TCP的应用层协议，它和HTTP的关系就是请求可以作为一个升级请求（Upgrade request）经由 HTTP 服务器解释（也就是可以使用 Nginx 反向代理一个 WebSocket）。</p>
 </li>
-<li><p>握手信息的头字段是没有顺序要求的</p>
+<li>消息队列<ul>
+<li>Redis中的list是一个双向链表，所以很适用于作为消息队列来使用，消息生产者只需要将消息push进队列，消费者利用pop取出消息。并且还可以保证数据的有序性。另外Redis具有的sub/pub 功能还可以作为发布者/订阅者角色。另外由于Redis具有的快照功能，也可以避免数据的丢失。</li>
+</ul>
 </li>
-<li>关闭握手的操作可以是任何一端主动发出，因为WebSocket的通信本就是全双工的</li>
+<li>时间轴：可以将一个redis 作为共用的时间轴。例如一个服务负责接收一个微博的帖子的评论，这个服务将评论数据插入到redis指定数据的最后，另一个前端的接口服务可以从最后lrange得到这个最新的评论，用来显示，推送等操作</li>
+<li>排行榜：</li>
+<li>计数器：计算器</li>
+<li>分布式锁:<ul>
+<li><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2></li>
 </ul>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/09/WebSocket协议笔记/" class="archive-article-date">
-  	<time datetime="2016-11-09T01:09:02.667Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-09</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/08/Stomp和WebSocket协议/">WebSocket协议和Stomp协议</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Stomp协议基础"><a href="#Stomp协议基础" class="headerlink" title="Stomp协议基础"></a>Stomp协议基础</h1><ul>
-<li>Stomp基于消息，但是允许二进制传递。默认的消息格式是UTF-8</li>
-<li>类似Http协议，Stomp是同样是基于帧的协议</li>
-<li>Stomp帧的样子..帧通常是以COMMAND字节开始，以EOL结束</li>
-<li>COMMANDS和headers都是大小写敏感的，并且在UTF-8编码的headers中除了CONNECT和CONNETED帧之外，任何的回车，换行，colon found(?)都会被转义<pre>
-COMMAND
-header1:value1
-header2:value2
-Body^@
-</pre></li>
-<li><p>对于body，只有send，message和ERROR帧有body，其他所有帧都没有body。并且这三个帧的也必须携带 content-length的header。</p>
 </li>
-<li><p>Stomp client通过Connect frame与server建立流或者TCP链接</p>
+<li>Redis 和Datacache的区别：DataBase 只是一个datagrid（表格），redis是一个DataBase，datagrid并不含有数据持久化的功能，而database是有的</li>
+<li>Redis 中的Java驱动Jedis使用的模式是代理模式，Jedis的所有操作都最后交给client去执行了。。Jedis并不是线程安全的.<strong>不要在多线程中使用同一个Jedis实例</strong>redis 默认存储间隔为 300s 5分钟</li>
+<li>在Redis存储中key的字符长度对存储性能是没有影响的</li>
+<li>Redis 内存优化：<ul>
+<li>对于多影射对象，比如一个个人信息，利用id作为key，利用一个map作为个人信息的存储作为value存储。map保存有filed的名称和value</li>
+<li>根据业务需要选择合适的数据类型，并为不同的应用场景设置相应的紧凑存储参数。</li>
+<li>当业务场景不需要数据持久化时，关闭所有的持久化方式可以获得最佳的性能以及最大的内存使用量。</li>
+<li>如果需要使用持久化，根据是否可以容忍重启丢失部分数据在快照方式与语句追加方式之间选择其一</li>
+<li>不要让你的Redis所在机器物理内存使用超过实际内存总量的3/5。</li>
+</ul>
 </li>
-</ul>
-<pre>
-CONNECT
-accept-version:1.2
-host:stomp.github.org
-^@
-</pre>
-
-<ul>
-<li>然后server返回给connected frame给client</li>
-</ul>
-<pre>
-CONNECTED
-version:1.2
-^@
-</pre>
-
-<p>或者相应ERROR Frame给client说明为什么被拒绝</p>
-<ul>
-<li>对于Stomp 1.1以后的版本，Connected frame必须包含accept-version header. 它的值为client所支持的Stomp版本号，如果client和server不支持共同的版本协议。server返回类似下面的ERROR frame并断开连接</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ERROR</div><div class="line">version:1.2,2.1</div><div class="line">content-type:text/plain</div><div class="line"></div><div class="line">Supported protocol versions are 1.2 2.1^@</div></pre></td></tr></table></figure>
-<h2 id="心跳"><a href="#心跳" class="headerlink" title="心跳"></a>心跳</h2><blockquote>
-<p>心跳被用于测试底层TCP连接的可用性，确保远程服务处于活动状态,一般是作为header出现在connect frame中。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CONNECT</div><div class="line">heart-beat:&lt;cx&gt;,&lt;cy&gt;</div></pre></td></tr></table></figure>
-<p>header-beat 头的两个值都是为数字，</p>
-<ul>
-<li>第一个数字表示发送方能做什么，为0表示不能发送心跳，其他值表保证两次心跳的最小毫秒数</li>
-<li>第二个数字代表发送方能获得什么: 0表示它不想接收心跳 ,否则它表示两次心跳期望的毫秒数 </li>
-</ul>
-<p>如果接受者在规定的时间内没有收到新数据，表明连接已经断开</p>
-<h2 id="Client-Frame"><a href="#Client-Frame" class="headerlink" title="Client Frame"></a>Client Frame</h2><ul>
-<li><strong>SEND</strong>: 必须要包含Body和destination的header</li>
-<li><strong>SUBSCRIBE</strong> ：同样需要destination的header,表示订阅的目的地 </li>
-<li>UNSUBSCRIBE：携带id header</li>
-<li>BEGIN</li>
-<li>COMMIT</li>
-<li>ABORT</li>
-<li>ACK：用于通知server，你发来的消息我已经消费。</li>
-<li>NACK</li>
-<li>DISCONNECT</li>
-</ul>
-<h2 id="Message-Frame"><a href="#Message-Frame" class="headerlink" title="Message Frame"></a>Message Frame</h2><ul>
-<li>Message：下面是一个最基本的messageframe，另外如果frame Body携带信息的话，header应该带有content type和content length</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">MESSAGE</div><div class="line">subscription:0</div><div class="line">message-id:007    </div><div class="line">destination:/queue/a  </div><div class="line">content-type:text/plain </div><div class="line"></div><div class="line">hello queue a^@</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/08/Stomp和WebSocket协议/" class="archive-article-date">
-  	<time datetime="2016-11-08T02:42:10.839Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-08</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-代码规范" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-代码规范"><a href="#title-代码规范" class="headerlink" title="title:代码规范"></a>title:代码规范</h2><blockquote>
-<p>不懂编程的人能看的懂得代码是最好的代码！</p>
-</blockquote>
-<h1 id="From-lt-lt-effecttive-java-gt-gt"><a href="#From-lt-lt-effecttive-java-gt-gt" class="headerlink" title="From &lt;&lt; effecttive java &gt;&gt;"></a>From &lt;&lt; effecttive java &gt;&gt;</h1><h1 id="个人总结"><a href="#个人总结" class="headerlink" title="个人总结"></a>个人总结</h1><ul>
-<li>工具类要有<strong>final</strong>修饰符！避免被继承</li>
-<li>严格遵守驼峰式的命名规则！</li>
+<li>Redis 怎么保证和Mysql保证数据一致性<ul>
+<li>读的数据作为缓存保存到Redis，对于写操作都是直接操作的Mysql？</li>
+<li>不要求强一致实时性的读操作，都由redis进行，要求强一致性的读操作，交给</li>
 <li></li>
 </ul>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/07/代码规范/" class="archive-article-date">
-  	<time datetime="2016-11-07T01:18:36.305Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-leetcode #451 Frequency String Sort" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/07/leetcode #451 Frequency String Sort/">Solution of Leetcode</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Solution-of-leetcode-451"><a href="#Solution-of-leetcode-451" class="headerlink" title="Solution of leetcode #451"></a>Solution of leetcode #451</h1><blockquote>
-<p>自从开始刷leetcode以来最高的排位，84%的beat率，更重要的是从构思到实现加debug只用了20分钟！感觉有必要记录下！</p>
-</blockquote>
-<p>下面是具体实现！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">frequencySort</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> == s || <span class="number">0</span> == s.length() )</div><div class="line">          <span class="keyword">return</span> s;</div><div class="line">      <span class="keyword">char</span>[] array = s.toCharArray();</div><div class="line"></div><div class="line">      Arrays.sort(array);</div><div class="line"></div><div class="line">      List&lt;StringBuilder&gt; elements = <span class="keyword">new</span> ArrayList&lt;StringBuilder&gt;();</div><div class="line">      elements.add(<span class="keyword">new</span> StringBuilder().append(array[<span class="number">0</span>]));</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">1</span>;index &lt; array.length;index++)&#123;</div><div class="line">          <span class="keyword">char</span> c = array[index];</div><div class="line">          StringBuilder strBuilder = elements.get(<span class="number">0</span>);</div><div class="line">          <span class="keyword">if</span> (strBuilder.charAt(<span class="number">0</span>) == c)</div><div class="line">              strBuilder.append(c);</div><div class="line">          <span class="keyword">else</span></div><div class="line">              elements.add(<span class="number">0</span>,<span class="keyword">new</span> StringBuilder().append(c));</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      Collections.sort(elements, <span class="keyword">new</span> Comparator&lt;StringBuilder&gt;() &#123;</div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(StringBuilder o1, StringBuilder o2)</span> </span>&#123;</div><div class="line">              <span class="keyword">return</span> o2.length() - o1.length();</div><div class="line">          &#125;</div><div class="line">      &#125;);</div><div class="line"></div><div class="line">      StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</div><div class="line">      <span class="keyword">for</span> (StringBuilder element : elements)</div><div class="line">          stringBuilder.append(element);</div><div class="line"></div><div class="line">      <span class="keyword">return</span> stringBuilder.toString();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>leetcode 上的runtime 最后是23ms！算法思想很简单，就是先排序。然后利用排序好的字符串进行divide形成list，排序号list里面的元素后进行重装即可。很简单…</p>
-<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>算法实现实现起来其实蛮简单，不过重要的是理解java底层的排序算法实现。这正是下一步要做的工作！ </p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/07/leetcode #451 Frequency String Sort/" class="archive-article-date">
-  	<time datetime="2016-11-07T00:57:29.459Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-07</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-快速搭建一个支持HttpsAndroid后台(服务端)" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/03/快速搭建一个支持HttpsAndroid后台(服务端)/">快速搭建一个支持Https的服务（附有Android访问Https链接的配置）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>本篇文章通过一个小Demo来介绍利用Spring Boot快速搭建一个Https的移动客户端后台服务和Client(安卓)端在配置自定义双向验证的一些配置</p>
-</blockquote>
-<h1 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h1><blockquote>
-<p>我准备用Spring Boot来示例这个这个Server端demo，众所周知SpringBoot作为Spring.io推出的杀手级框架不仅使得后端开发效率大幅度提升，也使得学习门槛降低。随着时间推移Spring Boot将会更多的应用到实践当中</p>
-</blockquote>
-<h2 id="框架的简单介绍"><a href="#框架的简单介绍" class="headerlink" title="框架的简单介绍"></a>框架的简单介绍</h2><p><img src="/assets/kuangjia.png" alt="CSDN图标" title="框架图"></p>
-<p>Server端应用主要分为三个部分</p>
-<ul>
-<li>java 文件夹下的源文件</li>
-<li>resource文件夹下面的配置文件和资源文件</li>
-<li>build.gradle配置文件</li>
+</li>
 </ul>
-<h2 id="利用gradle构造你的工程"><a href="#利用gradle构造你的工程" class="headerlink" title="利用gradle构造你的工程"></a>利用gradle构造你的工程</h2><pre>
-group 'person.walker'
-version '1.0-SNAPSHOT'
-
-
-sourceCompatibility = 1.5
-buildscript{
-    repositories{
-        mavenCentral()
-    }
-    //安装Spring-boot 插件！
-    dependencies{
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
-    }
-}
-sourceCompatibility = 1.5
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'spring-boot'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    //我们只需要下面两个dependence！
-    compile("org.springframework.boot:spring-boot-starter")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
-</pre>
-
-
-<p>gradle配置文件需要注意两个地方(添加注解的地方)第一个是添加Spring-boot-gradle-plugin的依赖和jar包的依赖。这两个依赖足够我们来开发最最基本的Restful应用和javaWeb应用（注意这里最最基本，不涉及dao层(⊙﹏⊙)b）。。。</p>
-<h2 id="编写你的应用"><a href="#编写你的应用" class="headerlink" title="编写你的应用"></a>编写你的应用</h2><h3 id="Application-应用入口类"><a href="#Application-应用入口类" class="headerlink" title="Application:应用入口类"></a>Application:应用入口类</h3><p>第一步编写你的应用入口类</p>
-<pre>
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args){
-
-        new SpringApplicationBuilder(Application.class)
-                .run(args);
-    }
-}
-</pre>
-
-<p>这里需要注意的的是<strong>@SpringBootApplicaiton</strong>这个注解，这个注解相当于自动完成了注解@CompontScan ，@Auto-Configuration等等注解的功能，真正的实现了SpringBoot开箱即用的功能，节省大量繁琐的操作</p>
-<h3 id="编写你的Controller控制器"><a href="#编写你的Controller控制器" class="headerlink" title="编写你的Controller控制器"></a>编写你的Controller控制器</h3><pre>
-//Restful 服务的注解,方便快捷！
-@RestController
-public class MyControllers {
-    @RequestMapping("/getInfo")
-    public Person getInfo(){
-        //返回一个Object类,其会被jackson 格式化为Json格式的字符串
-        return new Person("walker","23");
-    }
-}
-</pre>
-
-<p>其中Person类是个bean类。</p>
-<pre>
-public class Person {
-
-    private String age;
-    private String name;
-
-    public Person(String age, String name) {
-        this.age = age;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
-}
-</pre>
-
-<p>到这里基本上就可以运行的应用了，我们通过Applicaiton的main函数来跑一下，观察到控制台输出的信息</p>
-<p><img src="&quot;/assets/embeddedtomcat.png&quot;" alt="lala" title="console 输出"></p>
-<p>图例标出的就是启动SpringBoot 内置Tomcat容器的信息，这可能会消除一些你的疑问，为什么没有部署到Tomcat这个应用就可以访问。</p>
-<p>现在我们通过浏览器访问就可以访问了</p>
-<h2 id="配置你的SSL"><a href="#配置你的SSL" class="headerlink" title="配置你的SSL"></a>配置你的SSL</h2><p>利用keytool生成SSL证书可以参考下面的命令:</p>
-<pre>
-keytool -genkey -alias walker_server -keyalg RSA -keystore walker_server.jks
-</pre>
-
-<p>上面的命令的含义是生成一个 文件名叫做”walker_server.jks”的公匙文件，证书的别名为walker_server。加密算法指定为RSA。<br>另外在生成证书时一定要记牢设置的密码！<br><br>拷贝你生成的XXX.jks文件到你工程的resource文件夹下面<br><br>然后配置的application.properties添加以下代码</p>
-<pre>
-# 将Https端口映射到8444 ，端口号可以根据你自己的喜好和系统环境配置
-server.port = 8444
-server.ssl.key-store = classpath:walker_server.jks  // 注意将jks文件改成你的jks文件名字
-server.ssl.key-store-password = 3252860 //这里的password是你生成ssl证书时第一次输入的密码
-server.ssl.key-password = 3252860   //这里的password是你生成ssl证书时第二次次输入的密码
-</pre>
-现在运行你的应用，打开浏览器访问"https://localhost:8444/getInfo"
-
-![](/assets/httpsrequest.png)
-
-如果你用过12306的话，你一定对这个界面不会感到陌生。为什么会出现这样的界面呐？原因是12306和我们现在配置的server都是自生成的SSL证书进行的双向验证，而一般的网站都是通过CA机构颁发的证书来进行的验证。两种验证方式具体的区别已经优缺点请自行Google.....
-<br><br>
-点击信任后看到的界面
-
-![](/assets/brosucces.png)
-
-<br><br><br><br>
-
-# 附：Android端访问Https服务的配置
-
->Android这边对于Https链接的访问一般都是正常的，不需要什么特殊配置。但是前提是这个Https的SSL证书第三方CA机构颁发，我们的SSL证书是自己生成的，自然不满足这个前提条件。所以还是需要一些配置。这里用Andriod中应用 最广的OkHttp3来做示范。
-
-下面是生成一个包含公匙的证书的命令，XXX.jks就是上面生成的公匙文件，storepass是你的密码
-
-<pre>keytool -export -alias zhy_server -file xxxx.cer 
- -keystore XXXX.jks  
- -storepass XXXXX    //你的store密码 
-</pre>
-
-<p>下面是完整的代码</p>
-<pre>
-    private static final String TAG = "HttpsTest";
-
-    public static void test() {
-        String rfc = "-----BEGIN CERTIFICATE-----\n" +
-                "MIIDTTCCAjWgAwIBAgIEesCiAzANBgkqhkiG9w0BAQsFADBXMQswCQYDVQQGEwJjbjELMAkGA1UE\n" +
-                "CBMCYmoxCzAJBgNVBAcTAmJqMQ8wDQYDVQQKEwZ3YWxrZXIxDzANBgNVBAsTBndhbGtlcjEMMAoG\n" +
-                "A1UEAxMDbGl1MB4XDTE2MTEwMzAzNTAyMFoXDTE3MDIwMTAzNTAyMFowVzELMAkGA1UEBhMCY24x\n" +
-                "CzAJBgNVBAgTAmJqMQswCQYDVQQHEwJiajEPMA0GA1UEChMGd2Fsa2VyMQ8wDQYDVQQLEwZ3YWxr\n" +
-                "ZXIxDDAKBgNVBAMTA2xpdTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJWHIMofHvUM\n" +
-                "YqXYffKQB+H6nNPmnvsR/WPsJ3AO12WdJSpqkhnG17Plc/3M3LVopm+2LgnkHnOuz7ZWpBoAVVtn\n" +
-                "NpxbniO7ra/eVJLwtLIVzQN2O1yXB2ydSL1ie8XgUK/UUtyTOP3ZMrqrQBnbzA8Q7Nr2FxZaOt0Z\n" +
-                "rgLh+P5nCz3SRoNp76ges9EeYew+lE+O1ETtsLXwEAcJfQFMNRzzJsE3ZEHxZEp/33wRDQFIeZ8H\n" +
-                "37lsC8I84bCKYfkIAD/U/L0ZKeCTb8ivTwE/sxJvctK0z2xwWx1k4iz1wNtRWRPzIkNJm+P0rdnb\n" +
-                "mg8sL739zt3dKNeNQ/09BiXX3QsCAwEAAaMhMB8wHQYDVR0OBBYEFEMDzffLfXXwsq9Z85qHQc/t\n" +
-                "j6tWMA0GCSqGSIb3DQEBCwUAA4IBAQBwYEWeLgvKMRcINKTetypXJ2YmvD5QBCJafDLCdM+IkvKs\n" +
-                "K21C3oIodjDTreXEEH8UxY8ku1qYodTT8egjenpdD9maTZp1G3SKrkJ3ARQwNuFfAP1HxeQ8y7LF\n" +
-                "VX3ZDLfgIib+Xm1ygyAmn3Pd9X/J+4KYmqTJyy4RdSg0flY5c44PuvjT317MouuHbyb53mGrjp4b\n" +
-                "+bOGyAJ8N2wFCso1y3367qpAJF3zYVIVWakTufA5nGjhuvN0GZZ109HuB+ry3aPi2mUQheBnQYu3\n" +
-                "ggvxxytA58QkUxiqxnZZtAkEEa6tyPIJO5idAs1Lmza8+Wr+jBdm7JrVRb3wQJjOYlDz\n" +
-                "-----END CERTIFICATE-----";
-        //参考张鸿翔的开源框架<a href="https://github.com/hongyangAndroid/okhttputils" target="_blank" rel="external">OkHttpUtils</a>
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(new InputStream[]{new Buffer().writeUtf8(rfc).inputStream()}, null, "3252860");
-
-
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
-                //<a href="http://stackoverflow.com/questions/14619781/java-io-ioexception-hostname-was-not-verified" target="_blank" rel="external">host 验证错误</a>
-                .hostnameVerifier(new NullHostNameVerifier()) 
-                .build();
-        OkHttpUtils.initClient(okHttpClient);
-        OkHttpUtils
-                .get()
-                .url(url)
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.e(TAG,e.getMessage());
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Log.d(TAG,response);
-                    }
-                });
-
-</pre>
-上面是一个完整的请求示例的方法，ssl文件的配置可以利用张鸿翔已经封装好的库来做，我就不造重复造轮子了。
-
-最后要注意NullHostNameVerifier类，这里是要验证HostName，由于OkhttpClient默认是返回false的，所以我们要进行重写！
-<pre>
-public class NullHostNameVerifier implements HostnameVerifier {
-    @Override
-    public boolean verify(String s, SSLSession sslSession) {
-        Log.d(s,sslSession.getPeerHost());
-        return true;
-    }
-}
-
-</pre>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>源码在我的Github上面：<a href="https://github.com/WalkerLiuFei/SpringBootWithHttps" target="_blank" rel="external">戳我！</a></p>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/03/快速搭建一个支持HttpsAndroid后台(服务端)/" class="archive-article-date">
-  	<time datetime="2016-11-03T07:54:27.909Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-03</time>
+      <a href="/2017/02/15/Redis Interview/" class="archive-article-date">
+  	<time datetime="2017-02-15T07:53:49.806Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-15</time>
 </a>
       
       
@@ -876,7 +244,120 @@ public class NullHostNameVerifier implements HostnameVerifier {
 
 
   
-    <article id="post-EventBus源码阅读笔记" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Java基础" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><ul>
+<li><strong>你对ClassLoader的理解</strong><ul>
+<li>ClassLoader默认提供的三个ClassLoader，Bootstrap, Extension ClassLoader，APPClassLoader，后面这俩其实是第一个加载出来的，第一个是属于JVM的。不是一个层次的东西</li>
+<li>Bootstrp 负责加载jdk的核心库。</li>
+<li>Extension ClassLoader：扩展类加载器，负责加载Java的扩展类库</li>
+<li>APP ClassLoader：系统类加载器，负责加载ClassPath下所有的jar包和Class文件</li>
+<li>可以继承ClassLoader实现自己的类加载器 </li>
+<li>如果你在去找通过Class类 找ClassLoader 它返回null的时候，说明他的类加载器是BootStrapClassLoader，所以说不要通过java核心库去找ClassLoader 加载配置文件什么的<br><code>System.out.println(String.class.getClassLoader());</code>就是输出的null</li>
+<li>双亲委派模型,其实就是父类的Class先去加载，父类找不到，再交给子类的ClassLoader加载….这样就不会造成类加载时的冲突</li>
+<li>对于不同ClassLoader加载出来的类，虽然它们有可能会是同一个字节码文件(同一个类文件)JVM也会认为他们属于不同的类</li>
+<li>利用 java -Xbootstrap/a; 添加bootstrap 需要加载的类的jar包的路径</li>
+</ul>
+</li>
+<li><p>64位JDK 不变不如32位JDK</p>
+</li>
+<li><p><strong>谈谈你对Java线程池的理解</strong></p>
+<blockquote>
+<ul>
+<li><strong>实现原理</strong>：关键词 <code>生产者消费者模型</code>、<code>HashSet</code>、<code>ThreadPoolExcutors</code>、<code>额外的任务管理线程</code>。核心类是 ThreadPoolExcutors，其维护一个corePoolSize，maxPoolSize,缓冲队列和一个HashSet 作为Task集合。内部通过一个BlockQueue作为 work queue维护一个生产消费者模型。线程池其实就是一个HashSet来存放所有的工作集。内部维护了一个名字叫Worker的类，用来管理工作集的执行，换句话说，ThreadPoolExcutors也额外需要一个线程来执行它维护的线程。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>Syntronized 属于悲观锁，lock属于乐观锁。lock更方便用于负责逻辑的。 </p>
+</li>
+<li>java中的公平锁和非公平锁<ul>
+<li>公平锁：先来先得</li>
+<li>费公平锁：不管先后顺序，来了就给（看释放时间）。</li>
+<li>Java中的RetreenLock 默认是非公平锁</li>
+</ul>
+</li>
+<li>ConcurrentHashMap 和Collections.synchronized(map)之间的区别：<br>  <strong>ConcurrentHashMap允许多个线程同时修改Map中的元素，而不是阻塞其中的某个线程.Collections.synchronized(map)是利用阻塞线程来实现的线程安全访问。如果你想及时看到Map中实时更新的元素，使用Collections.Syntronized。如果你的往Map里面插入的操作很多，而读的操作很少。并且想拥有较好的性能。那么使用ConcurrentHashMap</strong>，另外ConcurrentHashMap不允许插入null值。。HashTable和Collections.syntronized(HashMap)的表现是一致的。都是在整个集合上建立一个读写锁。concurrentMap主要关注的是get动作</li>
+<li>java dump 文件<ul>
+<li>heap dump:用来分析java对象的内存占用情况 ： jmap -dump:live ,format=b,file=heap.hprof xxx(java 进程号)</li>
+<li>thread dump：用来分析java应用的执行情况。一般用来解决java执行时的block问题：jstack XXX(java 进程号)</li>
+<li>使用工具MAT来分析dump文件是一个比较好的选择</li>
+</ul>
+</li>
+<li><p>java -x m命令</p>
+</li>
+<li><p>java内存模型</p>
+<ul>
+<li>线程共享</li>
+<li>程序计数器：java执行字节码的指示器</li>
+<li>Java虚拟机堆：用来为java方法执行时建立的内存模型，包含局部变量，操作数栈，动态链接，方法出口。</li>
+<li>线程共享</li>
+<li>Java堆，用来存放对象，是GC主要区域，分为新生代和老生代</li>
+<li>方法区（永久代）：用于存储虚拟机加载的类信息，常量，静态变量等。这个区域的内存回收主要针对的是常量池的回收和对类型的卸载！</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li>JavaGC 算法，可达性分析算法。判断一个对象的引用是否能达到GC Root Set。不能则说明是可以回收的</li>
+</ul>
+<ul>
+<li>垃圾回收算法<br>&gt;<ul>
+<li>标记清除算法：先对所有的需要回收的对象进行标记，然后统一回收。缺点是会产生大量的内存碎片</li>
+<li>复制算法：将可用内存按照容量分成大小相同的两块，每次使用的时候只用其中的一块。使用完毕后，进行一次内存回收。将还存活的对象复制到另一块内存，并对先前的那块内存进行清理。缺点显而易见</li>
+<li>分代回收算法：老年代单线程标记整理算法，新生代复制收集算法</li>
+<li>可以利用–XX:PretenureSizeThrshold 参数 设定一个阈值，令大于这个阈值的对象直接在老年代分配。这样做的目的是避免Eden区以及Survivor区之间发生大量的内存复制（新生代采用内存复制算法来进行GC）</li>
+<li>通过指定MinorGC次数(默认15次)的对象将进入老年代区域</li>
+<li>注意区别 full gc ，minor gc  的区别已经出发条件</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li><strong>java 中计算hashcode 用 31作为因子?</strong><blockquote>
+<p> 首先因为其是一个素数</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><strong>利用 foreach 循环删除元素时为什么会抛出一个 ConncurrentException ？</strong> (测试环境 jdk 8)<br>&gt;<ul>
+<li>首先，foreach 循环只能遍历 可以Iterable的对象，比如Collections包里面各类集合类和 数组。Iterable 对象的遍历在编译期被编程成 <code>for(Iterator i = list.iterator;i.next;){...}</code>,而数组的的编译成（之前会首先有个引用！）， <code>for(int index = 0;index &lt; arr.length();index ++){...}</code></li>
+<li>在单线程的情况下并不是真正意义上的并发异常。原因是，可 Iterable 的集合类，内部维护了一个子类Iterator,这个子类有一个 属性 expectCount 这个count是当前list集合元素的数量。如果你利用List 直接去Remove，会造成这个属性值和 list值不一致！如果你在modify list元素数量然后再用Iterator 去 进行next 操作的时候会抛出一个ConcurrentException</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/14/Java基础/" class="archive-article-date">
+  	<time datetime="2017-02-14T07:39:13.214Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-14</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Spring 面试" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -886,7 +367,7 @@ public class NullHostNameVerifier implements HostnameVerifier {
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/02/EventBus源码阅读笔记/">EventBus 源码阅读笔记</a>
+      <a class="article-title" href="/2017/02/13/Spring 面试/">Spring 学习</a>
     </h1>
   
 
@@ -894,30 +375,978 @@ public class NullHostNameVerifier implements HostnameVerifier {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1：getDefault方法，明显看的出来这是单例模式的得到单例对象的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//Convenience singleton for apps using a process-wide EventBus instance. </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBus <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">synchronized</span> (EventBus.class) &#123;</div><div class="line">            <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">                defaultInstance = <span class="keyword">new</span> EventBus();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> defaultInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>2:先来看看register具体实现方法。是的，反射！ 对于findSubscriberMethods方法,它里面有一个MethodCache 的HashMap（最新的版本作者改成了ConcurrentHashMap来保证线程安全，）这个HashMap的key是注册类，Value是通过反射得到的Subscribe方法。</p>
-<pre><code>private synchronized void register(Object subscriber, boolean sticky, int priority) {
-    List&lt;SubscriberMethod&gt; subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriber.getClass());
-    for (SubscriberMethod subscriberMethod : subscriberMethods) {
-        subscribe(subscriber, subscriberMethod, sticky, priority);
-    }
+        <ul>
+<li><p>Spring security 默认 http cache是disable的 。为静态资源添加设置cache 周期 </p>
+<ul>
+<li><p>对静态资源开启cache 周期，如果要关闭的话，setCachedPeriod（-1）即为关闭缓存</p>
+<pre>
+  @Configuration
+public class MvcConfigurer extends WebMvcConfigurerAdapter
+  implements EmbeddedServletContainerCustomizer {
+  @Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+  // Resources without Spring Security. No cache control response headers.
+  registry.addResourceHandler("/static/public/**")
+      .addResourceLocations("classpath:/static/public/");
+
+  // Resources controlled by Spring Security, which
+  // adds "Cache-Control: must-revalidate".
+  registry.addResourceHandler("/static/**")
+      .addResourceLocations("classpath:/static/")
+      .setCachePeriod(3600*24);
+   }
 }
-</code></pre><p>3：Subsrcibe 方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">  <span class="comment">// 必须在保证线程安全的情况下调用</span></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(Object subscriber, SubscriberMethod subscriberMethod)</span> </span>&#123;</div><div class="line"><span class="comment">//得到事件类型，（这个东西就是POST 和 subcribe 想对应的那个类）</span></div><div class="line">      Class&lt;?&gt; eventType = subscriberMethod.eventType;</div><div class="line">      Subscription newSubscription = <span class="keyword">new</span> Subscription(subscriber, subscriberMethod);</div><div class="line"><span class="comment">//通过Map拿到线程安全的随机访问List</span></div><div class="line">      CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);</div><div class="line">      <span class="keyword">if</span> (subscriptions == <span class="keyword">null</span>) &#123;</div><div class="line">          subscriptions = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</div><div class="line">          subscriptionsByEventType.put(eventType, subscriptions);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">if</span> (subscriptions.contains(newSubscription)) &#123;</div><div class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Subscriber "</span> + subscriber.getClass() + <span class="string">" already registered to event "</span></div><div class="line">                      + eventType);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line"><span class="comment">//根据优先级进行插入</span></div><div class="line">      <span class="keyword">int</span> size = subscriptions.size();</div><div class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= size; i++) &#123;</div><div class="line">          <span class="keyword">if</span> (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) &#123;</div><div class="line">              subscriptions.add(i, newSubscription);</div><div class="line">              <span class="keyword">break</span>;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line"><span class="comment">//插入订阅者订阅的消息</span></div><div class="line">      List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);</div><div class="line">      <span class="keyword">if</span> (subscribedEvents == <span class="keyword">null</span>) &#123;</div><div class="line">          subscribedEvents = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">          typesBySubscriber.put(subscriber, subscribedEvents);</div><div class="line">      &#125;</div><div class="line">      subscribedEvents.add(eventType);</div><div class="line"><span class="comment">//拿到SubsriberMethod</span></div><div class="line">      <span class="keyword">if</span> (subscriberMethod.sticky) &#123;</div><div class="line"><span class="comment">/*</span></div><div class="line">	在默认情况下，Subsricb的超类也会被通知，将这个纳入到订阅接受的考虑情况会提高事件的发布效率</div><div class="line">	在这个开关off掉，会提高 20%的事件发布接受效率</div><div class="line">*/</div><div class="line">            <span class="keyword">if</span> (eventInheritance) &#123;</div><div class="line"><span class="comment">/*</span></div><div class="line">   这个参数是新版EventBus添加的，这个参数的意义</div><div class="line">&lt;span style="white-space:pre"&gt;	&lt;/span&gt;			</div><div class="line">                  注：因为有很多粘性时间，遍历所有的事件会降低效率</div><div class="line">   新版的EventBus改变了存储结构 使用了 Class -&gt; List&lt;Class&gt; 的Map结构，</div><div class="line">*/</div><div class="line">              Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();</div><div class="line">              <span class="keyword">for</span> (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) &#123;</div><div class="line">                  Class&lt;?&gt; candidateEventType = entry.getKey();</div><div class="line">                  <span class="keyword">if</span> (eventType.isAssignableFrom(candidateEventType)) &#123;</div><div class="line">                      Object stickyEvent = entry.getValue();</div><div class="line">                      checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">                  &#125;</div><div class="line">              &#125;</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">              Object stickyEvent = stickyEvents.get(eventType);</div><div class="line">              checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<p>4：最后看下Post方法：<br>看一下形式就发现和Handler的实现原理非常类似。Looper,消息队列等等。。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// Posts the given event to the event bus. </span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">post</span><span class="params">(Object event)</span> </span>&#123;</div><div class="line">    PostingThreadState postingState = currentPostingThreadState.get();</div><div class="line">    List&lt;Object&gt; eventQueue = postingState.eventQueue;</div><div class="line">    eventQueue.add(event);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!postingState.isPosting) &#123;</div><div class="line">        postingState.isMainThread = Looper.getMainLooper() == Looper.myLooper();</div><div class="line">        postingState.isPosting = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span> (postingState.canceled) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Internal error. Abort state was not reset"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">while</span> (!eventQueue.isEmpty()) &#123;</div><div class="line">                postSingleEvent(eventQueue.remove(<span class="number">0</span>), postingState);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            postingState.isPosting = <span class="keyword">false</span>;</div><div class="line">            postingState.isMainThread = <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>最后找到具体实现方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">postToSubscription</span><span class="params">(Subscription subscription, Object event, <span class="keyword">boolean</span> isMainThread)</span> </span>&#123;</div><div class="line">     <span class="keyword">switch</span> (subscription.subscriberMethod.threadMode) &#123;</div><div class="line">         <span class="keyword">case</span> PostThread:</div><div class="line">             invokeSubscriber(subscription, event);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> MainThread:</div><div class="line">             <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                 invokeSubscriber(subscription, event);</div><div class="line">             &#125; <span class="keyword">else</span> &#123;</div><div class="line">                 mainThreadPoster.enqueue(subscription, event);</div><div class="line">             &#125;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> BackgroundThread:</div><div class="line">             <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                 backgroundPoster.enqueue(subscription, event);</div><div class="line">             &#125; <span class="keyword">else</span> &#123;</div><div class="line">                 invokeSubscriber(subscription, event);</div><div class="line">             &#125;</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">case</span> Async:</div><div class="line">             asyncPoster.enqueue(subscription, event);</div><div class="line">             <span class="keyword">break</span>;</div><div class="line">         <span class="keyword">default</span>:</div><div class="line">             <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown thread mode: "</span> + subscription.subscriberMethod.threadMode);</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>前面已经说过subscription包含了所有执行需要的东西，大致有:subscriber, subscriberMethod（method, threadMode, eventType）, priority；<br>那么这个方法：第一步根据threadMode去判断应该在哪个线程去执行该方法；<br>case PostThread。<br>直接反射调用；也就是说在当前的线程直接调用该方法；<br>case MainThread:<br>首先去判断当前如果是UI线程，则直接调用；否则： mainThreadPoster.enqueue(subscription, event);把当前的方法加入到队列，然后直接通过handler去发送一个消息，在handler的handleMessage中，去执行我们的方法。说白了就是通过Handler去发送消息，然后执行的。<br>     case BackgroundThread:<br>如果当前非UI线程，则直接调用；如果是UI线程，则将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用<br>executorService = Executors.newCachedThreadPool();。<br>     case Async:将任务加入到后台的一个队列，最终由Eventbus中的一个线程池去调用；线程池与BackgroundThread用的是同一个。<br>这么说BackgroundThread和Async有什么区别呢？<br>    BackgroundThread中的任务，一个接着一个去调用，中间使用了一个布尔型变量handlerActive进行的控制。<br>Async则会动态控制并发。</p>
-<p>register会把当前类中匹配的方法，通过反射得到存入一个map。Map的键值分别是订阅者和其所有的订阅方法类（这个方法类包含了优先级，执行线程，和EventType等），而post会根据实参去map查找进行反射调用。</p>
+</pre>、
++ 检查 request 的 last-modified的状态，如果没有被修改返回 null，返回null后 这里回去是交给父类处理，。。
+<pre>
+  long lastModified = // spec by app。
+  if (request.checkNotModified(lastModified)) {
+  // 2. shortcut exit - no further processing necessary
+  return null;
+}
+</pre>
+</li>
+</ul>
+</li>
+<li><p>后台怎样防范XSS 攻击：</p>
+</li>
+</ul>
 
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/02/EventBus源码阅读笔记/" class="archive-article-date">
-  	<time datetime="2016-11-02T07:27:38.296Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
+      <a href="/2017/02/13/Spring 面试/" class="archive-article-date">
+  	<time datetime="2017-02-13T09:45:31.685Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-13</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-个人简历" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/13/个人简历/" class="archive-article-date">
+  	<time datetime="2017-02-12T23:56:50.029Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-13</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-New Document" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/09/New Document/">要准备的东西</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h1><ul>
+<li>牢记JVM的平台无关性</li>
+<li>java 8 的新语法</li>
+<li>线程池实现原理和调度原理</li>
+<li>Java 线程安全同步代码块和lock的区别，原子性 和 可见性  </li>
+<li>ClassLoader 双亲委派？ClassLoader 深入理解</li>
+<li>JVM 编译优化</li>
+<li>LinkedHashMap 与HashMap的区别在哪里，ConcurrentHashMap哪。Concurrent 在处理Hash竞争时的处理</li>
+<li>java Nio的概念以及使用，底部实现原理（通道，缓冲区，选择器）</li>
+<li>java内存模型的理解（深入理解JVM虚拟机）</li>
+<li>守护线程</li>
+<li>深入反射机制，是怎么 实现的，起码能大概说出其原理</li>
+<li>Concurrent 包的整体架构，CAS和volatile可见性的变量的读写等等</li>
+<li>常用设计模式的深入理解</li>
+<li>HashTable 和 HashMap的区别，H</li>
+<li>六大设计模式原则！</li>
+<li>在java下面怎么获取一个dump文件</li>
+<li>线程局部变量</li>
+<li>熟悉 JVM –xx 几种优化命令</li>
+<li>java中的序列化与反序列化</li>
+<li>为什么Java的hash 会用 31 ? java中 这样计算hash code 出现的hash碰撞的几率会有多大？</li>
+<li>HashMap中的负载因子是干嘛的？ List中貌似也有<h1 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h1></li>
+<li>Mybatis 怎么控制事务</li>
+<li><h1 id="MYSQL"><a href="#MYSQL" class="headerlink" title="MYSQL"></a>MYSQL</h1></li>
+<li>MySQL数据库的几种引擎，不同数据库间的比较</li>
+<li>数据库的封锁协议，各种读写锁,乐观锁和悲观锁</li>
+<li>OUTTER join 和INNER JOIN的区别<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1></li>
+<li>动态代理的几种方式</li>
+<li>为什么CGlib方式可以对接口实现代理？ </li>
+<li>Spring中编码统一要如何做（Spring Boot）</li>
+<li>依赖倒置，控制反转</li>
+<li>怎么做一个Spring 的测试<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1></li>
+<li>Redis面试会问到的问题，CAS操作</li>
+<li>Redis集群中，如何将一个对象映射到对应的缓存服务器</li>
+<li>缓存集群中如果新增一台服务器，怎么才能不影响大部分缓存数据的命中？</li>
+<li>Redis的优化等</li>
+<li>项目中具体是怎样使用Redis的</li>
+<li>Redis怎么做持久化？<h1 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h1></li>
+<li>MapReduce在MongoDB中应用</li>
+<li>MongoDB 的缓存和Redis缓存的区别<h1 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h1></li>
+<li><a href="http://blog.csdn.net/cywosp/article/details/23397179" target="_blank" rel="external">一致性Hash算法</a></li>
+<li>深入了解下B-Tree</li>
+<li>几个常用的排序算法 好好复习下<h1 id="netty"><a href="#netty" class="headerlink" title="netty"></a>netty</h1></li>
+</ul>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
+<li>Maven的使用</li>
+<li>一个服务从发布到消费的过程</li>
+<li>TCP/IP协议 常问的问题。TCP协议栈？</li>
+<li>TCP和UDP协议的却别</li>
+<li>Socket的连接在建立TCP/UDP 连接时的区别</li>
+<li>RMI与代理模式</li>
+</ul>
+<ul>
+<li>HashMap(包括但是不限于 Collections的其他数据结构实现)的底层数据结构，以及并发的处理</li>
+</ul>
+<ul>
+<li>MapReduce的原理</li>
+<li>消息中间件</li>
+</ul>
+<ul>
+<li><p>Redis缓存失效了怎么办？</p>
+</li>
+<li><p><strong>注重对基础和编程能力的考察，以及对分布式系统设计和架构的理解。</strong></p>
+</li>
+</ul>
+<ul>
+<li>Spring 中的设计模式</li>
+<li>Spring bean的生命周期，CGLIB <a href="https://premaseem.wordpress.com/2013/02/09/spring-design-patterns-used-in-java-spring-framework/" target="_blank" rel="external">Spring中的设计模式</a></li>
+<li>Spring IOC 和AOP 概念以及基本使用，实现原理</li>
+<li>Git的操作</li>
+<li>Thrift通信协议</li>
+<li>，Mysql 锁。</li>
+<li><a href="http://blog.csdn.net/hguisu/article/details/6155636" target="_blank" rel="external">深入理解 java异常机制</a></li>
+</ul>
+<p><a href="http://www.cnblogs.com/xrq730/p/5260294.html" target="_blank" rel="external"> 面试感悟—-一名3年工作经验的程序员应该具备的技能</a></p>
+<h3 id="基础能力"><a href="#基础能力" class="headerlink" title="基础能力"></a>基础能力</h3><p>基础知识必须要扎实，包括语言基础，计算机基础，算法和基本的Linux运维等</p>
+<p>针对Java语言，需要对集合类，并发包，IO/NIO，JVM，内存模型，泛型，异常，反射等都有比较深入的了解，最好是学习过部分源码。</p>
+<p>这些知识点都是相通的，在面试中也可以体现，比如集合类的HashMap，</p>
+<p>从源码的角度，可以深入到哈希表的实现，拉链法以外的哈希碰撞解决方法，如何平衡内部数组保证哈希表的性能不会下降等；<br>从线程安全的角度可以扩展到HashTable、ConcurrentHashMap等其他的数据结构，可以比较两种不同的加锁方式，RetreenLock的实现和应用，<br>继续深入可以考察Java内存模型，Volitale原语，内存栅栏等；<br>横向扩展可以考察有序的Map结构如TreeMap、LinkedHashMap，继而考察红黑树，LRU缓存，HashMap的排序等知识。</p>
+<p>Java方向的中高级职位，会比较重视对虚拟机的掌握，诸如类加载机制，内存模型等，这些在程序的优化和并发编程中都非常重要。</p>
+<p>算法方面，基本的排序和查找算法，对递归，分治等思想的掌握。如果算法基础不太好，推荐《编程珠玑》等，每一章都很经典。</p>
+<p>另外计算机基础，比如TCP/IP协议和操作系统的知识也是必备的，这些都是大学计算机专业的基础课，也是做开发基本的素养。</p>
+<h3 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h3><p>设计模式，造轮子的能力，各种缓存和数据库应用，缓存，中间件技术，高并发和高可用的分布式系统设计</p>
+<p>大型互联网公司每天要面对海量的请求，都会考察分布式系统的架构和设计，如何构建高并发高可用的系统，</p>
+<p>另外因为用户基数比较大，一个细微的优化可能会给带来很大的收益，所以对一些技术栈的掌握要求都比较深入。</p>
+<p>比如对MySQL数据库，需要知道相关的配置和优化，业务上来以后如何分库分表，如何合理的配置缓存，一个经验丰富的服务端开发人员，也应该是一个称职的DBA。</p>
+<p>对常用的开发组件，比如中间件，RPC框架等都要有一定的了解，虽然工作中可能用不到我们自己造轮子，但是掌握原理才会得心应手。</p>
+<p>这部分知识主要靠工作积累，推荐<strong>《大型网站技术架构与Java中间件实践》</strong>，还有曾贤杰的<strong>《大型网站系统架构与实践》</strong>，</p>
+<p>里面对大型网站的演变，服务治理和中间件的使用做了很详细的阐述。</p>
+<p>作为业务开发人员，有必要了解压力测试相关的指标，比如QPS，用户平均等待时间等，可以帮助你更好的了解自己的系统。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/09/New Document/" class="archive-article-date">
+  	<time datetime="2017-02-09T00:52:50.595Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-09</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-mongo面试知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p>like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！</p>
+<h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h2 id="NoSql"><a href="#NoSql" class="headerlink" title="NoSql"></a>NoSql</h2><ul>
+<li>mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？<ul>
+<li></li>
+<li>capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制</li>
+<li></li>
+</ul>
+</li>
+<li>monogoDB 的存储大小限制<ul>
+<li>对于MMAPv1 存储引擎中，DataBase 中的文件数量不能超过16000个，也就是说一个以MMAPv1 作为存储引擎的data base的最大容量为32TB，如果设置了storage.mmapv1.smallFiles 为true,最大容量为8TB（设置这个bool 值后，单个data file 的最大容量会是 512MB）</li>
+<li>对于WiredTiger engine ,内部缓存分为两种，一般的RAM 存储，或者256MB（V .34）。</li>
+</ul>
+</li>
+<li>mongoDB 中的存储引擎有哪些种，各自有什么特点<ul>
+<li>MMAPV1  <ul>
+<li></li>
+<li>存储原理:文档在磁盘中连续存放，文档所占用的磁盘空间包括文档数据所占空间和文档填充，datafile 起始大小为64MB（pre allocate）,当大小超过 64MB后，data file 会通过padding 算法来叠加文档大小</li>
+<li>journal 刷新频率为 100ms，jorunal 用来用来恢复数据库的非正常关闭</li>
+<li>很吃内存，因为数据文件会通过mmap 映射到内存中（基本上是有多少吃多少），所以增大机器内存是提高 mongoDB性能的手段之一</li>
+</ul>
+</li>
+<li>WiredTiger engine v3.2 以后的默认存储引擎<ul>
+<li>支持文档级别的 lock （<code>在代码中怎么实现？</code>）</li>
+<li>快照功能（check point）， 一分钟或者超过2GB的变更日志一次，在写最新快照时，上一个快照已然有效。当 当前快照落地后，会自动删除上一个快照。journal 文件的大小为100MB，当日志文件超过这个大小后，会自动新建一个日志文件</li>
+<li>内部缓存 默认值是：1GB 或 60% of RAM - 1GB，取两值中的较大值</li>
+</ul>
+</li>
+<li>InMemory : 基于内存的存储，不是重点</li>
+</ul>
+</li>
+<li><p>BSON Document 大小限制，有没有 level limit,是多少？</p>
+<ul>
+<li>为避免内存溢出，Bson 最大为 16MB ，如果遇到size 瓶颈，你就需要 GridFS API 来解决</li>
+<li>BSON Document 的level 层级最多100.</li>
+</ul>
+</li>
+<li><p>mongoDB 是基于内存的还是基于硬盘的</p>
+<ul>
+<li>根据存储引擎不同，inmemory 是基于内存。otherwise 基于硬盘的持久化</li>
+</ul>
+</li>
+<li>mongoDB 中的GridFS机制，怎么使用<ul>
+<li>mongoDB 将db 分为 多个 chunk 来分块存储大文件。</li>
+<li>在使用时需要 基于database 新建 新建一个   <code>GridFSBucket</code>，上传文件时需要通过文件流，在java 中也可以使用<code>GridFSUploadStream</code> 来批量上传文件。 上传成功后 会返回一个 fileID,利用这个FileID 实现CURD 等等操作</li>
+<li></li>
+</ul>
+</li>
+<li>mongoDB 的数据文件为什么很大<ul>
+<li>mongoDB 为防止数据碎片采用存储空间预分配的策略</li>
+</ul>
+</li>
+<li>mongoDB 中chunk的概念，操作块（迁移，删除等等需要注意的事项）<ul>
+<li>chunk 用来存储协作一起来存储大的文件</li>
+<li>chunk size 默认为64M,chunk 过小会导致频繁的迁移从而导致性能问题，chunk 过大会导致数据存储的不均衡</li>
+</ul>
+</li>
+<li>mongoDB 中分片的概念<ul>
+<li>分片方式： 内存区域分片，hash分片(类似于 数组和hash表)</li>
+</ul>
+</li>
+<li>mongoDB 中的日志文件应该怎样存储</li>
+<li>mongoDB 中的fsync 操作<ul>
+<li>fsync 命令允许我们刷新所有等待写入的操作刷新数据文件中，它提供了锁的机制，这样会使得备份更加简单。</li>
+<li>fsync 机制并不适合建立一个 read-only 的模式，因为它的读操作也有可能会被block（因为新建立的 connection 需要被授予权限）</li>
+</ul>
+</li>
+<li>mongoDB 中<strong>事务</strong>？！ 如何对 collection ，database 进行加锁？</li>
+<li>mongoDB 中的集群分为那些。各包括那些部分，有什么特点</li>
+<li>什么事oplog？ 有什么用<ul>
+<li>操作日志</li>
+</ul>
+</li>
+<li>getlasterror是什么东西？ 有什么用<br>+ </li>
+<li>sharding 和replication 是怎样工作的。</li>
+<li>数据在什么时候才会扩展到多个分片里？</li>
+<li>当我在视图更新一个正在被迁移的块上的文档时会发生什么？</li>
+<li><a href="https://docs.mongodb.com/manual/reference/limits/" target="_blank" rel="external">mongoDB 的一些局限性</a></li>
+<li><a href="https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod" target="_blank" rel="external">说出几个常用的mongod 命令</a></li>
+<li>mongoDB 中的RDBMS</li>
+<li>dataBase 是怎样保存 collection的？ collection又是怎样保存document的？ </li>
+<li>chunk 默认的大小为 255KB</li>
+<li>bulkwrite ()</li>
+<li><p>目前很多write operation是用返回值的。包括错误信息</p>
+</li>
+<li><p>Document Model 类型</p>
+<ul>
+<li>one to one</li>
+<li>one to many emb</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>read concern ,write concern</li>
+</ul>
+<ul>
+<li>shard 集群，<ul>
+<li><ul>
+
+
+</ul></li>
+</ul>
+</li>
+</ul>
+ <pre>
+    mongod --port 2001 --shardsvr --dbpath shard1/
+    mongod --port 2002 --shardsvr --dbpath shard2/
+ </pre>
+
+
+<ul>
+<li><p>配置服务器：保存集群的元数据，包含各个shard的路由规则\</p>
+<pre>
+mongod --port 3001 --dbpath cfg1/
+mongod --port 3002 --dbpath cfg2/
+mongod --port 3003 --dbpath cfg3/
+</pre>
+
+<ul>
+<li>路由服务器：启动查询路由mongos 服务器 –&gt;</li>
+<li><p><code>mongos --port 5000 --configdb 127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003</code></p>
+</li>
+<li><p>连接mongos，为集群添加数据分片节点。</p>
+</li>
+</ul>
+<pre>
+mongo --port 5000 amdmin
+
+sh.addShard("127.0.0.1:2001")
+sh.addShard("127.0.0.1:2002")
+</pre>
+
+</li>
+</ul>
+<ul>
+<li>如果Shard是Replica Set，添加Shard的命令：  <pre>
+  sh.addShard("rsname/host1:port,host2:port,...")    
+  rsname - 副本集的名字
+  </pre>
+
+
+</li>
+</ul>
+<p> </p>
+<p>—————————-以上 需要在 2017/02/07 完成！—————————</p>
+<h2 id="mongoDB-常用命令"><a href="#mongoDB-常用命令" class="headerlink" title="mongoDB 常用命令"></a>mongoDB 常用命令</h2><ul>
+<li>use XXX (用户名，database)</li>
+<li>db.addUser(“name”,”password”)  //添加用户</li>
+<li>db.getUsers  //查询用户</li>
+<li>db.<code>collectionName</code>.Command : 其中的command 包括 各种对collection 数据的操作。这些也是driver 里面最常用的一些<ul>
+<li>aggreagate  </li>
+<li>distinct</li>
+<li>group</li>
+<li>mapReduce</li>
+<li>find </li>
+<li>insert</li>
+<li>update</li>
+<li>delete</li>
+<li>findAndModify </li>
+<li>getMore  // </li>
+<li>getLastError —-&gt; db.getLastError</li>
+<li>getPrevError —-&gt; db.</li>
+<li>resetError</li>
+<li>eval // 从 mongo 3.0 开始已经deprecate</li>
+<li>parallelCollection</li>
+</ul>
+</li>
+</ul>
+<h2 id="stackoverflow-上的问题"><a href="#stackoverflow-上的问题" class="headerlink" title="stackoverflow 上的问题"></a>stackoverflow 上的问题</h2><ul>
+<li>怎样查询 like。 利用regex..find(“key”,”regex 表达式”)。。。。其实mongoDB的regex 要比mysql的like 强大的多</li>
+<li>利用 <code>collection.find(Filters.where(&quot;this.stars - 20  &gt; 20&quot; )).forEach((Block&lt;? super Document&gt;) System.out::println );</code> 可以查询一些复杂的逻辑表达式 的数据</li>
+<li>mapreduce<br>  + </li>
+<li>group<br>  + </li>
+<li><p>aggreate</p>
+</li>
+<li><p>replica set 的rollback ，其实是主节点进行写操作，从节点没有同步成功。然后主节点出现宕机，或者其他情况退出了当前的cluster。当这个宕机的主节点从新加入到从节点的后，这个former primary 就成了从节点，从节点需要从当前 的主节点进行一次同步，这就是所谓的rollback。</p>
+<h2 id="mongoDB-官网FAQ"><a href="#mongoDB-官网FAQ" class="headerlink" title="mongoDB 官网FAQ"></a>mongoDB 官网FAQ</h2></li>
+<li><p>mongoDB 保存有cache功能</p>
+</li>
+<li>mongoDB 是否支持事务? <ul>
+<li>mongoDB 不支持在 多个文档上的事务，但是支持在单一文档的上的原子操作,利用$isolated 操作符</li>
+<li>原子操作保证在一次读写中，除非出现错误或者异常，其他的client是看不到 的。另外，原子操作</li>
+</ul>
+</li>
+<li>当在建立一个collection上面的Index的时候，collection是不允许读写的。所以建立index的时候尽量将background的属性设置为 true</li>
+<li>mongoDB的索引和mysql的索引有什么不同？ mysql只能建立一个索引的key，而mongodb 可以建立多个规则更flexable</li>
+<li>对于MMAPv1 存储引擎，如果对一个document进行修改导致它存储的空间超过了现有的分配空间。monogodb 会为他新分配一个空间并更新所有indexs.</li>
+<li>mongodb 的锁机制的类型： Mongodb 使用一个readers-writer 锁，允许多个读操作访问数据库，但是只提供唯一写操作。写操作比读操作的优先级更高</li>
+<li>对于MMAPv1 存储引擎，在进行一个读操作的时候，如果当前的document没有在memory中存在，它会将锁ylied，在所要读要读的data被读入内存后，这个操作会再获取这个锁进行操作。</li>
+<li>CURD ，Indexs,Map-Reduce，aggreate 都会获取锁</li>
+<li>那些操作会锁定数据库<ul>
+<li>db.collection.ensureIndex 。在不设置background 为true的时候</li>
+<li>reindex</li>
+<li>compact : 把所有的数据和索引重写并分块，在WiredTiger 存储引擎中，这个命令会将硬盘容量重新分配给操作系统</li>
+<li>再创建一个很大的collection的时候</li>
+<li>db.collection.validate() </li>
+<li>db.copyDatabase()</li>
+</ul>
+</li>
+<li>那些操作会锁定多个数据库<ul>
+<li>journing</li>
+<li>uset.auth</li>
+</ul>
+</li>
+<li>sharding 中的每个分片都有自己独立的读写锁</li>
+<li>在复制集节点中，由于从节点是不允许用户进行写操作的，所以没有必要关心其写的锁。另外就算是对一个cluster 进行写操作，从节点也不是在每时每刻监听主节点的写操作并执行同步，从节点会每分钟(defalut)参考主节点的oplog进行同步</li>
+<li>对一个document的一个读操作在进行时，稍后一个对这个读数据的update操作几乎同时发起。虽然读操作能及时看到写造成的document的更新操作的update version，但是无法实时的数据snap shot.也就是说，读操作会错过读操作期间的数据的更新</li>
+<li>replica Set 和shared 机制应该一起使用，但是replica set架构应该优先于shared机制</li>
+<li>一个复制集如果节点的数量是级数，他就不需要投票节点。</li>
+<li>在复制集架构中，你可以使用不同的存储引擎</li>
+<li>对于wiredTiger存储引擎，当一个机器上运行多个mongod实例 或者mongodb 运行在一个容器中（docker）时你需要降低其cacheSize</li>
+<li>工作复制集代表应用在正常操作进程中使用的所有数据，大部分情况下是所有数据大小的集合，但特殊情况下工作复制集的大小取决于当前正在使用的数据库</li>
+<li>对于unaccessed 的document，mongod 是不会将其映射到内存中，只要能映射到内存中的数据都是可以accesss的</li>
+<li>monogdb 每一分钟从memory 写入到disk一次，对于wireTiger，当journal 容量大于2G时其也进行一次write disk 操作，wireTiger 每100ms 写入journal文件一次</li>
+<li><p>默认存储目录 /data/db 中的数据文件可能要比要插入的data set所占空间要打，原因是</p>
+<ul>
+<li>第一：preallocated data file</li>
+<li>oplog 文件，oplog 文件大小大概是 disk存储的 5%</li>
+<li>journal文件</li>
+</ul>
+</li>
+<li><p>repairdatabase 和 compact命令都可以为monogoDB重新分配内存，但是需要注意这两个命令执行的时候都需要2GB 的临时硬盘容量（2GB —&gt;单个datafile的最大容量）</p>
+</li>
+<li>对于 mmapv1 存储引擎collection 没有所谓的容量大小限制，database是有的，database 最多只能包含16000个datafile，每个datafile 最大2GB</li>
+<li>内存不足会导致pagefault。原因是内存不足导致的从硬盘读取数据不到内存中，遇到这种情况最好就开始考虑sharding 分片了</li>
+<li>一般情况下mongodb是没有连接限制的，除非你对连接进行设置</li>
+</ul>
+<h2 id="mongodb-性能优化"><a href="#mongodb-性能优化" class="headerlink" title="mongodb 性能优化"></a>mongodb 性能优化</h2><ul>
+<li>通过打开db.getProfilingLevel(1) 来记录慢命令的日志。默认的慢命令阈值为100 ms</li>
+<li>建立索引</li>
+<li>Nosql于sql的区别<ul>
+<li>Nosql可以水平扩展</li>
+<li>Nosql 可以对于某些数据类型的存储/获取更加友好</li>
+<li>Sql的功能更强大</li>
+<li>Mysql更加稳定，且可以保证数据的原子性和一致性适合大量事务的应用程序。</li>
+<li>Nosql不太适合复杂的查询</li>
+<li>支持缓存机制</li>
+</ul>
+</li>
+<li>MongoDB 对于单一的Document的操作总是原子性的 </li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/08/mongo面试知识点/" class="archive-article-date">
+  	<time datetime="2017-02-08T10:54:40.116Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-面试知识点" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><p>like alaways 这些东西应该实时更新，参照 stackoverflow 上面的问题！</p>
+<h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h2 id="NoSql"><a href="#NoSql" class="headerlink" title="NoSql"></a>NoSql</h2><ul>
+<li>mongoDB 中collection 的特点，mongoDB collection大小的限制，遇到存储大小限制时应该怎么办？<ul>
+<li></li>
+<li>capped collection 在对Document 数量做限制时，其限制的数量必须小于 2^32, 如果不做限制，就没有限制</li>
+<li></li>
+</ul>
+</li>
+<li>monogoDB 的存储大小限制<ul>
+<li>对于MMAPv1 存储引擎中，DataBase 中的文件数量不能超过16000个，也就是说一个以MMAPv1 作为存储引擎的data base的最大容量为32TB，如果设置了storage.mmapv1.smallFiles 为true,最大容量为8TB（设置这个bool 值后，单个data file 的最大容量会是 512MB）</li>
+<li>对于WiredTiger engine ,内部缓存分为两种，一般的RAM 存储，或者256MB（V .34）。</li>
+</ul>
+</li>
+<li>mongoDB 中的存储引擎有哪些种，各自有什么特点<ul>
+<li>MMAPV1  <ul>
+<li></li>
+<li>存储原理:文档在磁盘中连续存放，文档所占用的磁盘空间包括文档数据所占空间和文档填充，datafile 起始大小为64MB（pre allocate）,当大小超过 64MB后，data file 会通过padding 算法来叠加文档大小</li>
+<li>journal 刷新频率为 100ms，jorunal 用来用来恢复数据库的非正常关闭</li>
+<li>很吃内存，因为数据文件会通过mmap 映射到内存中（基本上是有多少吃多少），所以增大机器内存是提高 mongoDB性能的手段之一</li>
+</ul>
+</li>
+<li>WiredTiger engine v3.2 以后的默认存储引擎<ul>
+<li>支持文档级别的 lock （<code>在代码中怎么实现？</code>）</li>
+<li>快照功能（check point）， 一分钟或者超过2GB的变更日志一次，在写最新快照时，上一个快照已然有效。当 当前快照落地后，会自动删除上一个快照。journal 文件的大小为100MB，当日志文件超过这个大小后，会自动新建一个日志文件</li>
+<li>内部缓存 默认值是：1GB 或 60% of RAM - 1GB，取两值中的较大值</li>
+</ul>
+</li>
+<li>InMemory : 基于内存的存储，不是重点</li>
+</ul>
+</li>
+<li><p>BSON Document 大小限制，有没有 level limit,是多少？</p>
+<ul>
+<li>为避免内存溢出，Bson 最大为 16MB ，如果遇到size 瓶颈，你就需要 GridFS API 来解决</li>
+<li>BSON Document 的level 层级最多100.</li>
+</ul>
+</li>
+<li><p>mongoDB 是基于内存的还是基于硬盘的</p>
+<ul>
+<li>根据存储引擎不同，inmemory 是基于内存。otherwise 基于硬盘的持久化</li>
+</ul>
+</li>
+<li>mongoDB 中的GridFS机制，怎么使用<ul>
+<li>mongoDB 将db 分为 多个 chunk 来分块存储大文件。</li>
+<li>在使用时需要 基于database 新建 新建一个   <code>GridFSBucket</code>，上传文件时需要通过文件流，在java 中也可以使用<code>GridFSUploadStream</code> 来批量上传文件。 上传成功后 会返回一个 fileID,利用这个FileID 实现CURD 等等操作</li>
+<li></li>
+</ul>
+</li>
+<li>mongoDB 的数据文件为什么很大<ul>
+<li>mongoDB 为防止数据碎片采用存储空间预分配的策略</li>
+</ul>
+</li>
+<li>mongoDB 中chunk的概念，操作块（迁移，删除等等需要注意的事项）<ul>
+<li>chunk 用来存储协作一起来存储大的文件</li>
+<li>chunk size 默认为64M,chunk 过小会导致频繁的迁移从而导致性能问题，chunk 过大会导致数据存储的不均衡</li>
+</ul>
+</li>
+<li>mongoDB 中分片的概念<ul>
+<li>分片方式： 内存区域分片，hash分片(类似于 数组和hash表)</li>
+</ul>
+</li>
+<li>mongoDB 中的日志文件应该怎样存储</li>
+<li>mongoDB 中的fsync 操作<ul>
+<li>fsync 命令允许我们刷新所有等待写入的操作刷新数据文件中，它提供了锁的机制，这样会使得备份更加简单。</li>
+<li>fsync 机制并不适合建立一个 read-only 的模式，因为它的读操作也有可能会被block（因为新建立的 connection 需要被授予权限）</li>
+</ul>
+</li>
+<li>mongoDB 中<strong>事务</strong>？！ 如何对 collection ，database 进行加锁？</li>
+<li>mongoDB 中的集群分为那些。各包括那些部分，有什么特点</li>
+<li>什么事oplog？ 有什么用<ul>
+<li>操作日志</li>
+</ul>
+</li>
+<li>getlasterror是什么东西？ 有什么用<br>+ </li>
+<li>sharding 和replication 是怎样工作的。</li>
+<li>数据在什么时候才会扩展到多个分片里？</li>
+<li>当我在视图更新一个正在被迁移的块上的文档时会发生什么？</li>
+<li><a href="https://docs.mongodb.com/manual/reference/limits/" target="_blank" rel="external">mongoDB 的一些局限性</a></li>
+<li><a href="https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod" target="_blank" rel="external">说出几个常用的mongod 命令</a></li>
+<li>mongoDB 中的RDBMS</li>
+<li>dataBase 是怎样保存 collection的？ collection又是怎样保存document的？ </li>
+<li>chunk 默认的大小为 255KB</li>
+<li>bulkwrite ()</li>
+<li><p>目前很多write operation是用返回值的。包括错误信息</p>
+</li>
+<li><p>Document Model 类型</p>
+<ul>
+<li>one to one</li>
+<li>one to many emb</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>read concern ,write concern</li>
+</ul>
+<ul>
+<li>shard 集群，<ul>
+<li><ul>
+
+
+</ul></li>
+</ul>
+</li>
+</ul>
+ <pre>
+    mongod --port 2001 --shardsvr --dbpath shard1/
+    mongod --port 2002 --shardsvr --dbpath shard2/
+ </pre>
+
+
+<ul>
+<li><p>配置服务器：保存集群的元数据，包含各个shard的路由规则\</p>
+<pre>
+mongod --port 3001 --dbpath cfg1/
+mongod --port 3002 --dbpath cfg2/
+mongod --port 3003 --dbpath cfg3/
+</pre>
+
+<ul>
+<li>路由服务器：启动查询路由mongos 服务器 –&gt;</li>
+<li><p><code>mongos --port 5000 --configdb 127.0.0.1:3001,127.0.0.1:3002,127.0.0.1:3003</code></p>
+</li>
+<li><p>连接mongos，为集群添加数据分片节点。</p>
+</li>
+</ul>
+<pre>
+mongo --port 5000 amdmin
+
+sh.addShard("127.0.0.1:2001")
+sh.addShard("127.0.0.1:2002")
+</pre>
+
+</li>
+</ul>
+<ul>
+<li>如果Shard是Replica Set，添加Shard的命令：  <pre>
+  sh.addShard("rsname/host1:port,host2:port,...")    
+  rsname - 副本集的名字
+  </pre>
+
+
+</li>
+</ul>
+<p> </p>
+<p>—————————-以上 需要在 2017/02/07 完成！—————————</p>
+<h2 id="mongoDB-常用命令"><a href="#mongoDB-常用命令" class="headerlink" title="mongoDB 常用命令"></a>mongoDB 常用命令</h2><ul>
+<li>use XXX (用户名，database)</li>
+<li>db.addUser(“name”,”password”)  //添加用户</li>
+<li>db.getUsers  //查询用户</li>
+<li>db.<code>collectionName</code>.Command : 其中的command 包括 各种对collection 数据的操作。这些也是driver 里面最常用的一些<ul>
+<li>aggreagate  </li>
+<li>distinct</li>
+<li>group</li>
+<li>mapReduce</li>
+<li>find </li>
+<li>insert</li>
+<li>update</li>
+<li>delete</li>
+<li>findAndModify </li>
+<li>getMore  // </li>
+<li>getLastError —-&gt; db.getLastError</li>
+<li>getPrevError —-&gt; db.</li>
+<li>resetError</li>
+<li>eval // 从 mongo 3.0 开始已经deprecate</li>
+<li>parallelCollection</li>
+</ul>
+</li>
+</ul>
+<h2 id="stackoverflow-上的问题"><a href="#stackoverflow-上的问题" class="headerlink" title="stackoverflow 上的问题"></a>stackoverflow 上的问题</h2><ul>
+<li>怎样查询 like。 利用regex..find(“key”,”regex 表达式”)。。。。其实mongoDB的regex 要比mysql的like 强大的多</li>
+<li>利用 <code>collection.find(Filters.where(&quot;this.stars - 20  &gt; 20&quot; )).forEach((Block&lt;? super Document&gt;) System.out::println );</code> 可以查询一些复杂的逻辑表达式 的数据</li>
+<li>mapreduce<br>  + </li>
+<li>group<br>  + </li>
+<li><p>aggreate</p>
+</li>
+<li><p>replica set 的rollback ，其实是主节点进行写操作，从节点没有同步成功。然后主节点出现宕机，或者其他情况退出了当前的cluster。当这个宕机的主节点从新加入到从节点的后，这个former primary 就成了从节点，从节点需要从当前 的主节点进行一次同步，这就是所谓的rollback。</p>
+<h2 id="mongoDB-官网FAQ"><a href="#mongoDB-官网FAQ" class="headerlink" title="mongoDB 官网FAQ"></a>mongoDB 官网FAQ</h2></li>
+<li><p>mongoDB 保存有cache功能</p>
+</li>
+<li>mongoDB 是否支持事务? <ul>
+<li>mongoDB 不支持在 多个文档上的事务，但是支持在单一文档的上的原子操作,利用$isolated 操作符</li>
+<li>原子操作保证在一次读写中，除非出现错误或者异常，其他的client是看不到 的。另外，原子操作</li>
+</ul>
+</li>
+<li>当在建立一个collection上面的Index的时候，collection是不允许读写的。所以建立index的时候尽量将background的属性设置为 true</li>
+<li>mongoDB的索引和mysql的索引有什么不同？ mysql只能建立一个索引的key，而mongodb 可以建立多个规则更flexable</li>
+<li>对于MMAPv1 存储引擎，如果对一个document进行修改导致它存储的空间超过了现有的分配空间。monogodb 会为他新分配一个空间并更新所有indexs.</li>
+<li>mongodb 的锁机制的类型： Mongodb 使用一个readers-writer 锁，允许多个读操作访问数据库，但是只提供唯一写操作。写操作比读操作的优先级更高</li>
+<li>对于MMAPv1 存储引擎，在进行一个读操作的时候，如果当前的document没有在memory中存在，它会将锁ylied，在所要读要读的data被读入内存后，这个操作会再获取这个锁进行操作。</li>
+<li>CURD ，Indexs,Map-Reduce，aggreate 都会获取锁</li>
+<li>那些操作会锁定数据库<ul>
+<li>db.collection.ensureIndex 。在不设置background 为true的时候</li>
+<li>reindex</li>
+<li>compact : 把所有的数据和索引重写并分块，在WiredTiger 存储引擎中，这个命令会将硬盘容量重新分配给操作系统</li>
+<li>再创建一个很大的collection的时候</li>
+<li>db.collection.validate() </li>
+<li>db.copyDatabase()</li>
+</ul>
+</li>
+<li>那些操作会锁定多个数据库<ul>
+<li>journing</li>
+<li>uset.auth</li>
+</ul>
+</li>
+<li>sharding 中的每个分片都有自己独立的读写锁</li>
+<li>在复制集节点中，由于从节点是不允许用户进行写操作的，所以没有必要关心其写的锁。另外就算是对一个cluster 进行写操作，从节点也不是在每时每刻监听主节点的写操作并执行同步，从节点会每分钟(defalut)参考主节点的oplog进行同步</li>
+<li>对一个document的一个读操作在进行时，稍后一个对这个读数据的update操作几乎同时发起。虽然读操作能及时看到写造成的document的更新操作的update version，但是无法实时的数据snap shot.也就是说，读操作会错过读操作期间的数据的更新</li>
+<li>replica Set 和shared 机制应该一起使用，但是replica set架构应该优先于shared机制</li>
+<li>一个复制集如果节点的数量是级数，他就不需要投票节点。</li>
+<li>在复制集架构中，你可以使用不同的存储引擎</li>
+<li>对于wiredTiger存储引擎，当一个机器上运行多个mongod实例 或者mongodb 运行在一个容器中（docker）时你需要降低其cacheSize</li>
+<li>工作复制集代表应用在正常操作进程中使用的所有数据，大部分情况下是所有数据大小的集合，但特殊情况下工作复制集的大小取决于当前正在使用的数据库</li>
+<li>对于unaccessed 的document，mongod 是不会将其映射到内存中，只要能映射到内存中的数据都是可以accesss的</li>
+<li>monogdb 每一分钟从memory 写入到disk一次，对于wireTiger，当journal 容量大于2G时其也进行一次write disk 操作，wireTiger 每100ms 写入journal文件一次</li>
+<li><p>默认存储目录 /data/db 中的数据文件可能要比要插入的data set所占空间要打，原因是</p>
+<ul>
+<li>第一：preallocated data file</li>
+<li>oplog 文件，oplog 文件大小大概是 disk存储的 5%</li>
+<li>journal文件</li>
+</ul>
+</li>
+<li><p>repairdatabase 和 compact命令都可以为monogoDB重新分配内存，但是需要注意这两个命令执行的时候都需要2GB 的临时硬盘容量（2GB —&gt;单个datafile的最大容量）</p>
+</li>
+<li>对于 mmapv1 存储引擎collection 没有所谓的容量大小限制，database是有的，database 最多只能包含16000个datafile，每个datafile 最大2GB</li>
+<li>内存不足会导致pagefault。原因是内存不足导致的从硬盘读取数据不到内存中，遇到这种情况最好就开始考虑sharding 分片了</li>
+<li>一般情况下mongodb是没有连接限制的，除非你对连接进行设置</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/08/面试知识点/" class="archive-article-date">
+  	<time datetime="2017-02-08T10:54:40.116Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-08</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-MongoDB学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/24/MongoDB学习/">MongoDB学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="基本的CURD"><a href="#基本的CURD" class="headerlink" title="基本的CURD"></a>基本的CURD</h1><ul>
+<li>mongodb 的MongoDBClient对象表示一个MongoDB的连接池，就算你有多个线程的操作，你也只需要一个对象</li>
+<li>MongoClientOptions可以配置数据库连接的选项。其有类似一个静态的工厂类，可以指定，<strong>应用名，最大连接数，最小连接数，服务选择的超时时间，解码器，编码器等等。</strong></li>
+<li>MongoDB默认连接是通过SSL加密的（Java 7 以上！），如果你必须使用java 6，或者更低的java版本，你必须通过MongoDBClientOptions的<code>sslInvalidHostNameAllowed(true)</code>来disable ssl加密！</li>
+<li><p>MongoDB的标准URI格式 : <code>mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]</code>,</p>
+<ul>
+<li>首先前缀 <code>mongodb://</code>  这是用来标示mongoDB URI的标示符。</li>
+<li><code>[username:password@]</code> 是可选项</li>
+<li>host1 是唯一必须的部分。</li>
+<li>：port 是可选项，默认为：27017</li>
+<li><code>/database</code> 是登录的数据库名字。这个选项只有在 前面 <code>[username:password@]</code>使用时才会使用得到。如果没有的话，默认为admin database 会被使用。</li>
+</ul>
+</li>
+<li><p>对于Capped Collections ，指的是指定容量的collections,类似于 java中 lrucache,根据插入的数据顺序来进行覆盖存储。Capped Collections 的插入速度更高，并且你无法从一个 capped collections 中移除一个document。collections 的最小cap 是4096 byte。mongodb 会确保 query 的 index 等同于 insert 的 index.</p>
+</li>
+<li><p>mongoDB的三种codec 类。</p>
+<ul>
+<li>Document since 3.0</li>
+<li>BasicDBObject</li>
+<li>BsonDocument</li>
+</ul>
+</li>
+<li><p>MongoDB 的Index是在collection 级别上创建的。其类似于Mysql 其默认的index 是”_id”。也就是说排序的标准是按照插入的顺序来的。</p>
+</li>
+</ul>
+<pre>
+    //创建一个 递增的key
+  collection.createIndex(Indexes.ascending("stars"));
+    //默认的query 的顺序依旧是按照 "_id"的值，也就是说插入顺序来的
+   collection.find().forEach((Block<? super Document>) System.out::println);
+    // 但是如果你加上 查找的限制字段。他就会按照字段"stars" 来进行排序显示！ 
+   collection.find(Filters.gt("stars",0)).forEach((Block<? super Document>) System.out::println);
+    // 或者
+    collection.find().sort(Indexes.descending("stars")).forEach((Block<? super  Document>) System.out::println);
+</pre>
+
+<ul>
+<li><p>Text Index ..一个collection 至多含有一个Text Index。</p>
+</li>
+<li><p>projections(Projections.XXX)。。。。<br><code>collection.find().projection(Projections.fields(Projections.include(&quot;stars&quot;),Projections.exclude(&quot;_id&quot;))).forEach((Block&lt;? super Document&gt;) System.out::println);</code><br>projections 内部的fileds 都是Projections 里面一些静态方法。</p>
+</li>
+<li>同上，MongoDB里面的包<code>package com.mongodb.client.model;</code>里面都是一些类似工具类的类。可以用来进行相应的操作</li>
+<li>类似projections的还有sort。。</li>
+</ul>
+<h1 id="MongoDB-Cluster"><a href="#MongoDB-Cluster" class="headerlink" title="MongoDB Cluster"></a>MongoDB Cluster</h1><ul>
+<li><strong>主从架构：</strong>搭建一个主从数据库， slave 会同步master 所有 write的操作。下面是 shell 命令。。<code>注意在本机测试时 需要在不同的命令行窗口打开master 和 slave</code><br><pre><br>#创建一个主从MongDB服务器<br>cd /</pre></li>
+</ul>
+<p>e:</p>
+<p>mkdir monogoDBCluster<br>cd ./monogoDBCluster<br>mkdir Master<br>mkdir Slave</p>
+<p>mongod –port 12002 –master –dbpath ./Master </p>
+<h1 id="源master-来自于-127-0-0-1-2000-。"><a href="#源master-来自于-127-0-0-1-2000-。" class="headerlink" title="源master 来自于 127.0.0.1:2000 。"></a>源master 来自于 127.0.0.1:2000 。</h1><p>mongod –port 12003 –slave –source 127.0.0.1:12002 –dbpath  ./Slave</p>
+<p></p>
+<ul>
+<li><p><strong>副本集架构</strong>：显示启动三个 mongoDB 的实例，并同时制定为 replSet 的名称为 rs0; </p>
+<p><pre><br>#<br>mkdir replicaSet_1<br>mkdir replicaSet_2<br>mkdir replicaSet_3</pre></p>
+</li>
+</ul>
+<p>cmd /k start mongod –port 12004 –dbpath replicaSet_1 –replSet rs0<br>cmd /k start mongod –port 12005 –dbpath replicaSet_2 –replSet rs0<br>cmd /k start mongod –port 12006 –dbpath replicaSet_3 –replSet rs0<br></p>
+<p>然后选择其中一个实例进入 其shell命令界面。初始化replSet集群，并添加secondary。 即，当前这些命令的这个实例会被作为primary。</p>
+<pre>
+mongo --port 12004
+
+rs.initiate()
+rs.add("<hostname>:2002")
+rs.add("<hostname>:2003")
+rs.conf()
+</hostname></hostname></pre>
+
+<p>所有的连接什么的都会在这个上面。在默认情况下，secondary是不允许读和写的。如果你想在secondary 节点上进行读。需要进行相应的设置<br>在java下面三个等级的设置</p>
+<pre>
+        //在client 级别。read 首先是从 secondary 上面进行读
+  MongoClientOptions options = MongoClientOptions.builder().readPreference(
+                                  ReadPreference.secondary()).build();
+    //类似的！
+  MongoClient mongoClient = new MongoClient(
+    new MongoClientURI("mongodb://host1:27017,host2:27017/?readPreference=secondary"));
+// database 级别的设置
+MongoDatabase database = mongoClient.getDatabase("test")
+                         .withReadPreference(ReadPreference.secondary());
+//最后 是collection级别的设置
+MongoCollection<document> collection = database.getCollection("restaurants")
+            .withReadPreference(ReadPreference.secondary());
+</document></pre>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/01/24/MongoDB学习/" class="archive-article-date">
+  	<time datetime="2017-01-24T07:24:20.147Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-24</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Netty(二)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/18/Netty(二)/">Netty 基础学习（二）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>EventLoop 是来处理channel 中的IO操作，Netty中所有的IO操作默认是异步的，你需要利用ChannleFuture 注册相应ChannleFutureListeners来对异步IO的状态进行监听。</li>
+<li>Netty其实是利用多线程来处理IO事件的，通过源码你会发现，EventLoop其实继承的是ExcutorService。对于NioEventLoopGroup来说，其默认的线程数是2 * CPU核心数。</li>
+<li><strong>Netty 中为什么不需要关心同步问题？</strong></li>
+<li>ServerBootGroup 需要两个EventLoopGroup,用来绑定本地端口。BootStrap需要一个EventLoopGroup …..对于ServerBootGroup来讲，他需要一个EventGroup来处理连接，然后传递给后面子EventGroup。</li>
+<li><p>Channel 是线程安全的，怎么保证线程安全的？</p>
+<h1 id="ChannleHandler"><a href="#ChannleHandler" class="headerlink" title="ChannleHandler"></a>ChannleHandler</h1></li>
+<li><p>每一个ChannelHandler 在从一个ChannlePipeline中移除之前不能添加到另一个ChannlePipline中去,并且一般来讲，每一个ChannelHandler是不允许阻塞IO 的，如果有这方面的需求，你可能需要在添加ChannlePipline的同时添加一个EventLoopGroup</p>
+</li>
+<li>ChannleHandler 中以<code>fireXXX</code>开头的方法都是唤醒Handler所在Pipleling下面的的对应方法，对于Outbound 和inbound的顺序注意区分</li>
+<li>每次添加channelHanndler 到pipline中的时候会有一个ChannleHandlerContext被创建并被分配</li>
+<li>如果你想将一个ChannelHandler的实例添加到不同pipline中，可以通过添加注解<code>@Shareable</code>的方法实现， 不过要注意线程安全的问题</li>
+<li>在channelRead 中你应该及时释放资源<strong>ReferenceCountUtil.release(msg)</strong>不然会造成内存泄露，另外你也可以利用继承SimpleInboundHanlder来替你完成这些工作 </li>
+</ul>
+<h1 id="Netty中的ByteBuf"><a href="#Netty中的ByteBuf" class="headerlink" title="Netty中的ByteBuf"></a>Netty中的ByteBuf</h1><ul>
+<li>ByteBuf实现了ReferenceCount接口。顾名思义其是个计数类，参考JVM垃圾回收机制</li>
+<li>netty ByteBuf 相对于Java Nio ByteBuffer的优势：<ul>
+<li>自定义缓冲类型</li>
+<li>通过一个内置的复合类型实现零拷贝</li>
+<li>扩展性好，比如StringBuffer</li>
+<li>不需要调用flip()来切换读写状态</li>
+<li>读取和写入索引分开</li>
+<li>方法链</li>
+<li>引用计数功能</li>
+<li>Pool（池）的引入</li>
+</ul>
+</li>
+<li>ByteBuf的类型<ul>
+<li>HeapBuffer : 顾名思义，底层存储使用数组的数据结构将数据存储在JVM的堆空间上面—-&gt; ByteBuf.array() 来获取byte[]数据</li>
+<li>DirectBuffer：同Nio 中的Direct Buffer，Netty通过内存池的概念来解决其分配内存和释放内存的复杂的问题，通过间接方式来对directBuffer来读写</li>
+</ul>
+</li>
+</ul>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ByteBuf directBuf = Unpooled.directBuffer(<span class="number">16</span>);</div><div class="line">    directBuf.writeBytes(<span class="string">"I'm datas"</span>.getBytes());</div><div class="line">    <span class="keyword">if</span> (!directBuf.hasArray())&#123; <span class="comment">//如果Bytebuf 的存储状态不是 堆</span></div><div class="line">        <span class="keyword">int</span> len = directBuf.readableBytes(); <span class="comment">// 首先得到其长度</span></div><div class="line">        <span class="keyword">byte</span>[] arr = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</div><div class="line">        directBuf.getBytes(<span class="number">0</span>,arr);</div><div class="line">        System.out.println(<span class="keyword">new</span> String(arr));</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>Composite Buffer： <ul>
+<li>Composite Buffer 的hasArray总是返回false,虽然它有可能会在堆内存上有存储 </li>
+</ul>
+</li>
+<li>对于已读字节，以readerIndex 为准，使用 discardReadBytes，可以清楚【0…readerIndex】区间的字节</li>
+<li>利用ByteBuf的clear 函数来 复位readerIndex和writerIndex为0,clear不会清空ByteBuf的内容，它影响的只是Index。。。</li>
+<li>Netty Buffer包中的工具类<ul>
+<li>BufferAllactor 用来分配ButyBuf实例</li>
+<li>Unpooled 是一个用来创建缓冲区的工具</li>
+<li>ByteBufUtil,其中的 HexDump 用来返回ByteBuf中 16进制信息。可以用来调试</li>
+</ul>
+</li>
+</ul>
+<h1 id="Netty中的编解码"><a href="#Netty中的编解码" class="headerlink" title="Netty中的编解码"></a>Netty中的编解码</h1><ul>
+<li>编码器负责入站，而解码器负责出站。<strong>他们是怎么实现区分入站和出站的区别判断的？</strong></li>
+<li>MessageToByteEncoder和ByteToMessageDecoder是使用最多的编解码类。尝试读这两个类的源码，另外还有MessageToMessageEncode和MessageToMessageDecoder两个类</li>
+</ul>
+<h1 id="Netty-中的Http"><a href="#Netty-中的Http" class="headerlink" title="Netty 中的Http"></a>Netty 中的Http</h1><ul>
+<li>在netty中处理Http请求，需要两个编解码类 分别为 HttpReqestDecoder，HttpRequestDecoder,HttpResponseDecoder,HttpResponseEncoder…其中一般在HttpRequestDecoder和HttpResponseEncoder 用的较多</li>
+<li>Netty Server 处理Request请求时比较底层，没有做过多的封装，需要自行判断握手，信息传递，长连接判断，和trailer header的判断<br>最后在Netty中映射的类分别为 <code>HttpRequst -----&gt; HttpCotent...HttpContent -----&gt; LastHttpContent</code></li>
+</ul>
+<h1 id="测试Neety-代码"><a href="#测试Neety-代码" class="headerlink" title="测试Neety 代码"></a>测试Neety 代码</h1>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/01/18/Netty(二)/" class="archive-article-date">
+  	<time datetime="2017-01-18T05:30:25.306Z" itemprop="datePublished"><i class="icon-clock"></i>2017-01-18</time>
 </a>
       
       
@@ -939,7 +1368,7 @@ public class NullHostNameVerifier implements HostnameVerifier {
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 

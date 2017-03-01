@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Nginx 负载均衡 | Walker的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="概念
+模块划分
+Core 核心模块
+Events事件模块
+HTTP 模块
+Mail邮件模块
+
+
+ Nginx 中的正则表达式语法
+第一优先级：  已=开头表示精确匹配
+第二优先级：^~ 开头表示uri以某个常规字符串开头，不是正则匹配
+第三优先级：~ 开头表示区分大小写的正则匹配;~* 开头表示不区分大小写的正则匹配 
+第四优先级：/ 通用匹配, 如果没有其它匹配,任何请求都会匹配到
+
+
+
+
+lo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx 负载均衡">
+<meta property="og:url" content="http://yoursite.com/2017/02/23/负载均衡Nginx/index.html">
+<meta property="og:site_name" content="Walker的博客">
+<meta property="og:description" content="概念
+模块划分
+Core 核心模块
+Events事件模块
+HTTP 模块
+Mail邮件模块
+
+
+ Nginx 中的正则表达式语法
+第一优先级：  已=开头表示精确匹配
+第二优先级：^~ 开头表示uri以某个常规字符串开头，不是正则匹配
+第三优先级：~ 开头表示区分大小写的正则匹配;~* 开头表示不区分大小写的正则匹配 
+第四优先级：/ 通用匹配, 如果没有其它匹配,任何请求都会匹配到
+
+
+
+
+lo">
+<meta property="og:updated_time" content="2017-02-24T03:40:12.103Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nginx 负载均衡">
+<meta name="twitter:description" content="概念
+模块划分
+Core 核心模块
+Events事件模块
+HTTP 模块
+Mail邮件模块
+
+
+ Nginx 中的正则表达式语法
+第一优先级：  已=开头表示精确匹配
+第二优先级：^~ 开头表示uri以某个常规字符串开头，不是正则匹配
+第三优先级：~ 开头表示区分大小写的正则匹配;~* 开头表示不区分大小写的正则匹配 
+第四优先级：/ 通用匹配, 如果没有其它匹配,任何请求都会匹配到
+
+
+
+
+lo">
+  
+  
+    <link rel="icon" href="/assets/header.jpg">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/header.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Walker</a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/CV">简历</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+		        
+					<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">Walker</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/header.jpg" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Walker</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/CV">简历</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/WalkerLiuFei" title="github">github</a>
+			        
+						<a class="google" target="_blank" href="http://walkerliu1993@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-负载均衡Nginx" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Nginx 负载均衡
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><ul>
+<li>模块划分<ul>
+<li>Core 核心模块</li>
+<li>Events事件模块</li>
+<li>HTTP 模块</li>
+<li>Mail邮件模块</li>
+</ul>
+</li>
+<li><a href="http://seanlook.com/2015/05/17/nginx-location-rewrite/" target="_blank" rel="external"> Nginx 中的正则表达式语法</a><ul>
+<li>第一优先级：  已=开头表示精确匹配</li>
+<li>第二优先级：^~ 开头表示uri以某个常规字符串开头，不是正则匹配</li>
+<li>第三优先级：~ 开头表示区分大小写的正则匹配;~* 开头表示不区分大小写的正则匹配 </li>
+<li>第四优先级：/ 通用匹配, 如果没有其它匹配,任何请求都会匹配到</li>
+</ul>
+</li>
+</ul>
+<pre>
+location = / {
+    # 仅仅匹配请求 /  **第一优先级，因为好含有 "="**
+    [ configuration A ]
+}
+location / {
+    # 匹配所有以 / 开头的请求。但是如果有更长的同类型的表达式，则选择更长的表达式。如果有正则表达式可以匹配，则    
+    # 优先匹配正则表达式。 **常规匹配**
+    [ configuration B ]
+}
+location /documents/ {
+    # 匹配所有以 /documents/ 开头的请求。但是如果有更长的同类型的表达式，则选择更长的表达式。
+    #如果有正则表达式可以匹配，则优先匹配正则表达式。
+    [ configuration C ]
+}
+location ^~ /images/ { 
+    # 匹配所有以 /images/ 开头的表达式，如果匹配成功，则停止匹配查找。所以，即便有符合的正则表达式location，也
+    # 不会被使用 **第二优先级 ，**^~ 所有 以image 开头的url 利用这个**
+    [ configuration D ]
+}
+location ~* \.(gif|jpg|jpeg)$ {
+    # 匹配所有以 gif jpg jpeg结尾的请求。但是 以 /images/开头的请求，将使用 Configuration D
+    [ configuration E ]
+}
+</pre>
+
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><h2 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h2><ul>
+<li><strong>注意当你的负责均衡服务器也要做为服务器时，负载监听端口一定不能和服务接口一致</strong></li>
+<li><p><strong>Nginx 负载均衡有几种配置方案</strong></p>
+<ol>
+<li><strong>轮询(Round Robin)：</strong> 根据Nginx配置文件中的顺序，<code>依次</code>将客户端的请求分发到后端服务器上</li>
+<li><strong>最少连接(Least_Conn)：</strong> 将客户端的web请求分发到分发到连接最少的服务器上</li>
+<li><strong>IP地址Hash(Ip_hash) ： 如果处理的连接比较复杂，通过IP计算的hash值将统一客户端的Web请求分发到统一服务器上去处理</strong><pre>
+upstream backend {
+      server 127.0.0.1:8080 ;
+   server 127.0.0.1:9090 ;
+      ip_hash;
+}
+</pre></li>
+<li><p><strong>基于权重的负载均衡（Weight）</strong> ，下面是一个基于权重的负载均衡配置</p>
+<pre>
+upstream Server_Name { # 这个Server_Name 就是你的配置的Nginx 服务器的Servern_Name，  
+
+#ip_hash;   
+# down 表示这个指定的Server 暂时不参与负载均衡
+server 127.0.0.1:8083 down;    
+ # Weight 表示当前的负载权重
+server 127.0.0.1:8084 weight=3;   
+
+server 127.0.0.1:8001;   
+ @
+server 127.0.0.1:8002 backup;
+}
+</pre>
+
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="代理设置"><a href="#代理设置" class="headerlink" title="代理设置"></a>代理设置</h2><h3 id="反向代理设置"><a href="#反向代理设置" class="headerlink" title="反向代理设置"></a>反向代理设置</h3><p>反向代理，其实是将代理服务器作为客户端可见的服务器作为 客户端的相应，所以你在访问的时候其实是在访问这个代理服务器！<br>在下面的这个例子中其实是访问 的 <code>http:localhost:85</code></p>
+<pre>
+   # 定义上游服务器,并提供负载均衡
+    upstream  web{   
+        server localhost:8084;  
+        server localhost:8083;  
+        server localhost:8082;  
+    }  
+
+    server {
+        # Http 监听的端口
+        listen       85;
+        # Host name ，Server name 即为 服务器的 地址，确保能被发现
+        server_name  localhost;  
+        # 
+        charset utf-8;
+        # 访问日志存储目录
+        access_log  logs/host.access.log;
+
+        location / {
+            # 当前这个Server 反向代理的 上游服务器 看上面的 UpStream
+            proxy_pass  http://web;
+            root   html;
+            index  index.html index.htm;
+            #  Nginx默认是不转发client的 Host 名字的
+            #  这个利用这个变量 Nginx会转发 <a href="http://www.pureage.info/2014/02/22/host-variable-#in-nginx.html" target="_blank" rel="external">Client Host</a> 
+            proxy_set_header Host $host;  
+            # 转发时隐藏中 指定的Client 请求中的Header 信息   
+            proxy_hide_header Cache-Control;
+            # proxy_next_upstream 表示 当当前的上游服务器发生故障时，去找下一个上游服务器  
+            #proxy_next_upstream
+            # proxy_pass_request_body 是否向上游服务器转发Request的请求体部分
+            # proxy_pass_request_body on|off
+        }
+
+</pre>
+
+
+
+<ul>
+<li>proxy_redirect<br>一个典型的配置 <code>proxy_redirect http://localhost:8000/two/ http://frontend/one/;</code>如果上游 服务器返回302状态重定向到   <a href="http://localhost:8000/two/" target="_blank" rel="external">http://localhost:8000/two/</a> 通过这个 配置 其实是定向到 <a href="http://frontend/one/some/uri/。" target="_blank" rel="external">http://frontend/one/some/uri/。</a></li>
+</ul>
+<h3 id="正向代理设置"><a href="#正向代理设置" class="headerlink" title="正向代理设置"></a>正向代理设置</h3><p>正向代理，其实是将代理服务器作为客户端的一个DNS 解析器而已,一个正先发代理的例子</p>
+<pre>
+server {
+ listen 8090;
+ location / {
+
+     resolver 8.8.8.8; //设置一个DNS 服务器作为Client 端请求服务器的解析服务器
+     resolver_timeout 30s;
+     proxy_pass http://$host$request_uri;
+ }
+ access_log  /data/httplogs/proxy-$host-aceess.log;      
+}
+</pre>
+
+<h1 id="怎样对Nginx-运行状态进行监控"><a href="#怎样对Nginx-运行状态进行监控" class="headerlink" title="怎样对Nginx 运行状态进行监控"></a>怎样对Nginx 运行状态进行监控</h1><h1 id="Nginx-的安全过滤"><a href="#Nginx-的安全过滤" class="headerlink" title="Nginx 的安全过滤"></a>Nginx 的安全过滤</h1><p>首选 认识Nginx 中的这些内置百变量</p>
+<pre><code class="hljs lang-gams"><span class="hljs-meta"><span class="hljs-meta-keyword">$args</span> ：这个变量等于请求行中的参数，同$query_string</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$content</span>_length ： 请求头中的Content-length字段。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$content</span>_type ： 请求头中的Content-Type字段。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$document</span>_root ： 当前请求在root指令中指定的值。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$host</span> ： 请求主机头字段，否则为服务器名称。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$http</span>_user_agent ： 客户端agent信息</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$http</span>_cookie ： 客户端cookie信息</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$limit</span>_rate ： 这个变量可以限制连接速率。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$request</span>_method ： 客户端请求的动作，通常为GET或POST。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$remote</span>_addr ： 客户端的IP地址。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$remote</span>_port ： 客户端的端口。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$remote</span>_user ： 已经经过Auth Basic Module验证的用户名。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$request</span>_filename ： 当前请求的文件路径，由root或alias指令与URI请求生成。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$scheme</span> ： HTTP方法（如http，https）。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_protocol ： 请求使用的协议，通常是HTTP/1.0或HTTP/1.1。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_addr ： 服务器地址，在完成一次系统调用后可以确定这个值。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_name ： 服务器名称。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$server</span>_port ： 请求到达服务器的端口号。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$request</span>_uri ： 包含请求参数的原始URI，不包含主机名，如：”/foo/bar.php?arg=baz”。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$uri</span> ： 不带请求参数的当前URI，$uri不包含主机名，如”/foo/bar.html”。</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$document</span>_uri ： 与$uri相同。</span>
+</code></pre>
+
+
+<p>一些内置的条件判断：</p>
+<ul>
+<li>-f和!-f用来判断是否存在文件</li>
+<li>-d和!-d用来判断是否存在目录</li>
+<li>-e和!-e用来判断是否存在文件或目录</li>
+<li>-x和!-x用来判断文件是否可执行</li>
+</ul>
+<p>例子</p>
+<pre># 如果文件不存在则返回400
+if (!-f $request_filename) {
+    return 400;
+}
+
+# 如果host不是xuexb.com，则301到xuexb.com中
+if ( $host != "xuexb.com" ){
+    rewrite ^/(.*)$ https://xuexb.com/$1 permanent;
+}
+
+# 如果请求类型不是POST则返回405
+if ($request_method = POST) {
+    return 405;
+}
+
+# 如果参数中有 a=1 则301到指定域名
+if ($args ~ a=1) {
+    rewrite ^ http://example.com/ permanent;
+}
+在某种场景下可结合location规则来使用，如：
+
+# 访问 /test.html 时
+location = /test.html {
+    # 默认值为xiaowu
+    set $name xiaowu;
+
+    # 如果参数中有 name=xx 则使用该值
+    if ($args ~* name=(\w+?)(&|$)) {
+        set $name $1;
+    }
+
+    # 301
+    rewrite ^ /$name.html permanent;
+}
+上面表示：
+
+/test.html => /xiaowu.html
+/test.html?name=ok => /ok.html?name=ok</pre>
+
+<h1 id="页面缓存"><a href="#页面缓存" class="headerlink" title="页面缓存"></a>页面缓存</h1>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/23/负载均衡Nginx/" class="archive-article-date">
+  	<time datetime="2017-02-23T02:03:35.284Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-23</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/23/测试工具/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/02/22/Web相关/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Web 相关</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="负载均衡Nginx" data-title="Nginx 负载均衡" data-url="http://yoursite.com/2017/02/23/负载均衡Nginx/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Walker
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">&lt;br&gt;一枚小小的技术控&lt;br/&gt;爱好篮球$健身$美剧&lt;br/&gt;靠Java为生&lt;br/&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

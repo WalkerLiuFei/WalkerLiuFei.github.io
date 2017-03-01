@@ -32,7 +32,7 @@
 
 
 从java层传入绝对路径到jni层的时候，有时候会在默认莫名其妙">
-<meta property="og:updated_time" content="2016-11-24T11:00:10.825Z">
+<meta property="og:updated_time" content="2017-02-14T03:26:31.604Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Walker的博客">
 <meta name="twitter:description" content="title:音视频编解码中注意的问题SDK使用
@@ -175,7 +175,7 @@
 </li>
 <li>从java层传入绝对路径到jni层的时候，有时候会在默认莫名其妙的脚伤”flock“suffix，这个时候可以利用jbyteArray.size对得到的char *进行剪切，因为这个时候jbyteArray的size标记的path长度是正确的！</li>
 <li>其实更好的做法是利用<em>GetStringUTFChars</em>来进行转换更为常用 </li>
-<li>在GETMethod()中,最后一个参数<ul>
+<li>在GETMethod()中,最后一个参数，这其实是类型在字节码中的呈现！<ul>
 <li>“([BI)V” :表示返回类型为void，形参为byte[] 和 int</li>
 <li>“(Ljava/lang/String;)void” 表示形参为String 返回值为void的函数</li>
 <li>“(Ljava/lang/String;I)void”表示形参为String　和　int 返回值为void的函数,其和 I 区别在于”;”是否添加，只要到参数为类的时候才添加！！！！</li>
