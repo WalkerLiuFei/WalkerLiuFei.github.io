@@ -21,7 +21,7 @@ Mybatis 中 “#” 和“$”的区别
 Mybatis 中 “#” 和“$”的区别
 #{ } 解析为一个 JDBC 预编译语句（prepared statement）的参数标记符。  select  from user where name = #{name};  解析为：  select  from use">
 <meta property="og:image" content="https://segmentfault.com/img/bVtwuY">
-<meta property="og:updated_time" content="2017-03-01T08:50:49.713Z">
+<meta property="og:updated_time" content="2017-03-01T09:50:13.474Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mybatis">
 <meta name="twitter:description" content="Mybatis 查询的的结果类必须要有相应结果属性的构造函数，并且还不能有原生的属性，比如int 需要是 Integer的！
@@ -211,10 +211,7 @@ try {
     logger.error(e.message());
 }
 </code></pre><p><strong>对于怎样提升的性能？ 个人理解就是将语语句进行了缓存。例如查询 <code>select * from table_name where id &gt; 100</code>在第一次查询时将语句进行缓存，第二次查询时，使用同样的 查询语句 select * from table_name where id &gt; ? 第二次主需要填充占位符即可！</strong></p>
-<h2 id="MYSQL中的分页"><a href="#MYSQL中的分页" class="headerlink" title="MYSQL中的分页"></a>MYSQL中的分页</h2><ul>
-<li><h1 id="事务管理"><a href="#事务管理" class="headerlink" title="事务管理"></a>事务管理</h1></li>
-</ul>
-<h2 id="Mybatis事务管理与AOP的结合使用"><a href="#Mybatis事务管理与AOP的结合使用" class="headerlink" title="Mybatis事务管理与AOP的结合使用"></a>Mybatis事务管理与AOP的结合使用</h2><h2 id="Mybatis的一对多映射"><a href="#Mybatis的一对多映射" class="headerlink" title="Mybatis的一对多映射"></a>Mybatis的一对多映射</h2><h2 id="Mybatis的多对一映射"><a href="#Mybatis的多对一映射" class="headerlink" title="Mybatis的多对一映射"></a>Mybatis的多对一映射</h2><h2 id="Statement-PreparedStatement-CallableStatement的区别"><a href="#Statement-PreparedStatement-CallableStatement的区别" class="headerlink" title="Statement ,PreparedStatement,CallableStatement的区别"></a>Statement ,PreparedStatement,CallableStatement的区别</h2><h2 id="Mybatis-的缓存机制"><a href="#Mybatis-的缓存机制" class="headerlink" title="Mybatis 的缓存机制"></a>Mybatis 的缓存机制</h2><h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><p>一级缓存是SqlSession级别的缓存。在操作数据库时需要构造sqlSession对象，在对象中有一个（内存区域）HashMap用于缓存数据。不同的sqlSession之间的缓存数据区域互相没有影响。Mybatis 默认开启一级缓存。当然，让SqlSession close之后一级缓存就没了。</p>
+<h2 id="Mybatis中的缓存"><a href="#Mybatis中的缓存" class="headerlink" title="Mybatis中的缓存"></a>Mybatis中的缓存</h2><h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><p>一级缓存是SqlSession级别的缓存。在操作数据库时需要构造sqlSession对象，在对象中有一个（内存区域）HashMap用于缓存数据。不同的sqlSession之间的缓存数据区域互相没有影响。Mybatis 默认开启一级缓存。当然，让SqlSession close之后一级缓存就没了。</p>
 <p>这一级缓存很容易理解，没什么好说的</p>
 <h3 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h3><p>二级缓存是Mapper级别的缓存，多个SqlSession去操作同一个Mapper的Sql语句，多个SqlSession去操作数据库会存在二级缓存区域，多个SqlSession可以共享二级缓存。二级缓存是跨SqlSession的。二级缓存需要在Mybatis中的Setting 选项中设置.其映射区域为整个Mapper。</p>
 <p>数据结构仍然为HashMap</p>
@@ -237,11 +234,11 @@ try {
   
 <nav id="article-nav">
   
-    <a href="/2017/02/19/Mysql 视图/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/02/19/Mysql事务/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          (no title)
+          事务
         
       </div>
     </a>

@@ -126,112 +126,6 @@
       <div class="body-wrap">
         
   
-    <article id="post-Mysql 分区" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title：-Mysql-分区"><a href="#title：-Mysql-分区" class="headerlink" title="title： Mysql 分区"></a>title： Mysql 分区</h2>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2017/02/19/Mysql 分区/" class="archive-article-date">
-  	<time datetime="2017-02-19T09:10:02.222Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Mysql安全" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/19/Mysql安全/">Mysql安全</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Sql-注入"><a href="#Sql-注入" class="headerlink" title="Sql 注入"></a>Sql 注入</h1><ul>
-<li>利用绑定变量，</li>
-<li>利用正则表达式对用户输入的信息进行过滤筛选</li>
-</ul>
-<h1 id="Sql-Mode"><a href="#Sql-Mode" class="headerlink" title="Sql Mode"></a><a href="https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html" target="_blank" rel="external">Sql Mode</a></h1><ul>
-<li>根据不同的业务需求来选择 设置不同 sql_mode</li>
-<li>Sql mode 可以解决的问题<ul>
-<li>通过设置SQL Mode,可以完成不同严格程度的数据校验，有效的保证数据准确性</li>
-<li>通过设置SQL Mode为ANSI模式，来保证大多数的SQL符合标准的SQL语法，这样来保证在不同的Database之间切换时不需要对SQL进行大量的修改</li>
-<li>通过设置sql mode，使得Mysql上的数据更方便迁移到目标数据库中</li>
-</ul>
-</li>
-<li>利用<code>SET GLOABLE/SESSION SQL_MODE = ‘modes’</code> 来对SQL的的模式进行设定</li>
-<li>最常见的几种MODE <ul>
-<li>ANSI: 这种模式使得SQL语句必须符合标准sql语法 —&gt;ANSI REAL_AS_FLOAT, PIPES_AS_CONCAT, ANSI_QUOTES, IGNORE_SPACE, and (as of MySQL 5.7.5) ONLY_FULL_GROUP_BY.</li>
-<li>STRICT_TRANS_TABLES :</li>
-<li>TRADITIONAL: 这个模式可以用一句话概述： give an error instead of a warning.<strong>插入和更新操作会在错误出现时立刻中止，如果你不是在用一个事务性的存储引擎的话。这可能不是你想要的结果，因为被中止的操作并不会被回滚</strong></li>
-</ul>
-</li>
-<li>Mode 分类<font size="3"><br>+ ALLOW_INVALID_DATES<br>+ ANSI_QUOTES<br>+ ERROR_FOR_DIVISION_BY_ZERO<br>+ HIGH_NOT_PRECEDENCE<br>+ IGNORE_SPACE<br>+ NO_AUTO_CREATE_USER<br>+ NO_AUTO_VALUE_ON_ZERO<br>+ NO_BACKSLASH_ESCAPES<br>+ NO_DIR_IN_CREATE<br>+ NO_ENGINE_SUBSTITUTION<br>+ NO_FIELD_OPTIONS<br>+ NO_KEY_OPTIONS<br>+ NO_TABLE_OPTIONS<br>+ NO_UNSIGNED_SUBTRACTION<br>+ NO_ZERO_DATE<br>+ NO_ZERO_IN_DATE<br>+ ONLY_FULL_GROUP_BY : 指的意思就是 所要query的列 必须有唯一性，被aggrate 函数修饰。或者是所选列的是primary key<br>+ PAD_CHAR_TO_FULL_LENGTH<br>+ PIPES_AS_CONCAT : 将 ‘||’视为 字符串连接符，<br>+ REAL_AS_FLOAT<br>+ STRICT_ALL_TABLES<br>+ STRICT_TRANS_TABLES<br></font></li>
-<li>Sql Mode 常见功能<ul>
-<li>校验日期数据的合法性</li>
-<li>严格模式：</li>
-</ul>
-</li>
-</ul>
-<p>0    25    16:05:05    create table t (d datetime)    Error Code: 1399. XAER_RMFAIL: The command cannot be executed when global transaction is in the  ACTIVE state    0.000 sec</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2017/02/19/Mysql安全/" class="archive-article-date">
-  	<time datetime="2017-02-19T07:51:30.182Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
     <article id="post-Mysql事务" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -340,40 +234,6 @@ lock tables table_name [as alias] {read [local]|[low_priority]write} ，table_na
 
 
   
-    <article id="post-Mysql 视图" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2017/02/19/Mysql 视图/" class="archive-article-date">
-  	<time datetime="2017-02-19T04:17:57.945Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-19</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
     <article id="post-mybatis" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -446,10 +306,7 @@ try {
     logger.error(e.message());
 }
 </code></pre><p><strong>对于怎样提升的性能？ 个人理解就是将语语句进行了缓存。例如查询 <code>select * from table_name where id &gt; 100</code>在第一次查询时将语句进行缓存，第二次查询时，使用同样的 查询语句 select * from table_name where id &gt; ? 第二次主需要填充占位符即可！</strong></p>
-<h2 id="MYSQL中的分页"><a href="#MYSQL中的分页" class="headerlink" title="MYSQL中的分页"></a>MYSQL中的分页</h2><ul>
-<li><h1 id="事务管理"><a href="#事务管理" class="headerlink" title="事务管理"></a>事务管理</h1></li>
-</ul>
-<h2 id="Mybatis事务管理与AOP的结合使用"><a href="#Mybatis事务管理与AOP的结合使用" class="headerlink" title="Mybatis事务管理与AOP的结合使用"></a>Mybatis事务管理与AOP的结合使用</h2><h2 id="Mybatis的一对多映射"><a href="#Mybatis的一对多映射" class="headerlink" title="Mybatis的一对多映射"></a>Mybatis的一对多映射</h2><h2 id="Mybatis的多对一映射"><a href="#Mybatis的多对一映射" class="headerlink" title="Mybatis的多对一映射"></a>Mybatis的多对一映射</h2><h2 id="Statement-PreparedStatement-CallableStatement的区别"><a href="#Statement-PreparedStatement-CallableStatement的区别" class="headerlink" title="Statement ,PreparedStatement,CallableStatement的区别"></a>Statement ,PreparedStatement,CallableStatement的区别</h2><h2 id="Mybatis-的缓存机制"><a href="#Mybatis-的缓存机制" class="headerlink" title="Mybatis 的缓存机制"></a>Mybatis 的缓存机制</h2><h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><p>一级缓存是SqlSession级别的缓存。在操作数据库时需要构造sqlSession对象，在对象中有一个（内存区域）HashMap用于缓存数据。不同的sqlSession之间的缓存数据区域互相没有影响。Mybatis 默认开启一级缓存。当然，让SqlSession close之后一级缓存就没了。</p>
+<h2 id="Mybatis中的缓存"><a href="#Mybatis中的缓存" class="headerlink" title="Mybatis中的缓存"></a>Mybatis中的缓存</h2><h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><p>一级缓存是SqlSession级别的缓存。在操作数据库时需要构造sqlSession对象，在对象中有一个（内存区域）HashMap用于缓存数据。不同的sqlSession之间的缓存数据区域互相没有影响。Mybatis 默认开启一级缓存。当然，让SqlSession close之后一级缓存就没了。</p>
 <p>这一级缓存很容易理解，没什么好说的</p>
 <h3 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h3><p>二级缓存是Mapper级别的缓存，多个SqlSession去操作同一个Mapper的Sql语句，多个SqlSession去操作数据库会存在二级缓存区域，多个SqlSession可以共享二级缓存。二级缓存是跨SqlSession的。二级缓存需要在Mybatis中的Setting 选项中设置.其映射区域为整个Mapper。</p>
 <p>数据结构仍然为HashMap</p>
@@ -541,7 +398,7 @@ try {
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Mysql-相关"><a href="#Mysql-相关" class="headerlink" title="Mysql 相关"></a>Mysql 相关</h1><h2 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h2><ul>
+        <h2 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h2><ul>
 <li>原子性：用于标示事务事务是否完全完成。对于事务而言，其所有的操作都在内存中执行，只有当所有的操作都完成 成功后，才会永久化写入到硬盘。</li>
 <li>一致性：事务在系统完整性中实施一致性，通过保证系统的任何事务最后都处于有效状态来实现。事务出错，系统将返回原始状态</li>
 <li>隔离性： 为防止混乱，再两个事务同时执行时，使用乐观锁的机制，保证对同一数据，同一时间只有一个请求在对其访问。隔离性保证了，在本次事务完成之前，其他操作对于数据的访问都不会受到未完成事务的影响</li>
@@ -695,46 +552,6 @@ try {
 
 
   
-    <article id="post-Spring" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><ul>
-<li>CGLIB 个JDK代理的区别：JDK 的动态代理是通过反射，代理的建立发生在编译器（其实是运行期），对动态代理类的字节码进行更改。JDK利用的是反射<ul>
-<li>cglib 实现的关键类<code>Enhancer</code> 织入器</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2017/02/16/Spring/" class="archive-article-date">
-  	<time datetime="2017-02-16T01:43:37.312Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-16</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
     <article id="post-我的简历" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -783,9 +600,440 @@ try {
 
 
   
+    <article id="post-Redis Interview" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/15/Redis Interview/">Redis学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Redis的应用场景"><a href="#Redis的应用场景" class="headerlink" title="Redis的应用场景"></a>Redis的应用场景</h2><ul>
+<li>缓存 ： 最多的是配合Mysql作为其读的缓存<ul>
+<li>保证表的数据和Redis数据的对应关系，比如让 mysql主键作为Redis这边的key等</li>
+<li>选择一个合适的<strong>序列化方式</strong></li>
+<li>为保证数据一致性，只在数据库查询时将对象放入缓存，如果对象发生了修改或者删除操作，直接清空缓存。在数据库新增和查询后将数据放入缓存，修改后更新缓存。删除后删除换粗    <strong>*怎么实现？</strong> </li>
+</ul>
+</li>
+<li>消息队列<ul>
+<li>Redis中的list是一个双向链表，所以很适用于作为消息队列来使用，消息生产者只需要将消息push进队列，消费者利用pop取出消息。并且还可以保证数据的有序性。另外Redis具有的sub/pub 功能还可以作为发布者/订阅者角色。另外由于Redis具有的快照功能，也可以避免数据的丢失。</li>
+</ul>
+</li>
+<li>时间轴：可以将一个redis 作为共用的时间轴。例如一个服务负责接收一个微博的帖子的评论，这个服务将评论数据插入到redis指定数据的最后，另一个前端的接口服务可以从最后lrange得到这个最新的评论，用来显示，推送等操作</li>
+<li>排行榜：</li>
+<li>计数器：计算器</li>
+<li>分布式锁:<ul>
+<li><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2></li>
+</ul>
+</li>
+<li>Redis 和Datacache的区别：DataBase 只是一个datagrid（表格），redis是一个DataBase，datagrid并不含有数据持久化的功能，而database是有的</li>
+<li>Redis 中的Java驱动Jedis使用的模式是代理模式，Jedis的所有操作都最后交给client去执行了。。Jedis并不是线程安全的.<strong>不要在多线程中使用同一个Jedis实例</strong>redis 默认存储间隔为 300s 5分钟</li>
+<li>在Redis存储中key的字符长度对存储性能是没有影响的</li>
+<li>Redis 内存优化：<ul>
+<li>对于多影射对象，比如一个个人信息，利用id作为key，利用一个map作为个人信息的存储作为value存储。map保存有filed的名称和value</li>
+<li>根据业务需要选择合适的数据类型，并为不同的应用场景设置相应的紧凑存储参数。</li>
+<li>当业务场景不需要数据持久化时，关闭所有的持久化方式可以获得最佳的性能以及最大的内存使用量。</li>
+<li>如果需要使用持久化，根据是否可以容忍重启丢失部分数据在快照方式与语句追加方式之间选择其一</li>
+<li>不要让你的Redis所在机器物理内存使用超过实际内存总量的3/5。</li>
+</ul>
+</li>
+<li>Redis 怎么保证和Mysql保证数据一致性<ul>
+<li>读的数据作为缓存保存到Redis，对于写操作都是直接操作的Mysql？</li>
+<li>不要求强一致实时性的读操作，都由redis进行，要求强一致性的读操作，交给</li>
+<li></li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/15/Redis Interview/" class="archive-article-date">
+  	<time datetime="2017-02-15T07:53:49.806Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-15</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Java基础" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/14/Java基础/">你应该了解的Java那些面试点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><ul>
+<li><strong>你对ClassLoader的理解</strong><ul>
+<li>ClassLoader默认提供的三个ClassLoader，Bootstrap, Extension ClassLoader，APPClassLoader，后面这俩其实是第一个加载出来的，第一个是属于JVM的。不是一个层次的东西</li>
+<li>Bootstrp 负责加载jdk的核心库。</li>
+<li>Extension ClassLoader：扩展类加载器，负责加载Java的扩展类库</li>
+<li>APP ClassLoader：系统类加载器，负责加载ClassPath下所有的jar包和Class文件</li>
+<li>可以继承ClassLoader实现自己的类加载器 </li>
+<li>如果你在去找通过Class类 找ClassLoader 它返回null的时候，说明他的类加载器是BootStrapClassLoader，所以说不要通过java核心库去找ClassLoader 加载配置文件什么的<br><code>System.out.println(String.class.getClassLoader());</code>就是输出的null</li>
+<li>双亲委派模型,其实就是父类的Class先去加载，父类找不到，再交给子类的ClassLoader加载….这样就不会造成类加载时的冲突</li>
+<li>对于不同ClassLoader加载出来的类，虽然它们有可能会是同一个字节码文件(同一个类文件)JVM也会认为他们属于不同的类</li>
+<li>利用 java -Xbootstrap/a; 添加bootstrap 需要加载的类的jar包的路径</li>
+</ul>
+</li>
+<li><p>64位JDK 不变不如32位JDK</p>
+</li>
+<li><p><strong>谈谈你对Java线程池的理解</strong></p>
+<blockquote>
+<ul>
+<li><strong>实现原理</strong>：关键词 <code>生产者消费者模型</code>、<code>HashSet</code>、<code>ThreadPoolExcutors</code>、<code>额外的任务管理线程</code>。核心类是 ThreadPoolExcutors，其维护一个corePoolSize，maxPoolSize,缓冲队列和一个HashSet 作为Task集合。内部通过一个BlockQueue作为 work queue维护一个生产消费者模型。线程池其实就是一个HashSet来存放所有的工作集。内部维护了一个名字叫Worker的类，用来管理工作集的执行，换句话说，ThreadPoolExcutors也额外需要一个线程来执行它维护的线程。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>Syntronized 属于悲观锁，lock属于乐观锁。lock更方便用于负责逻辑的。 </p>
+</li>
+<li>java中的公平锁和非公平锁<ul>
+<li>公平锁：先来先得</li>
+<li>费公平锁：不管先后顺序，来了就给（看释放时间）。</li>
+<li>Java中的RetreenLock 默认是非公平锁</li>
+</ul>
+</li>
+<li>ConcurrentHashMap 和Collections.synchronized(map)之间的区别：<br>  <strong>ConcurrentHashMap允许多个线程同时修改Map中的元素，而不是阻塞其中的某个线程.Collections.synchronized(map)是利用阻塞线程来实现的线程安全访问。如果你想及时看到Map中实时更新的元素，使用Collections.Syntronized。如果你的往Map里面插入的操作很多，而读的操作很少。并且想拥有较好的性能。那么使用ConcurrentHashMap</strong>，另外ConcurrentHashMap不允许插入null值。。HashTable和Collections.syntronized(HashMap)的表现是一致的。都是在整个集合上建立一个读写锁。concurrentMap主要关注的是get动作</li>
+<li>ConcurrentMap中的<strong>分段锁技术</strong><ul>
+<li>ConcurrentHashMap是由Segment数组结构和HashEntry数组结构组成。Segment是一种可重入锁ReentrantLock，在ConcurrentHashMap里扮演锁的角色，HashEntry则用于存储键值对数据。</li>
+<li>ConcurrentHashMap内部使用段(Segment)来表示这些不同的部分，每个段其实就是一个小的hash table，它们有自己的锁。只要多个修改操作发生在不同的段上，它们就可以并发进行。同样当一个线程占用锁访问其中一个段数据的时候，其他段的数据也能被其他线程访问。</li>
+<li>最后就是读写分离，也就是说对于Map中保存的对象进行读操作是不需要获取锁，只有在对某个元素进行写操作，才需要获取当前的这个元素所在的Segment的锁</li>
+</ul>
+</li>
+<li>java dump 文件<ul>
+<li>heap dump:用来分析java对象的内存占用情况 ： jmap -dump:live ,format=b,file=heap.hprof xxx(java 进程号)</li>
+<li>thread dump：用来分析java应用的执行情况。一般用来解决java执行时的block问题：jstack XXX(java 进程号)</li>
+<li>使用工具MAT来分析dump文件是一个比较好的选择</li>
+</ul>
+</li>
+<li><p>java -x m命令</p>
+</li>
+<li><p>java内存模型</p>
+<ul>
+<li>线程共享</li>
+<li>程序计数器：java执行字节码的指示器</li>
+<li>Java虚拟机堆：用来为java方法执行时建立的内存模型，包含局部变量，操作数栈，动态链接，方法出口。</li>
+<li>线程共享</li>
+<li>Java堆，用来存放对象，是GC主要区域，分为新生代和老生代</li>
+<li>方法区（永久代）：用于存储虚拟机加载的类信息，常量，静态变量等。这个区域的内存回收主要针对的是常量池的回收和对类型的卸载！</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li>JavaGC 算法，可达性分析算法。判断一个对象的引用是否能达到GC Root Set。不能则说明是可以回收的</li>
+</ul>
+<ul>
+<li>垃圾回收算法<br>&gt;<ul>
+<li>标记清除算法：先对所有的需要回收的对象进行标记，然后统一回收。缺点是会产生大量的内存碎片</li>
+<li>复制算法：将可用内存按照容量分成大小相同的两块，每次使用的时候只用其中的一块。使用完毕后，进行一次内存回收。将还存活的对象复制到另一块内存，并对先前的那块内存进行清理。缺点显而易见</li>
+<li>分代回收算法：老年代单线程标记整理算法，新生代复制收集算法</li>
+<li>可以利用–XX:PretenureSizeThrshold 参数 设定一个阈值，令大于这个阈值的对象直接在老年代分配。这样做的目的是避免Eden区以及Survivor区之间发生大量的内存复制（新生代采用内存复制算法来进行GC）</li>
+<li>通过指定MinorGC次数(默认15次)的对象将进入老年代区域</li>
+<li>注意区别 full gc ，minor gc  的区别已经出发条件</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<ul>
+<li><strong>java 中计算hashcode 用 31作为因子?</strong><blockquote>
+<p> 首先因为其是一个素数</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><strong>利用 foreach 循环删除元素时为什么会抛出一个 ConncurrentException ？</strong> (测试环境 jdk 8)<br>&gt;<ul>
+<li>首先，foreach 循环只能遍历 可以Iterable的对象，比如Collections包里面各类集合类和 数组。Iterable 对象的遍历在编译期被编程成 <code>for(Iterator i = list.iterator;i.next;){...}</code>,而数组的的编译成（之前会首先有个引用！）， <code>for(int index = 0;index &lt; arr.length();index ++){...}</code></li>
+<li>在单线程的情况下并不是真正意义上的并发异常。原因是，可 Iterable 的集合类，内部维护了一个子类Iterator,这个子类有一个 属性 expectCount 这个count是当前list集合元素的数量。如果你利用List 直接去Remove，会造成这个属性值和 list值不一致！如果你在modify list元素数量然后再用Iterator 去 进行next 操作的时候会抛出一个ConcurrentException</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/14/Java基础/" class="archive-article-date">
+  	<time datetime="2017-02-14T07:39:13.214Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-14</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Spring 面试" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/13/Spring 面试/">Spring 面试</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>Spring security 默认 http cache是disable的 。为静态资源添加设置cache 周期 </p>
+<ul>
+<li><p>对静态资源开启cache 周期，如果要关闭的话，setCachedPeriod（-1）即为关闭缓存</p>
+<pre>
+  @Configuration
+public class MvcConfigurer extends WebMvcConfigurerAdapter
+  implements EmbeddedServletContainerCustomizer {
+  @Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+  // Resources without Spring Security. No cache control response headers.
+  registry.addResourceHandler("/static/public/**")
+      .addResourceLocations("classpath:/static/public/");
+
+  // Resources controlled by Spring Security, which
+  // adds "Cache-Control: must-revalidate".
+  registry.addResourceHandler("/static/**")
+      .addResourceLocations("classpath:/static/")
+      .setCachePeriod(3600*24);
+   }
+}
+</pre>、
++ 检查 request 的 last-modified的状态，如果没有被修改返回 null，返回null后 这里回去是交给父类处理，。。
+<pre>
+  long lastModified = // spec by app。
+  if (request.checkNotModified(lastModified)) {
+  // 2. shortcut exit - no further processing necessary
+  return null;
+}
+</pre>
+
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>CGLIB 个JDK代理的区别：JDK 的动态代理是通过反射，代理的建立发生在编译器（其实是运行期），对动态代理类的字节码进行更改。JDK利用的是反射<ul>
+<li>cglib 实现的关键类<code>Enhancer</code> 织入器</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/13/Spring 面试/" class="archive-article-date">
+  	<time datetime="2017-02-13T09:45:31.685Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-13</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-New Document" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/09/New Document/">要准备的东西</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h1><ul>
+<li>牢记JVM的平台无关性</li>
+<li>java 8 的新语法</li>
+<li>线程池实现原理和调度原理</li>
+<li>Java 线程安全同步代码块和lock的区别，原子性 和 可见性  </li>
+<li>ClassLoader 双亲委派？ClassLoader 深入理解</li>
+<li>JVM 编译优化</li>
+<li>LinkedHashMap 与HashMap的区别在哪里，ConcurrentHashMap哪。Concurrent 在处理Hash竞争时的处理</li>
+<li>java Nio的概念以及使用，底部实现原理（通道，缓冲区，选择器）</li>
+<li>java内存模型的理解（深入理解JVM虚拟机）</li>
+<li>守护线程</li>
+<li>深入反射机制，是怎么 实现的，起码能大概说出其原理</li>
+<li>Concurrent 包的整体架构，CAS和volatile可见性的变量的读写等等</li>
+<li>常用设计模式的深入理解</li>
+<li>HashTable 和 HashMap的区别，H</li>
+<li>六大设计模式原则！</li>
+<li>在java下面怎么获取一个dump文件</li>
+<li>线程局部变量</li>
+<li>熟悉 JVM –xx 几种优化命令</li>
+<li>java中的序列化与反序列化</li>
+<li>为什么Java的hash 会用 31 ? java中 这样计算hash code 出现的hash碰撞的几率会有多大？</li>
+<li>HashMap中的负载因子是干嘛的？ List中貌似也有<h1 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h1></li>
+<li>Mybatis 怎么控制事务</li>
+<li><h1 id="MYSQL"><a href="#MYSQL" class="headerlink" title="MYSQL"></a>MYSQL</h1></li>
+<li>MySQL数据库的几种引擎，不同数据库间的比较</li>
+<li>数据库的封锁协议，各种读写锁,乐观锁和悲观锁</li>
+<li>OUTTER join 和INNER JOIN的区别<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1></li>
+<li>动态代理的几种方式</li>
+<li>为什么CGlib方式可以对接口实现代理？ </li>
+<li>Spring中编码统一要如何做（Spring Boot）</li>
+<li>依赖倒置，控制反转</li>
+<li>怎么做一个Spring 的测试<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1></li>
+<li>Redis面试会问到的问题，CAS操作</li>
+<li>Redis集群中，如何将一个对象映射到对应的缓存服务器</li>
+<li>缓存集群中如果新增一台服务器，怎么才能不影响大部分缓存数据的命中？</li>
+<li>Redis的优化等</li>
+<li>项目中具体是怎样使用Redis的</li>
+<li>Redis怎么做持久化？<h1 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h1></li>
+<li>MapReduce在MongoDB中应用</li>
+<li>MongoDB 的缓存和Redis缓存的区别<h1 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h1></li>
+<li><a href="http://blog.csdn.net/cywosp/article/details/23397179" target="_blank" rel="external">一致性Hash算法</a></li>
+<li>深入了解下B-Tree</li>
+<li>几个常用的排序算法 好好复习下<h1 id="netty"><a href="#netty" class="headerlink" title="netty"></a>netty</h1></li>
+</ul>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
+<li>Maven的使用</li>
+<li>一个服务从发布到消费的过程</li>
+<li>TCP/IP协议 常问的问题。TCP协议栈？</li>
+<li>TCP和UDP协议的却别</li>
+<li>Socket的连接在建立TCP/UDP 连接时的区别</li>
+<li>RMI与代理模式</li>
+</ul>
+<ul>
+<li>HashMap(包括但是不限于 Collections的其他数据结构实现)的底层数据结构，以及并发的处理</li>
+</ul>
+<ul>
+<li>MapReduce的原理</li>
+<li>消息中间件</li>
+</ul>
+<ul>
+<li><p>Redis缓存失效了怎么办？</p>
+</li>
+<li><p><strong>注重对基础和编程能力的考察，以及对分布式系统设计和架构的理解。</strong></p>
+</li>
+</ul>
+<ul>
+<li>Spring 中的设计模式</li>
+<li>Spring bean的生命周期，CGLIB <a href="https://premaseem.wordpress.com/2013/02/09/spring-design-patterns-used-in-java-spring-framework/" target="_blank" rel="external">Spring中的设计模式</a></li>
+<li>Spring IOC 和AOP 概念以及基本使用，实现原理</li>
+<li>Git的操作</li>
+<li>Thrift通信协议</li>
+<li>，Mysql 锁。</li>
+<li><a href="http://blog.csdn.net/hguisu/article/details/6155636" target="_blank" rel="external">深入理解 java异常机制</a></li>
+</ul>
+<p><a href="http://www.cnblogs.com/xrq730/p/5260294.html" target="_blank" rel="external"> 面试感悟—-一名3年工作经验的程序员应该具备的技能</a></p>
+<h3 id="基础能力"><a href="#基础能力" class="headerlink" title="基础能力"></a>基础能力</h3><p>基础知识必须要扎实，包括语言基础，计算机基础，算法和基本的Linux运维等</p>
+<p>针对Java语言，需要对集合类，并发包，IO/NIO，JVM，内存模型，泛型，异常，反射等都有比较深入的了解，最好是学习过部分源码。</p>
+<p>这些知识点都是相通的，在面试中也可以体现，比如集合类的HashMap，</p>
+<p>从源码的角度，可以深入到哈希表的实现，拉链法以外的哈希碰撞解决方法，如何平衡内部数组保证哈希表的性能不会下降等；<br>从线程安全的角度可以扩展到HashTable、ConcurrentHashMap等其他的数据结构，可以比较两种不同的加锁方式，RetreenLock的实现和应用，<br>继续深入可以考察Java内存模型，Volitale原语，内存栅栏等；<br>横向扩展可以考察有序的Map结构如TreeMap、LinkedHashMap，继而考察红黑树，LRU缓存，HashMap的排序等知识。</p>
+<p>Java方向的中高级职位，会比较重视对虚拟机的掌握，诸如类加载机制，内存模型等，这些在程序的优化和并发编程中都非常重要。</p>
+<p>算法方面，基本的排序和查找算法，对递归，分治等思想的掌握。如果算法基础不太好，推荐《编程珠玑》等，每一章都很经典。</p>
+<p>另外计算机基础，比如TCP/IP协议和操作系统的知识也是必备的，这些都是大学计算机专业的基础课，也是做开发基本的素养。</p>
+<h3 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h3><p>设计模式，造轮子的能力，各种缓存和数据库应用，缓存，中间件技术，高并发和高可用的分布式系统设计</p>
+<p>大型互联网公司每天要面对海量的请求，都会考察分布式系统的架构和设计，如何构建高并发高可用的系统，</p>
+<p>另外因为用户基数比较大，一个细微的优化可能会给带来很大的收益，所以对一些技术栈的掌握要求都比较深入。</p>
+<p>比如对MySQL数据库，需要知道相关的配置和优化，业务上来以后如何分库分表，如何合理的配置缓存，一个经验丰富的服务端开发人员，也应该是一个称职的DBA。</p>
+<p>对常用的开发组件，比如中间件，RPC框架等都要有一定的了解，虽然工作中可能用不到我们自己造轮子，但是掌握原理才会得心应手。</p>
+<p>这部分知识主要靠工作积累，推荐<strong>《大型网站技术架构与Java中间件实践》</strong>，还有曾贤杰的<strong>《大型网站系统架构与实践》</strong>，</p>
+<p>里面对大型网站的演变，服务治理和中间件的使用做了很详细的阐述。</p>
+<p>作为业务开发人员，有必要了解压力测试相关的指标，比如QPS，用户平均等待时间等，可以帮助你更好的了解自己的系统。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/02/09/New Document/" class="archive-article-date">
+  	<time datetime="2017-02-09T00:52:50.595Z" itemprop="datePublished"><i class="icon-clock"></i>2017-02-09</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
