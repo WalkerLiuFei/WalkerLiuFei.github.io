@@ -202,6 +202,16 @@
       <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/14/Java基础/">你应该了解的Java那些面试点</a>
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h1><ul>
@@ -235,6 +245,12 @@
 </ul>
 </li>
 <li>ConcurrentHashMap 和Collections.synchronized(map)之间的区别：<br>  <strong>ConcurrentHashMap允许多个线程同时修改Map中的元素，而不是阻塞其中的某个线程.Collections.synchronized(map)是利用阻塞线程来实现的线程安全访问。如果你想及时看到Map中实时更新的元素，使用Collections.Syntronized。如果你的往Map里面插入的操作很多，而读的操作很少。并且想拥有较好的性能。那么使用ConcurrentHashMap</strong>，另外ConcurrentHashMap不允许插入null值。。HashTable和Collections.syntronized(HashMap)的表现是一致的。都是在整个集合上建立一个读写锁。concurrentMap主要关注的是get动作</li>
+<li>ConcurrentMap中的<strong>分段锁技术</strong><ul>
+<li>ConcurrentHashMap是由Segment数组结构和HashEntry数组结构组成。Segment是一种可重入锁ReentrantLock，在ConcurrentHashMap里扮演锁的角色，HashEntry则用于存储键值对数据。</li>
+<li>ConcurrentHashMap内部使用段(Segment)来表示这些不同的部分，每个段其实就是一个小的hash table，它们有自己的锁。只要多个修改操作发生在不同的段上，它们就可以并发进行。同样当一个线程占用锁访问其中一个段数据的时候，其他段的数据也能被其他线程访问。</li>
+<li>最后就是读写分离，也就是说对于Map中保存的对象进行读操作是不需要获取锁，只有在对某个元素进行写操作，才需要获取当前的这个元素所在的Segment的锁</li>
+</ul>
+</li>
 <li>java dump 文件<ul>
 <li>heap dump:用来分析java对象的内存占用情况 ： jmap -dump:live ,format=b,file=heap.hprof xxx(java 进程号)</li>
 <li>thread dump：用来分析java应用的执行情况。一般用来解决java执行时的block问题：jstack XXX(java 进程号)</li>

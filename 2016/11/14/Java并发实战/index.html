@@ -8,34 +8,34 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Walker的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title:java并发编程实战笔记第一章
+  <meta name="description" content="title:java并发编程实战读书笔记第一章
 线程拥有自己的程序计数器，栈，本地变量
 同一个程序内的多个线程可以在多CPU的情况下同时进行
 线程为CPU时序调控的最基本单元
 
 第二章 线程安全
-原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&amp;lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）原子操作时不可中断的，">
+原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&amp;lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）原子操作时不可中断">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Walker的博客">
 <meta property="og:url" content="http://yoursite.com/2016/11/14/Java并发实战/index.html">
 <meta property="og:site_name" content="Walker的博客">
-<meta property="og:description" content="title:java并发编程实战笔记第一章
+<meta property="og:description" content="title:java并发编程实战读书笔记第一章
 线程拥有自己的程序计数器，栈，本地变量
 同一个程序内的多个线程可以在多CPU的情况下同时进行
 线程为CPU时序调控的最基本单元
 
 第二章 线程安全
-原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&amp;lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）原子操作时不可中断的，">
-<meta property="og:updated_time" content="2016-11-14T07:59:57.521Z">
+原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&amp;lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）原子操作时不可中断">
+<meta property="og:updated_time" content="2017-03-01T09:09:58.965Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Walker的博客">
-<meta name="twitter:description" content="title:java并发编程实战笔记第一章
+<meta name="twitter:description" content="title:java并发编程实战读书笔记第一章
 线程拥有自己的程序计数器，栈，本地变量
 同一个程序内的多个线程可以在多CPU的情况下同时进行
 线程为CPU时序调控的最基本单元
 
 第二章 线程安全
-原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&amp;lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）原子操作时不可中断的，">
+原子性：即原子性操作，即同一块相互关联的代码逻辑在同一时间只能有一个线程进行访问。 例如：if(a&amp;lt;10) a++，这个代码涉及到 读-读-改-写，四个连续的操作。（很容易理解）原子操作时不可中断">
   
   
     <link rel="icon" href="/assets/header.jpg">
@@ -155,7 +155,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<h2 id="title-java并发编程实战笔记"><a href="#title-java并发编程实战笔记" class="headerlink" title="title:java并发编程实战笔记"></a>title:java并发编程实战笔记</h2><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><ul>
+<h2 id="title-java并发编程实战读书笔记"><a href="#title-java并发编程实战读书笔记" class="headerlink" title="title:java并发编程实战读书笔记"></a>title:java并发编程实战读书笔记</h2><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><ul>
 <li>线程拥有自己的程序计数器，栈，本地变量</li>
 <li>同一个程序内的多个线程可以在多CPU的情况下同时进行</li>
 <li>线程为CPU时序调控的最基本单元</li>
@@ -183,7 +183,7 @@
 </ul>
 </li>
 <li>JDBC 并没有要求connection是线程安全的，但是在应用中，connection 会从线程池中获取一个实例，并且在connection完成操作归还给线程池之前，线程池不会将connection分配给其他线呈</li>
-<li>线程限制技术： 力图安卓的UI操作</li>
+<li>线程限制技术： 例如Android的UI线程</li>
 <li>ThreadLocal 是本地化的最规范的方式，应用很广、</li>
 <li>为临时缓存这种简单的事务而直接使用ThreadLocal并没有什么性能优势。在java5.0中，它被一种更直接的方式取代，就是为为每一次调用分配一个新的缓冲区</li>
 <li>对象的引用和以及对象的状态必须同事对其他线程可见。一个正确创建的对象可以通过下面的条件安全的发布<ul>
