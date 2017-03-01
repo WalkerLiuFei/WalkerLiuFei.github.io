@@ -126,110 +126,6 @@
       <div class="body-wrap">
         
   
-    <article id="post-lambda表达式" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-lambda-表达式笔记"><a href="#title-lambda-表达式笔记" class="headerlink" title="title:lambda 表达式笔记"></a>title:lambda 表达式笔记</h2><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><ul>
-<li>以前的循环方式</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (String player : players) &#123;  </div><div class="line">     System.out.print(player + <span class="string">"; "</span>);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>使用 lambda 表达式以及函数操作(functional operation)</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));</div><div class="line">```  </div><div class="line">   </div><div class="line">+ 在 Java 8 中使用双冒号操作符(double colon operator)</div><div class="line"></div><div class="line">```  </div><div class="line">players.forEach(System.out::println);</div><div class="line">```   </div><div class="line"></div><div class="line">## 匿名内部类</div><div class="line"></div><div class="line">+ 原来的表达式</div><div class="line"></div><div class="line">```  </div><div class="line">btn.setOnAction(new EventHandler&lt;ActionEvent&gt;() &#123;  </div><div class="line">          @Override  </div><div class="line">          public void handle(ActionEvent event) &#123;  </div><div class="line">              System.out.println(&quot;Hello World!&quot;);   </div><div class="line">          &#125;  </div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
-<ul>
-<li>lambda表达式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">btn.setOnAction(event -&gt; System.out.println(&quot;Hello World!&quot;));</div><div class="line">```  </div><div class="line"></div><div class="line">## 集合排序</div><div class="line"></div><div class="line">+ 原表达式</div><div class="line"></div><div class="line">``` </div><div class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </div><div class="line">Arrays.sort(players, sortByName);</div><div class="line">```  </div><div class="line">  </div><div class="line">+ lambda表达式</div><div class="line"></div><div class="line">```  </div><div class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));</div><div class="line">```  </div><div class="line"></div><div class="line">## Stream</div><div class="line"></div><div class="line">创建一个简单的集合作为例子</div></pre></td></tr></table></figure>
-<p>List<testbean> beans = new ArrayList<testbean>();<br>int count = 0;<br>while (count++ &lt; 50)<br>    beans.add(new TestBean(count,”我的是ID为”+ count +”的成员”));<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### filter</div><div class="line"></div><div class="line">filter比较简单，例如下面的例子。遍历所有id号大于20的元素并输出</div></pre></td></tr></table></figure></testbean></testbean></p>
-<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean);<br>        });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">###  map</div><div class="line"></div><div class="line">将testBean 映射为它的content.</div></pre></td></tr></table></figure></p>
-<p>beans.stream()<br>        .filter(testBean -&gt;(testBean.getId()&gt;20))<br>        .map(TestBean::getContent)<br>        .forEach(testBean -&gt; {<br>            System.out.println(testBean); //输出的的内容为testbean的content内容<br>        });<br>```</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/10/lambda表达式/" class="archive-article-date">
-  	<time datetime="2016-11-10T01:23:39.915Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-WebSocket协议笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="title-WebSocket协议笔记"><a href="#title-WebSocket协议笔记" class="headerlink" title="title:WebSocket协议笔记"></a>title:WebSocket协议笔记</h2><h1 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h1><h2 id="客户端发出的握手信息类似："><a href="#客户端发出的握手信息类似：" class="headerlink" title="客户端发出的握手信息类似："></a>客户端发出的握手信息类似：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">GET /chat HTTP/1.1</div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http://example.com                //源标示</div><div class="line">Sec-WebSocket-Protocol: chat, superchat   //子协议选项</div><div class="line">Sec-WebSocket-Version: 13</div></pre></td></tr></table></figure>
-<ul>
-<li>第5行：sec-WebSocket-Key: </li>
-<li>第6行：Origin头，表明源标示</li>
-<li>第7行：Sec-WebSocket-protocol。子协议选项，用于标示客户端和服务端使用的是哪一种子协议 </li>
-</ul>
-<h2 id="服务端回应的握手信息类式："><a href="#服务端回应的握手信息类式：" class="headerlink" title="服务端回应的握手信息类式："></a>服务端回应的握手信息类式：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat</div></pre></td></tr></table></figure>
-<ul>
-<li>第4行：Sec-WebSocket-Accept标示server是否接受了client的请求。这个值必须要不为空，并且符合client Request请求的规则才算是满足了请求</li>
-<li>第5行：返回的子协议，必须是client请求时携带的子协议之一</li>
-<li>服务端的返回也可以携带cookie信息</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li><p>WebSocket类似于Http，同样是一个基于TCP的应用层协议，它和HTTP的关系就是请求可以作为一个升级请求（Upgrade request）经由 HTTP 服务器解释（也就是可以使用 Nginx 反向代理一个 WebSocket）。</p>
-</li>
-<li><p>握手信息的头字段是没有顺序要求的</p>
-</li>
-<li>关闭握手的操作可以是任何一端主动发出，因为WebSocket的通信本就是全双工的</li>
-</ul>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/11/09/WebSocket协议笔记/" class="archive-article-date">
-  	<time datetime="2016-11-09T01:09:02.667Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-09</time>
-</a>
-      
-      
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
     <article id="post-Stomp和WebSocket协议" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1244,9 +1140,198 @@ JNIEXPORT jint JNICALL JNICALL Java_person_walker_natives_H264Decoder_decodeFram
 
 
   
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/02/hello-world/">搭建Github page笔记遇到的坑</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="配置Hexo遇到的坑"><a href="#配置Hexo遇到的坑" class="headerlink" title="配置Hexo遇到的坑"></a>配置Hexo遇到的坑</h2><ol>
+<li>在配置hexo的_config.yml文件时 <pre>
+ deploy:
+   type: git //前面要加空格！
+   repo: git@github.com:WalkerLiuFei/WalkerLiuFei.github.io.git //这里不要用https指向的地址
+   branch: master
+ </pre></li>
+<li>每次提交新文章的时候，hexo会清空github仓库（坑！），所以我在其他地方提交的文件，例如定向文件CNAME会被清空掉，所以这个文件药房你的hexo博客目录下面的source文件夹下！</li>
+</ol>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/02/hello-world/" class="archive-article-date">
+  	<time datetime="2016-11-02T02:54:31.743Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-02</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-宽动态&amp;指示灯" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#开关指示灯</p>
+<p>##命令号</p>
+<pre>
+    public static final int IOTYPE_USER_IPCAM_SETIO_REQ = 1622;
+    public static final int IOTYPE_USER_IPCAM_SETIO_RESP = 1623;
+</pre>
+##结构体
+<pre>
+    struct SMIO{
+        int avIndex;
+        int ioType; // 0是关闭，1是打开
+    }
+</pre>
+#宽动态
+##私有协议结构体
+<pre>
+    struct TagPacket {
+        <a href="#">注意这下面的四个int 其实是一个整形</a>
+        int nPacketType;        //包的类型 0----5 
+        int nPacketCount;        //包总数  5 -- 13
+        int nPacketID;        //包序号     13 ----21
+        int nPacketLen;        //包的长度  21-----32
+        char[] acData;     //length 128,
+
+
+    }
+
+    struct TagExtend {
+        int nType;
+        int nParam1;
+        int nParam2;
+        int nParam3;
+        char[] acData;  //length 128 - 20,减20的原因是要把它放到acData中？
+    }
+</pre>
+##命令号
+<pre>
+    //存储管理指令;lck20120306
+    public static int EX_STORAGE_REFRESH = 0x01;
+    public static int EX_STORAGE_REC = 0x02;
+    public static int EX_STORAGE_OK = 0x04;
+    public static int EX_STORAGE_ERR = 0x05;
+    public static int EX_STORAGE_FORMAT = 0x06;
+    public static int EX_STORAGE_SWITCH = 0x07;
+
+    //远程控制指令
+    public static byte RC_DISCOVER = 0x01;
+    public static byte RC_GETPARAM = 0x02;
+    public static byte RC_SETPARAM = 0x03;
+    public static byte RC_VERITY = 0x04;
+    public static byte RC_LOADDLG = 0x05;
+    public static byte RC_EXTEND = 0x06;
+    public static byte RC_USERLIST = 0x07;
+    public static byte RC_PRODUCTREG = 0X08;
+    public static byte RC_GETSYSTIME = 0x09;
+    public static byte RC_SETSYSTIME = 0x0a;
+    public static byte RC_DEVRESTORE = 0x0b;
+    public static byte RC_SETPARAMOK = 0x0c;
+    public static byte RC_DVRBUSY = 0X0d;
+    public static byte RC_GETDEVLOG = 0x0e;
+    public static byte RC_DISCOVER_CSST = 0x0f;
+    //扩展类型，用于指定哪个模块去处理;lck20120
+    public static byte RC_EX_FIRMUP = 0x01;
+    public static byte RC_EX_NETWORK = 0x02;
+    public static byte RC_EX_STORAGE = 0x03;
+    public static byte RC_EX_ACCOUNT = 0x04;
+    public static byte RC_EX_PRIVACY = 0x05;
+    public static byte RC_EX_MD = 0x06;
+    public static byte RC_EX_ALARM = 0x07;
+    public static byte RC_EX_SENSOR = 0x08;
+    public static byte RC_EX_PTZ = 0x09;
+    public static byte RC_EX_AUDIO = 0x0a;
+    public static byte RC_EX_ALARMIN = 0x0b;
+    public static byte RC_EX_REGISTER = 0x0c;
+    public static byte RC_EX_EXPOSURE = 0x0d;
+    public static byte RC_EX_QRCODE = 0x0e;
+    public static byte RC_EX_IVP = 0x0f;
+    public static byte RC_EX_DOORALARM = 0x10;
+    public static byte RC_EX_PTZUPDATE = 0x11;
+    public static byte RC_EX_COMTRANS = 0x12;
+    //------------------sensor设置-----------------------------------
+    public static byte EX_SENSOR_REFRESH = 0x01;
+    public static byte EX_SENSOR_SUBMIT = 0x02;
+    public static byte EX_SENSOR_CANCEL = 0x03;
+    public static byte EX_SENSOR_SAVE = 0x04;
+</pre>
+#宽动态的具体设置
+<pre>
+    public static boolean sendDynamic(int avIndex,String message) {
+        byte[] data = message.getBytes();
+        return sendPrivateCommand(avIndex,AVIOCTRLDEFs.EX_SENSOR_SAVE,AVIOCTRLDEFs.RC_EXTEND,AVIOCTRLDEFs.RC_EX_SENSOR,(byte) 40,data);
+    }
+
+    private static boolean sendPrivateCommand(int avIndex, int exCommand, byte rcExtend, byte rcExCommand, byte length, byte[] data) {
+        AVAPIs avapIs = getDefault();
+        byte[] extendData = AVIOCTRLDEFs.TagExtend.parseContent(exCommand, data);
+        byte[] packetData = AVIOCTRLDEFs.TagPacket.parseExContent(rcExtend, rcExCommand,  length,extendData);
+        int ac = avapIs.avSendIOCtrl(avIndex, AVIOCTRLDEFs.ACCESS_AV_CONFIG, packetData, packetData.length + 1);
+        if (ac < 0)
+            AVAPIs.showErrorMsg(TAG,ac);
+        return ac > 0;
+    }
+</pre>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/09/28/宽动态&指示灯/" class="archive-article-date">
+  	<time datetime="2016-09-28T07:41:14.318Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-28</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
     </nav>
   
 
