@@ -1,7 +1,7 @@
 baseURL = "http://localhost:1313/"
 languageCode = "en"
 defaultContentLanguage = "en"                             # en / zh-cn / ... (This field determines which i18n file to use)
-title = "Even - A super concise theme for Hugo"
+title = "Walker's blog,记录工作生活的点点滴滴"
 preserveTaxonomyNames = true
 enableRobotsTXT = true
 enableEmoji = true
@@ -73,10 +73,10 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   dateFormatToUse = "2006-01-02"
 
   # show word count and read time ?                       # 是否显示字数统计与阅读时间
-  moreMeta = false
+  moreMeta = true
 
   # Syntax highlighting by highlight.js
-  highlightInClient = false
+  highlightInClient = true
 
   # 一些全局开关，你也可以在每一篇内容的 front matter 中针对单篇内容关闭或开启某些功能，在 archetypes/default.md 查看更多信息。
   # Some global options, you can also close or open something in front matter for a single post, see more information from `archetypes/default.md`.
@@ -85,8 +85,8 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   fancybox = true           # see https://github.com/fancyapps/fancybox                 # 是否启用fancybox（图片可点击）
 
   # mathjax
-  mathjax = false           # see https://www.mathjax.org/                              # 是否使用mathjax（数学公式）
-  mathjaxEnableSingleDollar = false                                                     # 是否使用 $...$ 即可進行inline latex渲染
+  mathjax = true           # see https://www.mathjax.org/                              # 是否使用mathjax（数学公式）
+  mathjaxEnableSingleDollar = true                                                    # 是否使用 $...$ 即可進行inline latex渲染
   mathjaxEnableAutoNumber = false                                                       # 是否使用公式自动编号
   mathjaxUseLocalFiles = false  # You should install mathjax in `your-site/static/lib/mathjax`
 
@@ -183,20 +183,20 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
   [params.social]                                         # 社交链接
     a-email = "mailto:your@email.com"
-    b-stack-overflow = "http://localhost:1313"
-    c-twitter = "http://localhost:1313"
-    d-facebook = "http://localhost:1313"
-    e-linkedin = "http://localhost:1313"
-    f-google = "http://localhost:1313"
-    g-github = "http://localhost:1313"
-    h-weibo = "http://localhost:1313"
-    i-zhihu = "http://localhost:1313"
-    j-douban = "http://localhost:1313"
-    k-pocket = "http://localhost:1313"
-    l-tumblr = "http://localhost:1313"
-    m-instagram = "http://localhost:1313"
-    n-gitlab = "http://localhost:1313"
-    o-bilibili = "http://localhost:1313"
+   # b-stack-overflow = "http://localhost:1313"
+   # c-twitter = "http://localhost:1313"
+   # d-facebook = "http://localhost:1313"
+   # e-linkedin = "http://localhost:1313"
+   # f-google = "http://localhost:1313"
+   # g-github = "http://localhost:1313"
+   # h-weibo = "http://localhost:1313"
+   # i-zhihu = "http://localhost:1313"
+   # j-douban = "http://localhost:1313"
+   # k-pocket = "http://localhost:1313"
+   # l-tumblr = "http://localhost:1313"
+   # m-instagram = "http://localhost:1313"
+   # n-gitlab = "http://localhost:1313"
+   # o-bilibili = "http://localhost:1313"
 
 # See https://gohugo.io/about/hugo-and-gdpr/
 [privacy]
