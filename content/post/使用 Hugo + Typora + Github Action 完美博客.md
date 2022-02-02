@@ -1,5 +1,5 @@
 ---
-title: "使用 Hugo + Typora + Github Action 完美博客.md"
+title: "使用 Hugo + Typora + Github Action 完美博客"
 date: 2021-02-01T22:50:18+08:00
 author: walker
 ---
@@ -84,15 +84,11 @@ mv  themes/even/examplesite/config.toml ./config.toml
 
 然后根据自己的需要对`config.toml`中的内容进行替换，配置文件中每项都有中文注释，还是挺简单的。
 
-
-
 然后可以在博客目录执行命令即可创建一个博客。
 
 ````
 hugo new post/xxx.md
 ````
-
-
 
 到这里你可能会看出来这是一个 git 仓库的submodule，因为这个主题仓库是在我们的自己维护仓库的子目录下。
 

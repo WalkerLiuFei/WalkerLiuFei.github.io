@@ -20,7 +20,7 @@ Server通知Client请求已经已经被接收且Client 需要继续将未发送�
 
 Server 收到了ClientSwich Protocals的请求并且准备根据Client的Header切换协议，例如[Web Socket](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2)的握手请求Header和Response的Header : 
 
-```
+```pre
    The handshake from the client looks as follows:
 
         GET /chat HTTP/1.1
