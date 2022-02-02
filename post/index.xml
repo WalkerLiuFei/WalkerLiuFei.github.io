@@ -1,1 +1,40 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Walker's blog,记录工作生活的点点滴滴</title><link>http://localhost:1313/post/</link><description>Recent content in Posts on Walker's blog,记录工作生活的点点滴滴</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 01 Feb 2022 22:50:18 +0800</lastBuildDate><atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml"/><item><title>HTTP Status Code 含义及应用(Part I)</title><link>http://localhost:1313/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</link><pubDate>Tue, 01 Feb 2022 22:50:18 +0800</pubDate><guid>http://localhost:1313/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</guid><description>翻译自原文 1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1</description></item><item><title>使用 Hugo + Typora + Github Action 完美博客.md</title><link>http://localhost:1313/post/%E4%BD%BF%E7%94%A8-hugo-+-typora-+-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</link><pubDate>Mon, 01 Feb 2021 22:50:18 +0800</pubDate><guid>http://localhost:1313/post/%E4%BD%BF%E7%94%A8-hugo-+-typora-+-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</guid><description>安装Hugo 在本地安装 Hugo, 1 brew install hugo 安装成功后查看Hugo 版本 hugo version 1 2 ➜ blog git:(main) hugo version hugo v0.91.0+extended darwin/amd64 BuildDate=unknown 创建一个site，site其实就是一个博客地址 : hugo new site test</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on Walker&#39;blog</title>
+    <link>https://examplesite.com/post/</link>
+    <description>Recent content in Posts on Walker&#39;blog</description>
+    <image>
+      <url>https://examplesite.com/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://examplesite.com/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 01 Feb 2022 22:50:18 +0800</lastBuildDate><atom:link href="https://examplesite.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTTP Status Code 含义及应用(Part I)</title>
+      <link>https://examplesite.com/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</link>
+      <pubDate>Tue, 01 Feb 2022 22:50:18 +0800</pubDate>
+      
+      <guid>https://examplesite.com/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</guid>
+      <description>翻译自原文
+1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1XX的HTTP Status Code
+100 Continue Server通知Client请求已经已经被接收且Client 需要继续将未发送完毕的请求发送到Server端，如果Client已经发送完所有的请求，忽略此响应。
+100 这个Status Code可以用于作为Pre-Check HTTP Request， 例如说Client准备发送一个很大请求体的请求，Client可以通过Header检查请求是否合法来进行一次p re check，如果check通过，Client再进行接下来的操作。
+101 Switch Protocals Server 收到了ClientSwich Protocals的请求并且准备根据Client的Header切换协议，例如Web Socket的握手请求Header和Response的Header :
+The handshake from the client looks as follows: GET /chat HTTP/1.1 Host: server.example.com Upgrade: websocket Connection: Upgrade Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ== Origin: http://example.com Sec-WebSocket-Protocol: chat, superchat Sec-WebSocket-Version: 13 The handshake from the server looks as follows: HTTP/1.1 101 Switching Protocols Upgrade: websocket Connection: Upgrade Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo= Sec-WebSocket-Protocol: chat 2XX 此类的Status Code表明Server 收到，接受并且成功处理了Client的请求。</description>
+    </item>
+    
+    <item>
+      <title>使用 Hugo &#43; Typora &#43; Github Action 完美博客</title>
+      <link>https://examplesite.com/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</link>
+      <pubDate>Mon, 01 Feb 2021 22:50:18 +0800</pubDate>
+      
+      <guid>https://examplesite.com/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</guid>
+      <description>安装Hugo 在本地安装 Hugo,
+brew install hugo 安装成功后查看Hugo 版本  hugo version
+➜ blog git:(main) hugo version hugo v0.91.0+extended darwin/amd64 BuildDate=unknown 创建一个site，site其实就是一个博客地址 : hugo new site test
+➜ workspace hugo new site test Congratulations! Your new Hugo site is created in /Users/mac/workspace/test. Just a few more steps and you&amp;#39;re ready to go: 1. Download a theme into the same-named folder. Choose a theme from https://themes.gohugo.io/ or create your own with the &amp;#34;hugo new theme &amp;lt;THEMENAME&amp;gt;&amp;#34; command.</description>
+    </item>
+    
+  </channel>
+</rss>
