@@ -1,0 +1,288 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>HTTP Status Code 含义及应用(Part I) - Even - A super concise theme for Hugo</title>
+<meta name=renderer content="webkit">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta http-equiv=cache-control content="no-transform">
+<meta http-equiv=cache-control content="no-siteapp">
+<meta name=theme-color content="#f8f5ec">
+<meta name=msapplication-navbutton-color content="#f8f5ec">
+<meta name=apple-mobile-web-app-capable content="yes">
+<meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec">
+<meta name=author content="walker"><meta name=description content="翻译自原文 1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1"><meta name=keywords content="Hugo,theme,even">
+<meta name=generator content="Hugo 0.92.1 with theme even">
+<link rel=canonical href=http://localhost:1313/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/>
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/manifest.json>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5>
+<link href=/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css rel=stylesheet>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous>
+<meta property="og:title" content="HTTP Status Code 含义及应用(Part I)">
+<meta property="og:description" content="翻译自原文 1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2022-02-01T22:50:18+08:00">
+<meta property="article:modified_time" content="2022-02-01T22:50:18+08:00">
+<meta itemprop=name content="HTTP Status Code 含义及应用(Part I)">
+<meta itemprop=description content="翻译自原文 1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1"><meta itemprop=datePublished content="2022-02-01T22:50:18+08:00">
+<meta itemprop=dateModified content="2022-02-01T22:50:18+08:00">
+<meta itemprop=wordCount content="1865">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content="HTTP Status Code 含义及应用(Part I)">
+<meta name=twitter:description content="翻译自原文 1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]-->
+</head>
+<body>
+<div id=mobile-navbar class=mobile-navbar>
+<div class=mobile-header-logo>
+<a href=/ class=logo>Even</a>
+</div>
+<div class=mobile-navbar-icon>
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+<nav id=mobile-menu class="mobile-menu slideout-menu">
+<ul class=mobile-menu-list>
+<a href=/>
+<li class=mobile-menu-item>Home</li>
+</a><a href=/post/>
+<li class=mobile-menu-item>Archives</li>
+</a><a href=/tags/>
+<li class=mobile-menu-item>Tags</li>
+</a><a href=/categories/>
+<li class=mobile-menu-item>Categories</li>
+</a>
+</ul>
+</nav>
+<div class=container id=mobile-panel>
+<header id=header class=header>
+<div class=logo-wrapper>
+<a href=/ class=logo>Even</a>
+</div>
+<nav class=site-navbar>
+<ul id=menu class=menu>
+<li class=menu-item>
+<a class=menu-item-link href=/>Home</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/post/>Archives</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/tags/>Tags</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/categories/>Categories</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=main class=main>
+<div class=content-wrapper>
+<div id=content class=content>
+<article class=post>
+<header class=post-header>
+<h1 class=post-title>HTTP Status Code 含义及应用(Part I)</h1>
+<div class=post-meta>
+<span class=post-time> 2022-02-01 </span>
+</div>
+</header>
+<div class=post-toc id=post-toc>
+<h2 class=post-toc-title>Contents</h2>
+<div class="post-toc-content always-active">
+<nav id=TableOfContents>
+<ul>
+<li>
+<ul>
+<li><a href=#1xx>1XX</a>
+<ul>
+<li><a href=#100-continue>100 Continue</a></li>
+<li><a href=#101-switch-protocals>101 Switch Protocals</a></li>
+</ul>
+</li>
+<li><a href=#2xx>2XX</a>
+<ul>
+<li><a href=#200-ok>200 OK</a></li>
+<li><a href=#201-ceated>201 Ceated</a></li>
+<li><a href=#202-accepted>202 Accepted</a></li>
+<li><a href=#203-non-authoritative-information>203 Non-Authoritative Information</a></li>
+<li><a href=#204-no-content>204 No Content</a></li>
+<li><a href=#205-reset-content>205 Reset Content</a></li>
+</ul>
+</li>
+<li><a href=#3xx>3xx</a>
+<ul>
+<li><a href=#300-mutiple-choice>300 Mutiple Choice</a></li>
+<li><a href=#301-move-permanently>301 Move Permanently</a></li>
+<li><a href=#302-found>302 Found</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+<div class=post-content>
+<p>翻译自<a href=https://datatracker.ietf.org/doc/html/rfc7231#section-6>原文</a></p>
+<h2 id=1xx>1XX</h2>
+<p>1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1XX的HTTP Status Code</p>
+<h3 id=100-continue>100 Continue</h3>
+<p>Server通知Client请求已经已经被接收且Client 需要继续将未发送完毕的请求发送到Server端，如果Client已经发送完所有的请求，忽略此响应。</p>
+<p>100 这个Status Code可以用于作为Pre-Check HTTP Request， 例如说Client准备发送一个很大请求体的请求，Client可以通过Header检查请求是否合法来进行一次p re check，如果check通过，Client再进行接下来的操作。</p>
+<h3 id=101-switch-protocals>101 Switch Protocals</h3>
+<p>Server 收到了ClientSwich Protocals的请求并且准备根据Client的Header切换协议，例如<a href=https://datatracker.ietf.org/doc/html/rfc6455#section-1.2>Web Socket</a>的握手请求Header和Response的Header :</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>   The handshake from the client looks as follows:
+
+        GET /chat HTTP/1.1
+        Host: server.example.com
+        Upgrade: websocket
+        Connection: Upgrade
+        Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+        Origin: http://example.com
+        Sec-WebSocket-Protocol: chat, superchat
+        Sec-WebSocket-Version: 13
+
+   The handshake from the server looks as follows:
+
+        HTTP/1.1 101 Switching Protocols
+        Upgrade: websocket
+        Connection: Upgrade
+        Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+        Sec-WebSocket-Protocol: chat
+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=2xx>2XX</h2>
+<p>此类的Status Code表明Server 收到，接受并且成功处理了Client的请求。</p>
+<h3 id=200-ok>200 OK</h3>
+<p>请求被接受。对于处理结果，对于不同的请求类型的含义不同</p>
+<ol>
+<li>GET : Client需要的Resource被响应，Response Body中会含有Client需要的Resource资源</li>
+<li>POST : Client发送给Server的请求被正确处理, Response Body中可以含有对Client Post资源的处理描述</li>
+<li>PUT：Client 发送给Server的Body被成功接收</li>
+<li>DELETE : Client想要删除掉的资源已被成功删除</li>
+</ol>
+<h3 id=201-ceated>201 Ceated</h3>
+<p>表示Client想要在Server端创建的资源已被正确创建，正由于此，201一般会被用来作为对POST/PUT请求的响应。相对于200低于POST / PUT的处理在于，Response必须要包含有一条信息对创建资源具体位置的描述(URI)。</p>
+<p><strong>一般是以一个<code>ETag</code>响应头来描述被创建资源的位置。</strong></p>
+<h3 id=202-accepted>202 Accepted</h3>
+<p>202 Status Code用于表明Client的请求已经被接收，Server可能正在进行处理没有完成。<strong>一般用于异步处理的操作</strong>，但是由于HTTP Request的机制，Server无法通知到Client具体的处理结果，因为异步操作可能遇到失败的情况。</p>
+<h3 id=203-non-authoritative-information>203 Non-Authoritative Information</h3>
+<p>表示Server正确处理了Client的请求，但是响应的信息是从一系列第三方获取到的。这个Status Code一般用于Proxy-Server对于Client的请求处理</p>
+<h3 id=204-no-content>204 No Content</h3>
+<p>204 Status Code的表示的含义表明其Response Body没有多余的信息响应给Client，响应中的Metadata信息可能会指代Request的请求的完成后的指示。例如，一个PUT请求操作将一个文件上传后，会有一个ETag Header指向创建后的文件URI，但是相比于201 Created, 其Response Body是空的。</p>
+<p>对于Web页面一般用于用户的<code>SAVE</code> 操作</p>
+<h3 id=205-reset-content>205 Reset Content</h3>
+<p>Server 收到了Client的请求并成功执行了它，并且响应了一个空的Response Body, 但是不同于204 响应，此响应要求Client Reset Document View。</p>
+<h2 id=3xx>3xx</h2>
+<p>3XX 重定向的Status Code 表明Client需要采取进一步的动作才能可以完成请求操作。</p>
+<p>重定向类型：</p>
+<ol>
+<li>重定向表明Client请求的资源在其他地方是available的，正如响应的Header中Location值表明的那样。301(Move Permanently)，302(Found) 和 307(Temporary Redirect)。 都是属于这个类型</li>
+<li>重定向响应给了Client多个选项，300(Multiple Choice)属于这个类型。</li>
+<li>重定向到由 Location 标识的不同资源 字段，可以表示对请求的间接响应，如 在 303（See Other）状态代码中。</li>
+<li>重定向到以前缓存的结果，如 304（Not Modified）状态码。</li>
+</ol>
+<h3 id=300-mutiple-choice>300 Mutiple Choice</h3>
+<p>Server 需要一个Payload 来提供一个list让Client选择一个更合适的重定向链接地址。<em>使用场景有限</em></p>
+<h3 id=301-move-permanently>301 Move Permanently</h3>
+<p>Client请求的资源被永久转移到Server响应的Location Header指定的地址，Client通过自动跳转到指定的URI地址。</p>
+<p>另外 ：</p>
+<ol>
+<li>服务器的响应负载通常包含一个简短的 带有指向新 URI 的超链接的超文本注释。</li>
+<li>由于历史原因，用户代理可能会更改请求 从 POST 到 GET 的方法用于后续请求。如果这个不是期望行为，307（Temporary Redirect）状态代码 可以代替使用。</li>
+</ol>
+<h3 id=302-found>302 Found</h3>
+<p>302（Found）状态码表示目标资源 临时驻留在不同的 URI 下。由于重定向有时可能会更改，客户应继续使用 未来请求的有效请求 URI。</p>
+</div>
+<div class=post-copyright>
+<p class=copyright-item>
+<span class=item-title>Author</span>
+<span class=item-content>walker</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>LastMod</span>
+<span class=item-content>
+2022-02-01
+</span>
+</p>
+</div>
+<footer class=post-footer>
+<nav class=post-nav>
+</nav>
+</footer>
+</article>
+</div>
+</div>
+</main>
+<footer id=footer class=footer>
+<div class=social-links>
+<a href=mailto:your@email.com class="iconfont icon-email" title=email></a>
+<a href=http://localhost:1313 class="iconfont icon-stack-overflow" title=stack-overflow></a>
+<a href=http://localhost:1313 class="iconfont icon-twitter" title=twitter></a>
+<a href=http://localhost:1313 class="iconfont icon-facebook" title=facebook></a>
+<a href=http://localhost:1313 class="iconfont icon-linkedin" title=linkedin></a>
+<a href=http://localhost:1313 class="iconfont icon-google" title=google></a>
+<a href=http://localhost:1313 class="iconfont icon-github" title=github></a>
+<a href=http://localhost:1313 class="iconfont icon-weibo" title=weibo></a>
+<a href=http://localhost:1313 class="iconfont icon-zhihu" title=zhihu></a>
+<a href=http://localhost:1313 class="iconfont icon-douban" title=douban></a>
+<a href=http://localhost:1313 class="iconfont icon-pocket" title=pocket></a>
+<a href=http://localhost:1313 class="iconfont icon-tumblr" title=tumblr></a>
+<a href=http://localhost:1313 class="iconfont icon-instagram" title=instagram></a>
+<a href=http://localhost:1313 class="iconfont icon-gitlab" title=gitlab></a>
+<a href=http://localhost:1313 class="iconfont icon-bilibili" title=bilibili></a>
+<a href=http://localhost:1313/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a>
+</div>
+<div class=copyright>
+<span class=power-by>
+Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a>
+</span>
+<span class=division>|</span>
+<span class=theme-info>
+Theme -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a>
+</span>
+<span class=copyright-year>
+&copy;
+2017 -
+2022<span class=heart><i class="iconfont icon-heart"></i></span><span>walker</span>
+</span>
+</div>
+</footer>
+<div class=back-to-top id=back-to-top>
+<i class="iconfont icon-up"></i>
+</div>
+</div>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script>
+</body>
+</html>
