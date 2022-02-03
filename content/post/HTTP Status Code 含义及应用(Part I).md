@@ -1,5 +1,5 @@
 ---
-title: "HTTP Status Code 含义及应用(Part I)"
+title: "HTTP Status Code 含义及适用场景(Part I)"
 date: 2022-02-01T22:50:18+08:00
 author: walker
 ---

@@ -139,6 +139,51 @@ jobs:
           publish_dir: ./public
 ```
 
-## 开始使用
+## 使用Typora
+
+每个喜欢使用使用Markdown来写东西的小伙伴都知道`typora`的大名，这里就忽略其介绍了。这里简单说一下配置图床。
 
 我一般是通过在`content/post/` 目录下直接通过typora编辑文章，然后通过`git` commit 到GitHub GitHub通过github action直接渲染出静态页面，非常方便。
+
+配置图床
+
+1. 首先安装`picgo` 
+
+```
+brew install picgo --cask
+```
+
+然后根据自己需要[配置图床](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html#picbed)
+
+图床有很多种选择，从GitHub，Gitee 到七牛云,阿里云OSS等等
+
+我选用了腾讯云的.
+
+配置好对应配置之后执行选择对应的uploader即可
+
+```
+picgo set uploader
+```
+
+<img src="https://pictures-1300863886.cos.ap-shanghai.myqcloud.com/image-20220203113642355.png" alt="image-20220203113642355" style="zoom:50%;" />
+
+最后一步是在`typora`种选择upload操作
+
+<img src="https://pictures-1300863886.cos.ap-shanghai.myqcloud.com/image-20220203114009827.png" alt="image-20220203114009827" style="zoom:50%;" />
+
+操作1 : 在插入本地图片后自动上传，并将链接链接到上传后图片的地址。
+
+操作2 ：使用对应的command : `node picgo u` 作为图片的上传命令
+
+通过以上操作即可在编辑文章时自动上传图片
+
+## 自定义域名
+
+随便在哪里买一个域名，现在各个云服务提供商对域名都有首年优惠，非常方便。
+
+在上面创建`github.io` 仓库中将`Custom domin`配置为自行购买的域名，配置完成并保存以后会在`generate`分支产生一个CNAME文件，在我这个例子中这里就是`gh-pages`这个分支[CNAME文件](https://github.com/WalkerLiuFei/WalkerLiuFei.github.io/blob/gh-pages/CNAME)
+
+![image-20220202220416543](https://pictures-1300863886.cos.ap-shanghai.myqcloud.com/image-20220202220416543.png)
+
+然后在云服务提供商哪里将域名`CNAME`配置到指向另外一个域名即`<username.github.io> `这个域名即可。
+
