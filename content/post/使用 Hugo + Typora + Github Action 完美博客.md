@@ -137,7 +137,10 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+          cname: yourwebsit.onlie # 你自己的域名， 如果没有，删除这一行
 ```
+
+**注意如果没有自定义域名的删除最后一行**
 
 ## 使用Typora
 
