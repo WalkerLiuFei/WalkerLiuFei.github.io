@@ -22,8 +22,7 @@ jobs:
           # extended: true
 
       - name: Build
-      - run: hugo --minify
-      - run: cp ./CNAME ./CNAME
+        run: hcp ./CNAME ./CNAME & hugo --minify
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
