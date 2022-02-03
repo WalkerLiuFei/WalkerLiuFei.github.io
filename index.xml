@@ -11,7 +11,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Tue, 01 Feb 2022 22:50:18 +0800</lastBuildDate><atom:link href="https://examplesite.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTTP Status Code 含义及应用(Part I)</title>
+      <title>HTTP Status Code 含义及适用场景(Part I)</title>
       <link>https://examplesite.com/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</link>
       <pubDate>Tue, 01 Feb 2022 22:50:18 +0800</pubDate>
       
@@ -34,6 +34,16 @@ The handshake from the client looks as follows: GET /chat HTTP/1.1 Host: server.
 brew install hugo 安装成功后查看Hugo 版本  hugo version
 ➜ blog git:(main) hugo version hugo v0.91.0+extended darwin/amd64 BuildDate=unknown 创建一个site，site其实就是一个博客地址 : hugo new site test
 ➜ workspace hugo new site test Congratulations! Your new Hugo site is created in /Users/mac/workspace/test. Just a few more steps and you&amp;#39;re ready to go: 1. Download a theme into the same-named folder. Choose a theme from https://themes.gohugo.io/ or create your own with the &amp;#34;hugo new theme &amp;lt;THEMENAME&amp;gt;&amp;#34; command.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://examplesite.com/post/redis-%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://examplesite.com/post/redis-%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>Redis 中的数据结构 动态字符串（SDS） SDS 数据结构 struct sdshdr { // buf 已占用长度  int len; // buf 剩余可用长度  int free; // 实际保存字符串数据的地方  char buf[]; }; SDS 的特性  二进制安全 ： C字符串的数据肯定满足某种编码的，而SDS不需要。 获取字符串长度 的时间复杂度为 $$O(1)$$，因为有一个专门的记录长度的属性，如果使用使用原始的C字符串，计算长度的复杂度为$$O(N)$$。 避免缓存区溢出 ： 比如两个字符串相 concat，C字符串如果目标字符串没有提前分配足够的空间，这个操作就会造成缓冲区溢出，而SDS的API封装了这些检查和分配策略。 内存开销小，对于经常变化的字符串，有预分配的策略  &amp;lt; 1MB ，预分配内存大小为需要内存的两倍 /&amp;gt; 1MB , 多分配1MB空间 预分配的内存，在字符串被删除之前，不会被删除 这里需要注意的点是，对于经常append 的字符串，需要及时释放多余的预分配内存    双端链表 Redis通过 双端链表和压缩列表实现的集合功能
+数据结构 typedef struct list { // 表头指针  listNode *head; // 表尾指针  listNode *tail; // 节点数量  unsigned long len; // 复制函数  void *(*dup)(void *ptr); // 释放函数  void (*free)(void *ptr); // 比对函数  int (*match)(void *ptr, void *key); } list; typedef struct listNode { // 前驱节点  struct listNode *prev; // 后继节点  struct listNode *next; // 值  void *value; } listNode; Redis 有两种实现 双端链表，压缩列表。 Redis在创建集合时默认使用压缩列表的数据结构，只有在不得不适用双端链表时在使用双端链表。</description>
     </item>
     
   </channel>
