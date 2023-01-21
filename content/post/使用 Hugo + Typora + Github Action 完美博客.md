@@ -153,14 +153,14 @@ jobs:
 1. 首先安装`picgo` 
 
 ```
-brew install picgo --cask
+yarn install picgo --cask
 ```
 
 然后根据自己需要[配置图床](https://picgo.github.io/PicGo-Core-Doc/zh/guide/config.html#picbed)
 
 图床有很多种选择，从GitHub，Gitee 到七牛云,阿里云OSS等等
 
-我选用了腾讯云的.
+我选用了腾讯云的,参考 [配置方式](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#%E8%85%BE%E8%AE%AF%E4%BA%91cos)
 
 配置好对应配置之后执行选择对应的uploader即可
 
