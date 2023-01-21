@@ -31,7 +31,7 @@ The handshake from the client looks as follows: GET /chat HTTP/1.1 Host: server.
       
       <guid>https://walkerliu.online/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</guid>
       <description>安装Hugo 在本地安装 Hugo,
-brew install hugo 安装成功后查看Hugo 版本  hugo version
+brew install hugo 安装成功后查看Hugo 版本 hugo version
 ➜ blog git:(main) hugo version hugo v0.91.0+extended darwin/amd64 BuildDate=unknown 创建一个site，site其实就是一个博客地址 : hugo new site test
 ➜ workspace hugo new site test Congratulations! Your new Hugo site is created in /Users/mac/workspace/test. Just a few more steps and you&amp;#39;re ready to go: 1. Download a theme into the same-named folder. Choose a theme from https://themes.gohugo.io/ or create your own with the &amp;#34;hugo new theme &amp;lt;THEMENAME&amp;gt;&amp;#34; command.</description>
     </item>
