@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on Walker&#39;s blog</title>
-    <link>https://walkerliu.online/post/</link>
+    <link>https://walkerliu.top/post/</link>
     <description>Recent content in Posts on Walker&#39;s blog</description>
     <image>
-      <url>https://walkerliu.online/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://walkerliu.online/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>https://walkerliu.top/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://walkerliu.top/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 18 Feb 2023 11:21:54 +0800</lastBuildDate><atom:link href="https://walkerliu.online/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 18 Feb 2023 11:21:54 +0800</lastBuildDate><atom:link href="https://walkerliu.top/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>10种入门级期权策略</title>
-      <link>https://walkerliu.online/post/10%E7%A7%8D%E5%85%A5%E9%97%A8%E7%BA%A7%E6%9C%9F%E6%9D%83%E7%AD%96%E7%95%A5/</link>
+      <link>https://walkerliu.top/post/10%E7%A7%8D%E5%85%A5%E9%97%A8%E7%BA%A7%E6%9C%9F%E6%9D%83%E7%AD%96%E7%95%A5/</link>
       <pubDate>Sat, 18 Feb 2023 11:21:54 +0800</pubDate>
       
-      <guid>https://walkerliu.online/post/10%E7%A7%8D%E5%85%A5%E9%97%A8%E7%BA%A7%E6%9C%9F%E6%9D%83%E7%AD%96%E7%95%A5/</guid>
+      <guid>https://walkerliu.top/post/10%E7%A7%8D%E5%85%A5%E9%97%A8%E7%BA%A7%E6%9C%9F%E6%9D%83%E7%AD%96%E7%95%A5/</guid>
       <description>10种入门期权策略 原文:https://www.investopedia.com/trading/options-strategies/
 投资者往往在对期权策略知之甚少的情况下贸然入场期权交易，然而实际上，基于不同的市场环境，有许多既能限制风险又能最大化回报的期权策略。稍加努力，交易者就可以学习如何利用期权所提供的灵活性和强大功能。
 以下是每个投资者都应该知道的 10 种期权策略。
@@ -27,10 +27,10 @@
     
     <item>
       <title>HTTP Status Code 含义及适用场景(Part I)</title>
-      <link>https://walkerliu.online/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</link>
+      <link>https://walkerliu.top/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</link>
       <pubDate>Tue, 01 Feb 2022 22:50:18 +0800</pubDate>
       
-      <guid>https://walkerliu.online/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</guid>
+      <guid>https://walkerliu.top/post/http-status-code-%E5%90%AB%E4%B9%89%E5%8F%8A%E5%BA%94%E7%94%A8part-i/</guid>
       <description>翻译自原文
 1XX 1XX的HTTP Status Code只作为临时响应，并且，HTTP 1.0 的Client并不支持这个1XX的状态码，对于代理而言，代理需要转发1XX的HTTP Status Code
 100 Continue Server通知Client请求已经已经被接收且Client 需要继续将未发送完毕的请求发送到Server端，如果Client已经发送完所有的请求，忽略此响应。
@@ -41,10 +41,10 @@ The handshake from the client looks as follows: GET /chat HTTP/1.1 Host: server.
     
     <item>
       <title>使用 Hugo &#43; Typora &#43; Github Action 完美博客</title>
-      <link>https://walkerliu.online/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</link>
+      <link>https://walkerliu.top/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</link>
       <pubDate>Mon, 01 Feb 2021 22:50:18 +0800</pubDate>
       
-      <guid>https://walkerliu.online/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</guid>
+      <guid>https://walkerliu.top/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</guid>
       <description>安装Hugo 在本地安装 Hugo,
 brew install hugo 安装成功后查看Hugo 版本 hugo version
 ➜ blog git:(main) hugo version hugo v0.91.0+extended darwin/amd64 BuildDate=unknown 创建一个site，site其实就是一个博客地址 : hugo new site test
@@ -53,10 +53,10 @@ brew install hugo 安装成功后查看Hugo 版本 hugo version
     
     <item>
       <title></title>
-      <link>https://walkerliu.online/post/%E8%AE%B0%E4%B8%80%E6%AC%A1clb%E5%8F%98%E5%8A%A8%E5%AF%BC%E8%87%B4%E7%9A%84%E7%86%94%E6%96%AD%E9%97%AE%E9%A2%98/</link>
+      <link>https://walkerliu.top/post/%E8%AE%B0%E4%B8%80%E6%AC%A1clb%E5%8F%98%E5%8A%A8%E5%AF%BC%E8%87%B4%E7%9A%84%E7%86%94%E6%96%AD%E9%97%AE%E9%A2%98/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://walkerliu.online/post/%E8%AE%B0%E4%B8%80%E6%AC%A1clb%E5%8F%98%E5%8A%A8%E5%AF%BC%E8%87%B4%E7%9A%84%E7%86%94%E6%96%AD%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://walkerliu.top/post/%E8%AE%B0%E4%B8%80%E6%AC%A1clb%E5%8F%98%E5%8A%A8%E5%AF%BC%E8%87%B4%E7%9A%84%E7%86%94%E6%96%AD%E9%97%AE%E9%A2%98/</guid>
       <description></description>
     </item>
     
