@@ -3,6 +3,7 @@ title: Walker's blog
 paginate: 5
 theme: PaperMod
 
+enableEmoji: true
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
