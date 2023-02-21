@@ -10,7 +10,37 @@
       <link>https://walkerliu.top/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 21 Feb 2023 13:26:06 +0800</lastBuildDate><atom:link href="https://walkerliu.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 21 Feb 2023 13:31:02 +0800</lastBuildDate><atom:link href="https://walkerliu.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RSA算法</title>
+      <link>https://walkerliu.top/post/rsa%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Tue, 21 Feb 2023 13:31:02 +0800</pubDate>
+      
+      <guid>https://walkerliu.top/post/rsa%E7%AE%97%E6%B3%95/</guid>
+      <description>公钥与私钥的产生 等价符号（≡） 符号 ≡ 在模运算中使用，表示两个整数除以给定模数时具有相同的余数。例如，如果a和b是两个整数，m是正整数，那么 $$a ≡ b (mod m) $$等价 $$a% m = b % m$$
+原理 一句话概括 在RSA 加密方案中，选定了素数 p,q计算出N = p* q，再在小于 φ(n)的正整数中选一个和它互素的e作为公匙，它模 φ(n)的乘法逆元d 作为私匙。公开e,保留d
+第一步，随机选择两个不相等的质数p和q。
+alice选择了61和53。（实际应用中，这两个质数越大，就越难破解。）
+第二步，计算p和q的乘积n。
+alice就把61和53相乘。
+$$n = 61×53 = 3233$$
+n的长度就是密钥长度。3233写成二进制是$110010100001$，一共有12位，所以这个密钥就是12位。实际应用中，RSA密钥一般是1024位，重要场合则为2048位。
+第三步，计算n的欧拉函数φ(n)。
+根据公式：
+$$φ(n)=(p−1)(q−1)φ(n) = (p-1)(q-1)φ(n)=(p−1)(q−1)$$
+alice算出φ(3233)等于60×52，即3120。
+第四步，随机选择一个整数e，条件是1&amp;lt; e &amp;lt; φ(n)，且e与φ(n) 互质。
+alice就在1到3120之间，随机选择了17。（实际应用中，常常选择65537。）
+第五步，计算e对于φ(n)的模反元素d。
+所谓&amp;ldquo;模反元素&amp;rdquo;就是指有一个整数d，可以使得ed被φ(n)除的余数为1。
+$ed ≡ 1 (mod φ(n))$
+这个式子等价于
+$$ed - 1 = kφ(n)$$
+于是，找到模反元素d，实质上就是对下面这个二元一次方程求解。
+$$ex + φ(n)y = 1$$
+已知 e=17, φ(n)=3120，</description>
+    </item>
+    
     <item>
       <title>用户态和内核态</title>
       <link>https://walkerliu.top/post/%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E5%86%85%E6%A0%B8%E6%80%81/</link>
