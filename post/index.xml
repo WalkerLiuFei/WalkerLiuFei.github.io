@@ -117,6 +117,20 @@ The handshake from the client looks as follows: GET /chat HTTP/1.1 Host: server.
     </item>
     
     <item>
+      <title>Raft共识算法</title>
+      <link>https://walkerliu.top/post/raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Sun, 21 Feb 2021 15:32:34 +0800</pubDate>
+      
+      <guid>https://walkerliu.top/post/raft%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/</guid>
+      <description>Raft 共识算法 基本概念 Raft 共识算法算是Paxos的工程化，Raft 为了达到共识一共做了两件事情
+问题分解 状态简化 问题分解是将&amp;quot;复制集中节点一致性&amp;quot;这个复杂的问题划分为数个可以被独立解释、理解、解决的子问题。在raft，子问题包括，leader election， log replication，safety，membership changes。而状态简化更好理解，就是对算法做出一些限制，减少需要考虑的状态数，使得算法更加清晰，更少的不确定性（比如，保证新选举出来的leader会包含所有commited log entry）
+Raft 协议的工作原理
+所有节点启动时都是以follower的角色启动的 选举出 leader Leader负责Replicated log的管理 leader 负责所有客户端的请求，然后复制到 follower 节点，并在安全的时执行这些操作 如果遇到 leader 故障，followers会重新选举出新的leader 所有的节点在任何时候会处于三种状态中
+followers : 所有的节点在启动时都是 follower状态，如果在一定时间之后follower 没有收到leader的信息，就会自动切换为 candidate 角色然后发起选举并将选举信息推送给其他follower，如果收到 majority 的响应，那么就会切换为leader。 Candidate ： follower 和 leader的中间角色 leader ： 负责处理client的请求，并处理 replicated log的处理，leader 会有任期(term)，在一个term完成 term term（任期）以选举（election）开始，然后就是一段或长或短的稳定工作期（normal Operation）。 任期是递增的，这就充当了逻辑时钟的作用；term 存在的意义，
+由于网络情况不佳，一个主节点 A 与其它节点失联，其它节点选了一个新的主节点 B，当网络恢复正常时，旧主节点 A 收到主节点 B 的消息时，它会判断新主节点 B 的 term 大于自己，说明自己错过了一些事件，因此选择放弃自己的主节点身份，变为follower 另外 term在选举时也很有意义。 另外，term 还会有一种极端的场景出现，就是脑裂，就是说没有选举出leader就结束了，然后会发起新的选举，后面会解释这种split vote的情况。</description>
+    </item>
+    
+    <item>
       <title>使用 Hugo &#43; Typora &#43; Github Action 完美博客</title>
       <link>https://walkerliu.top/post/%E4%BD%BF%E7%94%A8-hugo-&#43;-typora-&#43;-github-action-%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2/</link>
       <pubDate>Mon, 01 Feb 2021 22:50:18 +0800</pubDate>
